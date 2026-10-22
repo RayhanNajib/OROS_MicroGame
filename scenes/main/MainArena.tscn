@@ -1,0 +1,118 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://scripts/main/main_arena.gd" id="1_arena_scr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/arena_background.png" id="2_bg_tex"]
+[ext_resource type="Texture2D" path="res://assets/sprites/blast_gate_closed.png" id="3_gate_tex"]
+[ext_resource type="PackedScene" path="res://scenes/entities/Player.tscn" id="4_player_scene"]
+[ext_resource type="PackedScene" path="res://scenes/entities/TerminalPod.tscn" id="5_pod_scene"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="6_hud_scene"]
+[ext_resource type="AudioStream" path="res://assets/audio/bgm_oros_intro.wav" id="7_bgm_stream"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_victory.wav" id="8_vic_sfx"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/pod_najib_inactive.png" id="9_najib_inact"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pod_najib_active.png" id="10_najib_act"]
+[ext_resource type="Texture2D" path="res://assets/sprites/face_najib_64x64.png" id="11_najib_face"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/pod_luigy_inactive.png" id="12_luigy_inact"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pod_luigy_active.png" id="13_luigy_act"]
+[ext_resource type="Texture2D" path="res://assets/sprites/face_luigy_64x64.png" id="14_luigy_face"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/pod_faizun_inactive.png" id="15_faizun_inact"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pod_faizun_active.png" id="16_faizun_act"]
+[ext_resource type="Texture2D" path="res://assets/sprites/face_faizun_64x64.png" id="17_faizun_face"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bottom"]
+normal = Vector2(0, -1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_left"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_right"]
+normal = Vector2(-1, 0)
+
+[node name="MainArena" type="Node2D"]
+script = ExtResource("1_arena_scr")
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="ArenaBackground" type="Sprite2D" parent="Environment"]
+texture = ExtResource("2_bg_tex")
+centered = false
+
+[node name="BlastGate" type="Sprite2D" parent="Environment"]
+position = Vector2(320, 36)
+texture = ExtResource("3_gate_tex")
+
+[node name="Borders" type="StaticBody2D" parent="Environment"]
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionTop" type="CollisionShape2D" parent="Environment/Borders"]
+position = Vector2(320, 64)
+shape = SubResource("WorldBoundaryShape2D_top")
+
+[node name="CollisionBottom" type="CollisionShape2D" parent="Environment/Borders"]
+position = Vector2(320, 344)
+shape = SubResource("WorldBoundaryShape2D_bottom")
+
+[node name="CollisionLeft" type="CollisionShape2D" parent="Environment/Borders"]
+position = Vector2(16, 180)
+shape = SubResource("WorldBoundaryShape2D_left")
+
+[node name="CollisionRight" type="CollisionShape2D" parent="Environment/Borders"]
+position = Vector2(624, 180)
+shape = SubResource("WorldBoundaryShape2D_right")
+
+[node name="Entities" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="PodNajib" parent="Entities" instance=ExtResource("5_pod_scene")]
+position = Vector2(160, 190)
+member_id = "najib"
+member_name = "Muhammad Rayhan Najib"
+member_nim = "240533600012"
+member_role = "Lead Programmer & Engine Integrator"
+member_desc = "Implementasi arsitektur Godot 4.7, GDScript 2.0 static typing, fisika collision layer, dan logika kendali karakter."
+activation_type = "shoot"
+avatar_texture = ExtResource("11_najib_face")
+texture_inactive = ExtResource("9_najib_inact")
+texture_active = ExtResource("10_najib_act")
+
+[node name="PodLuigy" parent="Entities" instance=ExtResource("5_pod_scene")]
+position = Vector2(320, 275)
+member_id = "luigy"
+member_name = "Luigy M. C. Liem Saunoah"
+member_nim = "240533605298"
+member_role = "2D Pixel Artist, Animator & UI Designer"
+member_desc = "Pembuatan 2D spritesheet Kael, desain HUD sci-fi industrial, tileset arena pabrik OROS, dan palet warna 16-bit."
+activation_type = "step"
+avatar_texture = ExtResource("14_luigy_face")
+texture_inactive = ExtResource("12_luigy_inact")
+texture_active = ExtResource("13_luigy_act")
+
+[node name="PodFaizun" parent="Entities" instance=ExtResource("5_pod_scene")]
+position = Vector2(480, 190)
+member_id = "faizun"
+member_name = "Ahmad Faizun"
+member_nim = "240533608123"
+member_role = "Project Manager, Game Designer & QA Tester"
+member_desc = "Penyusunan backlog & sprint board Trello, perancangan GDD OROS, kurva formula EXP, dan audio SFX/BGM foley."
+activation_type = "interact"
+avatar_texture = ExtResource("17_faizun_face")
+texture_inactive = ExtResource("15_faizun_inact")
+texture_active = ExtResource("16_faizun_act")
+
+[node name="Player" parent="Entities" instance=ExtResource("4_player_scene")]
+position = Vector2(320, 190)
+
+[node name="HUD" parent="." instance=ExtResource("6_hud_scene")]
+
+[node name="BGMPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_bgm_stream")
+volume_db = -6.0
+
+[node name="SFXVictory" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_vic_sfx")
