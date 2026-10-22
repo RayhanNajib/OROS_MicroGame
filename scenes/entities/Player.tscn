@@ -11,6 +11,8 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_enemy_hit.wav" id="9_hit"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_enemy_death.wav" id="10_death"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_xp_pickup.wav" id="11_xp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/fx_shadow.png" id="12_shadow"]
+[ext_resource type="Texture2D" path="res://assets/sprites/fx_muzzle_flash.png" id="13_flash"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 6.0
@@ -20,6 +22,11 @@ height = 20.0
 collision_layer = 2
 collision_mask = 1
 script = ExtResource("1_scr")
+
+[node name="ShadowSprite" type="Sprite2D" parent="."]
+position = Vector2(0, 18)
+texture = ExtResource("12_shadow")
+modulate = Color(1, 1, 1, 0.6)
 
 [node name="BodySprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_body")
@@ -38,6 +45,11 @@ texture = ExtResource("3_gun")
 
 [node name="Muzzle" type="Marker2D" parent="WeaponPivot"]
 position = Vector2(22, 0)
+
+[node name="MuzzleFlash" type="Sprite2D" parent="WeaponPivot/Muzzle"]
+visible = false
+texture = ExtResource("13_flash")
+modulate = Color(1.2, 1.4, 2.0, 1.0)
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 color = Color(0.85, 0.95, 1, 1)

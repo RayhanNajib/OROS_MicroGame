@@ -78,76 +78,193 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
 
-[node name="StartBtn" type="Button" parent="VBoxCenter"]
+[node name="ButtonsVBox" type="VBoxContainer" parent="VBoxCenter"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="StartBtn" type="Button" parent="VBoxCenter/ButtonsVBox"]
 custom_minimum_size = Vector2(240, 36)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
 theme_override_font_sizes/font_size = 11
-text = "▶ START OVERCLOCK RUN"
+text = "▶ INITIATE OVERCLOCK RUN"
 
-[node name="ControlsPanel" type="PanelContainer" parent="VBoxCenter"]
+[node name="ControlsBtn" type="Button" parent="VBoxCenter/ButtonsVBox"]
+custom_minimum_size = Vector2(240, 30)
 layout_mode = 2
-
-[node name="Margin" type="MarginContainer" parent="VBoxCenter/ControlsPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 6
-
-[node name="VBoxControls" type="VBoxContainer" parent="VBoxCenter/ControlsPanel/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="ControlsHeader" type="Label" parent="VBoxCenter/ControlsPanel/Margin/VBoxControls"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.3, 0.85, 1, 1)
-theme_override_font_sizes/font_size = 8
-text = "PANDUAN KONTROL & MEKANIK SURVIVOR:"
-horizontal_alignment = 1
-
-[node name="ControlsText" type="Label" parent="VBoxCenter/ControlsPanel/Margin/VBoxControls"]
-layout_mode = 2
+size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
-theme_override_font_sizes/font_size = 8
-text = "[W, A, S, D] Gerak Karakter (Speed Penalty 50% saat Tembak & Reload)
-[MOUSE] Arah Bidik Revolver  |  [KLIK KIRI] Tembak Peluru Plasma
-[R] Reload Manual Magasin   |  [1 / 2 / 3] Pilih Kartu Upgrade Roguelite"
-horizontal_alignment = 1
+theme_override_colors/font_hover_color = Color(0.3, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "⚙ CONTROLS & MANUAL"
 
-[node name="TeamFooter" type="PanelContainer" parent="."]
+[node name="CreditsBtn" type="Button" parent="VBoxCenter/ButtonsVBox"]
+custom_minimum_size = Vector2(240, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_colors/font_hover_color = Color(0.3, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "👥 CREDITS & TIM PPLG"
+
+[node name="QuitBtn" type="Button" parent="VBoxCenter/ButtonsVBox"]
+custom_minimum_size = Vector2(240, 28)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
+theme_override_colors/font_hover_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 9
+text = "✕ EXIT SIMULATION"
+
+[node name="VersionFooter" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -315.0
-offset_top = -34.0
-offset_right = 315.0
-offset_bottom = -5.0
+offset_left = -220.0
+offset_top = -22.0
+offset_right = 220.0
+offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 0
-
-[node name="VBox" type="VBoxContainer" parent="TeamFooter"]
-layout_mode = 2
-theme_override_constants/separation = 1
-
-[node name="TeamText" type="Label" parent="TeamFooter/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
-theme_override_font_sizes/font_size = 8
-text = "TIM PPLG: M. Rayhan Najib (240533600012) • Luigy M. C. Liem S. (240533605298) • Ahmad Faizun (240533608123)"
+theme_override_colors/font_color = Color(0.45, 0.55, 0.7, 0.8)
+theme_override_font_sizes/font_size = 7
+text = "v1.0.4-OVERCLOCK • GODOT 4.7.2 • UNIVERSITAS NEGERI MALANG"
 horizontal_alignment = 1
 
-[node name="DosenText" type="Label" parent="TeamFooter/VBox"]
+[node name="ControlsModal" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.08, 0.92)
+
+[node name="Center" type="CenterContainer" parent="ControlsModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="ControlsModal/Center"]
+custom_minimum_size = Vector2(480, 270)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="ControlsModal/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="ControlsModal/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="Label" parent="ControlsModal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "⚙ PROTOKOL KONTROL & MEKANIK PERMAINAN"
+horizontal_alignment = 1
+
+[node name="Guide" type="Label" parent="ControlsModal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_font_sizes/font_size = 9
+text = "• [W, A, S, D] / Arrow Keys: Gerak Karakter Kael
+  ★ 20MTD Movement Penalty: Gerakan melambat 50% saat menembak atau reload! Kite musuh secara cerdas!
+
+• [MOUSE]: Arah Bidik Revolver Plasma
+• [KLIK KIRI]: Tembak Peluru Revolver
+• [R]: Reload Manual Magasin (Otomatis reload saat peluru habis)
+• [1, 2, 3]: Pilih Cepat Kartu Upgrade Roguelite saat Level Up
+• [ESC]: Jeda Permainan / Tutup Menu Modal"
+autowrap_mode = 2
+
+[node name="CloseControlsBtn" type="Button" parent="ControlsModal/Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(160, 28)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "✕ TUTUP PANDUAN"
+
+[node name="CreditsModal" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.08, 0.92)
+
+[node name="Center" type="CenterContainer" parent="CreditsModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="CreditsModal/Center"]
+custom_minimum_size = Vector2(520, 290)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="CreditsModal/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="CreditsModal/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Header" type="Label" parent="CreditsModal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
+theme_override_font_sizes/font_size = 13
+text = "👥 TIM PENGEMBANG O.R.O.S. (PPLG 2026)"
+horizontal_alignment = 1
+
+[node name="Sub" type="Label" parent="CreditsModal/Center/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
-theme_override_font_sizes/font_size = 7
-text = "Dosen Pengampu: Harits Ar Rosyid, S.T., M.T., Ph.D. — S1 Pendidikan Teknik Informatika FT UM 2026"
+theme_override_font_sizes/font_size = 8
+text = "Workshop Pengembangan Perangkat Lunak dan Gim — S1 PTI FT Universitas Negeri Malang"
 horizontal_alignment = 1
+
+[node name="TeamDetails" type="Label" parent="CreditsModal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "1. Muhammad Rayhan Najib (NIM: 240533600012)
+   - Lead Programmer, Engine Integrator & 20MTD Core State Machine
+
+2. Luigy M. C. Liem Saunoah (NIM: 240533605298)
+   - 2D Pixel Artist, Animator & UI/UX Designer
+
+3. Ahmad Faizun (NIM: 240533608123)
+   - Project Manager, QA Balance Testing & 16-Bit Audio Chiptune Foley
+
+• Dosen Pengampu: Harits Ar Rosyid, S.T., M.T., Ph.D."
+autowrap_mode = 2
+
+[node name="CloseCreditsBtn" type="Button" parent="CreditsModal/Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(160, 28)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "✕ KEMBALI KE MENU"
 
 [node name="SFXClick" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_click")

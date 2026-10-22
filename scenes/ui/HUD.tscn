@@ -75,23 +75,15 @@ theme_override_font_sizes/font_size = 10
 text = "KILL: 0"
 horizontal_alignment = 2
 
-[node name="BottomBanner" type="PanelContainer" parent="."]
-anchors_preset = 7
-anchor_left = 0.5
+[node name="ControlsReminder" type="Label" parent="."]
+anchors_preset = 2
 anchor_top = 1.0
-anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -300.0
+offset_left = 16.0
 offset_top = -22.0
-offset_right = 300.0
-offset_bottom = -4.0
-grow_horizontal = 2
+offset_right = 260.0
+offset_bottom = -6.0
 grow_vertical = 0
-
-[node name="CreditsLabel" type="Label" parent="BottomBanner"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.75, 0.9, 1)
-theme_override_font_sizes/font_size = 8
-text = "TIM PPLG: M. Rayhan Najib (240533600012) • Luigy M. C. Liem S. (240533605298) • Ahmad Faizun (240533608123)"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_colors/font_color = Color(0.45, 0.55, 0.7, 0.7)
+theme_override_font_sizes/font_size = 7
+text = "[WASD] MOVE  •  [LMB] FIRE  •  [R] RELOAD"

@@ -23,6 +23,7 @@ var freeze_slow_factor: float = 0.5
 
 var shoot_timer: float = 0.0
 var shoot_interval: float = 2.4
+var attack_cooldown: float = 0.0
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -56,6 +57,10 @@ func _physics_process(delta: float) -> void:
 		if players.size() > 0:
 			player = players[0]
 		return
+
+	# Handle attack cooldown
+	if attack_cooldown > 0.0:
+		attack_cooldown -= delta
 
 	# Handle Freeze
 	if is_frozen:
@@ -91,26 +96,42 @@ func _physics_process(delta: float) -> void:
 		# Melee chaser
 		move_dir = dir
 
-	# Flocking separation
+	# Flocking separation: smooth boids repulsion
 	var separation := Vector2.ZERO
 	var neighbors := get_tree().get_nodes_in_group("enemies")
 	for n in neighbors:
 		if n != self and is_instance_valid(n):
 			var d: float = global_position.distance_to(n.global_position)
-			if d < 28.0 and d > 0.1:
-				separation += (global_position - n.global_position).normalized() / d
+			if d < 32.0 and d > 0.1:
+				var rep: Vector2 = (global_position - n.global_position).normalized()
+				separation += rep * (1.0 - (d / 32.0)) * 260.0
 
-	velocity = (move_dir * effective_speed) + (separation * 450.0) + knockback_velocity
-	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, 350.0 * delta)
+	velocity = (move_dir * effective_speed) + separation + knockback_velocity
+	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, 450.0 * delta)
 	
 	move_and_slide()
 
-	# Check contact with player
+	# Proximity & Slide contact check against player with cooldown & recoil
+	var hit_radius := 22.0
+	if enemy_type == "golem":
+		hit_radius = 32.0
+	elif enemy_type == "drone":
+		hit_radius = 16.0
+
+	if dist_to_player <= hit_radius and attack_cooldown <= 0.0:
+		if is_instance_valid(player) and player.has_method("take_hit"):
+			player.take_hit(contact_damage)
+			attack_cooldown = 1.0 # 1.0s attack cooldown
+			knockback_velocity = -dir * 280.0 # Recoil backward!
+
 	for i in range(get_slide_collision_count()):
 		var col = get_slide_collision(i)
 		var collider = col.get_collider()
 		if collider and collider.is_in_group("player") and collider.has_method("take_hit"):
-			collider.take_hit(contact_damage)
+			if attack_cooldown <= 0.0:
+				collider.take_hit(contact_damage)
+				attack_cooldown = 1.0
+				knockback_velocity = -dir * 280.0
 
 func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	current_hp -= amount

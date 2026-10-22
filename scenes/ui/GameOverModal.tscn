@@ -14,15 +14,15 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(360, 220)
+custom_minimum_size = Vector2(440, 260)
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="CenterContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin"]
 layout_mode = 2
@@ -31,30 +31,36 @@ theme_override_constants/separation = 12
 [node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.25, 0.35, 1)
-theme_override_font_sizes/font_size = 16
-text = "REACTOR MELTDOWN REACHED"
+theme_override_font_sizes/font_size = 15
+text = "⚠ PROTOKOL SURVIVOR: CORE MELTDOWN ⚠"
 horizontal_alignment = 1
 
 [node name="StatsLabel" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 11
-text = "TIME SURVIVED: 00:00
-ENEMIES ELIMINATED: 0
-LEVEL REACHED: 1"
+theme_override_font_sizes/font_size = 10
+text = "EVALUASI MISI: CADET [ C ]
+
+⏱ WAKTU BERTAHAN: 00:00
+☠ ROBOT DIELIMINASI: 0 UNIT
+⚡ LEVEL OVERCLOCK: LVL 01"
 horizontal_alignment = 1
 
 [node name="HBoxBtns" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 14
 alignment = 1
 
 [node name="RetryBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBoxBtns"]
-custom_minimum_size = Vector2(120, 32)
+custom_minimum_size = Vector2(140, 34)
 layout_mode = 2
-text = "RETRY RUN [R]"
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
+theme_override_font_sizes/font_size = 10
+text = "↺ ULANGI MISI [R]"
 
 [node name="MenuBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBoxBtns"]
-custom_minimum_size = Vector2(120, 32)
+custom_minimum_size = Vector2(140, 34)
 layout_mode = 2
-text = "MAIN MENU"
+theme_override_colors/font_hover_color = Color(0.3, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "⌂ MENU UTAMA [ESC]"

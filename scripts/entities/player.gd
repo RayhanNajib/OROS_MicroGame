@@ -33,12 +33,21 @@ var current_frame: int = 0
 # Orbital saw instance
 var saw_instance: Node2D = null
 
+# VFX references
+var muzzle_flash: Sprite2D = null
+var shadow_sprite: Sprite2D = null
+
 func _ready() -> void:
 	add_to_group("player")
 	if not bullet_scene:
 		bullet_scene = load("res://scenes/entities/Bullet.tscn")
 	if not orbital_saw_scene:
 		orbital_saw_scene = load("res://scenes/entities/OrbitalSaw.tscn")
+		
+	if has_node("WeaponPivot/Muzzle/MuzzleFlash"):
+		muzzle_flash = get_node("WeaponPivot/Muzzle/MuzzleFlash")
+	if has_node("ShadowSprite"):
+		shadow_sprite = get_node("ShadowSprite")
 		
 	# Sync ammo & health with GameState
 	GameState.ammo = GameState.max_ammo
@@ -50,6 +59,9 @@ func _process(delta: float) -> void:
 	# 1. Aim gun towards mouse
 	var mouse_pos := get_global_mouse_position()
 	weapon_pivot.look_at(mouse_pos)
+	
+	# Smoothly return gun pivot after recoil
+	weapon_pivot.position = weapon_pivot.position.move_toward(Vector2(0, 3), 40.0 * delta)
 	
 	# Flip character & gun based on aim angle
 	if mouse_pos.x < global_position.x:
@@ -91,19 +103,33 @@ func _process(delta: float) -> void:
 	# 5. Handle Invulnerability Flash
 	if is_invulnerable:
 		invuln_timer -= delta
-		modulate.a = 0.3 if int(invuln_timer * 15.0) % 2 == 0 else 1.0
+		var is_flash := int(invuln_timer * 18.0) % 2 == 0
+		modulate = Color(2.0, 0.4, 0.4, 0.6) if is_flash else Color(1.0, 1.0, 1.0, 0.9)
 		if invuln_timer <= 0.0:
 			is_invulnerable = false
-			modulate.a = 1.0
+			modulate = Color(1.0, 1.0, 1.0, 1.0)
 
-	# 6. Animation frames
-	if velocity.length() > 10.0:
-		anim_timer += delta * 10.0
+	# 6. Dynamic Animation: Idle Breathing vs Running Lean & Stride
+	if velocity.length() > 8.0:
+		anim_timer += delta * (velocity.length() / 14.0)
 		current_frame = int(anim_timer) % 4
 		body_sprite.frame = current_frame
+		
+		# Vertical stride bobbing
+		var bob: float = -absf(sin(anim_timer * PI)) * 3.0
+		body_sprite.position.y = bob
+		
+		# Movement tilt lean
+		var target_tilt := (velocity.x / 180.0) * 0.16
+		body_sprite.rotation = lerp_angle(body_sprite.rotation, target_tilt, delta * 18.0)
+		body_sprite.scale = Vector2.ONE
 	else:
-		body_sprite.frame = 0
-		anim_timer = 0.0
+		# Breathing idle cycle
+		var breath := sin(Time.get_ticks_msec() * 0.005) * 0.04
+		body_sprite.scale = Vector2(1.0 + breath, 1.0 - breath)
+		body_sprite.position.y = breath * 2.0
+		body_sprite.rotation = lerp_angle(body_sprite.rotation, 0.0, delta * 12.0)
+		body_sprite.frame = 1 # Relaxed resting stance
 
 func _physics_process(delta: float) -> void:
 	var input_vector := Vector2.ZERO
@@ -144,8 +170,25 @@ func fire_weapon() -> void:
 		sfx_gunshot.pitch_scale = randf_range(0.92, 1.08)
 		sfx_gunshot.play()
 
-	# Multi-shot projectile fan spread calculation
+	# Recoil kick opposite to aim direction
 	var base_angle := weapon_pivot.rotation
+	weapon_pivot.position = Vector2(0, 3) - Vector2.RIGHT.rotated(base_angle) * 5.0
+	
+	# Muzzle Flash
+	if muzzle_flash:
+		muzzle_flash.visible = true
+		muzzle_flash.rotation = randf_range(0.0, TAU)
+		var flash_tw := create_tween()
+		flash_tw.tween_interval(0.06)
+		flash_tw.tween_callback(func(): 
+			if is_instance_valid(muzzle_flash): 
+				muzzle_flash.visible = false
+		)
+		
+	# Character firing squash
+	body_sprite.scale = Vector2(1.06, 0.94)
+
+	# Multi-shot projectile fan spread calculation
 	var count := GameState.projectile_count
 	var spread := GameState.projectile_spread
 	
@@ -199,9 +242,12 @@ func take_hit(damage: int) -> void:
 	if is_invulnerable:
 		return
 	is_invulnerable = true
-	invuln_timer = 0.8 # 0.8s invulnerability
+	invuln_timer = 1.0 # 1.0s invulnerability window
 	
 	GameState.take_damage(damage)
+	
+	# Impact squash
+	body_sprite.scale = Vector2(1.15, 0.85)
 	
 	if sfx_player_hurt:
 		sfx_player_hurt.play()
