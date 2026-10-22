@@ -152,6 +152,14 @@ func _physics_process(delta: float) -> void:
 func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	current_hp -= amount
 	
+	# Spawn Floating Damage Number Popup
+	var popup_scene = load("res://scenes/entities/DamagePopup.tscn")
+	if popup_scene:
+		var popup = popup_scene.instantiate()
+		popup.global_position = global_position + Vector2(0, -14)
+		popup.setup(amount, amount >= 30)
+		get_parent().add_child(popup)
+	
 	# Apply knockback (golem resists knockback)
 	if enemy_type == "golem":
 		knockback_velocity = knockback * 0.3

@@ -153,9 +153,9 @@ func animate_poker_deal(card: Control, index: int) -> void:
 
 func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(175, 230)
+	btn.custom_minimum_size = Vector2(330, 440)
 	btn.flat = true
-	btn.pivot_offset = Vector2(87.5, 115)
+	btn.pivot_offset = Vector2(165, 220)
 	
 	# Background Frame - Retro Pixel Border
 	var bg_panel := Panel.new()
@@ -163,10 +163,10 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	bg_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.06, 0.08, 0.12, 0.95)
+	style.bg_color = Color(0.06, 0.08, 0.12, 0.96)
 	style.border_color = Color(0.18, 0.65, 0.92, 0.85)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(4)
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(6)
 	bg_panel.add_theme_stylebox_override("panel", style)
 	btn.add_child(bg_panel)
 	
@@ -174,21 +174,24 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_top", 10)
-	margin.add_theme_constant_override("margin_bottom", 10)
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_bottom", 16)
 	
 	var vbox := VBoxContainer.new()
 	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vbox.add_theme_constant_override("separation", 6)
+	vbox.add_theme_constant_override("separation", 12)
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	
+	var font_pixel = load("res://assets/fonts/PressStart2P-Regular.ttf")
 	
 	# Slot hotkey indicator
 	var key_lbl := Label.new()
 	key_lbl.text = "[ KARTU %d ]" % (slot_index + 1)
 	key_lbl.add_theme_color_override("font_color", Color(0.3, 0.85, 1.0))
-	key_lbl.add_theme_font_size_override("font_size", 8)
+	key_lbl.add_theme_font_override("font", font_pixel)
+	key_lbl.add_theme_font_size_override("font_size", 10)
 	key_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(key_lbl)
 	
@@ -196,7 +199,7 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	var icon_rect := TextureRect.new()
 	if ResourceLoader.exists(data["icon"]):
 		icon_rect.texture = load(data["icon"])
-	icon_rect.custom_minimum_size = Vector2(48, 48)
+	icon_rect.custom_minimum_size = Vector2(64, 64)
 	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	vbox.add_child(icon_rect)
@@ -205,7 +208,8 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	var title_lbl := Label.new()
 	title_lbl.text = data["title"]
 	title_lbl.add_theme_color_override("font_color", Color(1.0, 0.88, 0.25))
-	title_lbl.add_theme_font_size_override("font_size", 10)
+	title_lbl.add_theme_font_override("font", font_pixel)
+	title_lbl.add_theme_font_size_override("font_size", 11)
 	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(title_lbl)
@@ -214,7 +218,8 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	var desc_lbl := Label.new()
 	desc_lbl.text = data["desc"]
 	desc_lbl.add_theme_color_override("font_color", Color(0.85, 0.92, 1.0))
-	desc_lbl.add_theme_font_size_override("font_size", 8)
+	desc_lbl.add_theme_font_override("font", font_pixel)
+	desc_lbl.add_theme_font_size_override("font_size", 9)
 	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(desc_lbl)
@@ -223,7 +228,8 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	var equip_lbl := Label.new()
 	equip_lbl.text = "TEKAN [%d] ATAU KLIK" % (slot_index + 1)
 	equip_lbl.add_theme_color_override("font_color", Color(0.55, 0.7, 0.85))
-	equip_lbl.add_theme_font_size_override("font_size", 7)
+	equip_lbl.add_theme_font_override("font", font_pixel)
+	equip_lbl.add_theme_font_size_override("font_size", 8)
 	equip_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(equip_lbl)
 	

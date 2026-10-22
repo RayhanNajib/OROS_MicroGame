@@ -1,5 +1,6 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
+[ext_resource type="Script" path="res://scripts/main/game_arena_controller.gd" id="1_arena_scr"]
 [ext_resource type="Texture2D" path="res://assets/sprites/arena_tile_floor.png" id="1_floor"]
 [ext_resource type="PackedScene" path="res://scenes/entities/Player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://scripts/main/wave_spawner.gd" id="3_spawner"]
@@ -7,6 +8,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/LevelUpModal.tscn" id="5_lvl_modal"]
 [ext_resource type="PackedScene" path="res://scenes/ui/GameOverModal.tscn" id="6_go_modal"]
 [ext_resource type="AudioStream" path="res://assets/audio/bgm_combat_loop.wav" id="7_bgm"]
+[ext_resource type="FontFile" path="res://assets/fonts/PressStart2P-Regular.ttf" id="8_font"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pixel_hazard_fence.png" id="9_fence"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
 normal = Vector2(0, 1)
@@ -21,34 +24,83 @@ normal = Vector2(1, 0)
 normal = Vector2(-1, 0)
 
 [node name="GameArena" type="Node2D"]
+script = ExtResource("1_arena_scr")
+
+[node name="VoidBackground" type="ColorRect" parent="."]
+offset_left = -3000.0
+offset_top = -3000.0
+offset_right = 3000.0
+offset_bottom = 3000.0
+color = Color(0.01, 0.02, 0.04, 1)
 
 [node name="Floor" type="Sprite2D" parent="."]
 texture_repeat = 2
 texture = ExtResource("1_floor")
 region_enabled = true
-region_rect = Rect2(-1500, -1500, 3000, 3000)
+region_rect = Rect2(-1300, -1300, 2600, 2600)
+
+[node name="FencePerimeter" type="Node2D" parent="."]
+
+[node name="TopFence" type="Sprite2D" parent="FencePerimeter"]
+position = Vector2(0, -1300)
+texture_repeat = 2
+texture = ExtResource("9_fence")
+region_enabled = true
+region_rect = Rect2(0, 0, 2600, 32)
+
+[node name="BottomFence" type="Sprite2D" parent="FencePerimeter"]
+position = Vector2(0, 1300)
+texture_repeat = 2
+texture = ExtResource("9_fence")
+region_enabled = true
+region_rect = Rect2(0, 0, 2600, 32)
+
+[node name="LeftFence" type="Sprite2D" parent="FencePerimeter"]
+position = Vector2(-1300, 0)
+rotation = 1.5708
+texture_repeat = 2
+texture = ExtResource("9_fence")
+region_enabled = true
+region_rect = Rect2(0, 0, 2600, 32)
+
+[node name="RightFence" type="Sprite2D" parent="FencePerimeter"]
+position = Vector2(1300, 0)
+rotation = 1.5708
+texture_repeat = 2
+texture = ExtResource("9_fence")
+region_enabled = true
+region_rect = Rect2(0, 0, 2600, 32)
 
 [node name="ArenaBounds" type="StaticBody2D" parent="."]
-collision_mask = 2
+collision_mask = 7
 
 [node name="Top" type="CollisionShape2D" parent="ArenaBounds"]
-position = Vector2(0, -1450)
+position = Vector2(0, -1280)
 shape = SubResource("WorldBoundaryShape2D_top")
 
 [node name="Bottom" type="CollisionShape2D" parent="ArenaBounds"]
-position = Vector2(0, 1450)
+position = Vector2(0, 1280)
 shape = SubResource("WorldBoundaryShape2D_bottom")
 
 [node name="Left" type="CollisionShape2D" parent="ArenaBounds"]
-position = Vector2(-1450, 0)
+position = Vector2(-1280, 0)
 shape = SubResource("WorldBoundaryShape2D_left")
 
 [node name="Right" type="CollisionShape2D" parent="ArenaBounds"]
-position = Vector2(1450, 0)
+position = Vector2(1280, 0)
 shape = SubResource("WorldBoundaryShape2D_right")
 
+[node name="ContainmentZone" type="Node2D" parent="."]
+
+[node name="ZoneLine" type="Line2D" parent="ContainmentZone"]
+width = 5.0
+default_color = Color(1, 0.2, 0.35, 0.9)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
 [node name="DarkAmbience" type="CanvasModulate" parent="."]
-color = Color(0.06, 0.08, 0.14, 1)
+color = Color(0.68, 0.72, 0.82, 1)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(0, 0)
@@ -61,6 +113,36 @@ script = ExtResource("3_spawner")
 [node name="LevelUpModal" parent="." instance=ExtResource("5_lvl_modal")]
 
 [node name="GameOverModal" parent="." instance=ExtResource("6_go_modal")]
+
+[node name="BossAlertLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Banner" type="ColorRect" parent="BossAlertLayer"]
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -45.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.8, 0.1, 0.2, 0.88)
+
+[node name="Label" type="Label" parent="BossAlertLayer/Banner"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("8_font")
+theme_override_font_sizes/font_size = 18
+text = "[ ! ] ALERT: SECTOR CONTAINMENT LOCKDOWN ACTIVATED [ ! ]"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="BGMPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_bgm")

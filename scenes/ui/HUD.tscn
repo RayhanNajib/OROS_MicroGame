@@ -1,52 +1,68 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_scr"]
+[ext_resource type="FontFile" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pixel_low_hp_vignette.png" id="3_vig"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_scr")
 
+[node name="LowHPVignette" type="TextureRect" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_vig")
+expand_mode = 1
+stretch_mode = 6
+
 [node name="TopLeft" type="VBoxContainer" parent="."]
-offset_left = 16.0
-offset_top = 14.0
-offset_right = 200.0
-offset_bottom = 60.0
-theme_override_constants/separation = 4
+offset_left = 32.0
+offset_top = 28.0
+offset_right = 360.0
+offset_bottom = 110.0
+theme_override_constants/separation = 6
 
 [node name="HeartsContainer" type="HBoxContainer" parent="TopLeft"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 6
 
 [node name="AmmoContainer" type="HBoxContainer" parent="TopLeft"]
 layout_mode = 2
-theme_override_constants/separation = 3
+theme_override_constants/separation = 4
 
 [node name="ReloadLabel" type="Label" parent="TopLeft"]
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 10
-text = "RELOADING [====------] 45%"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 11
+text = "RELOADING [====------]"
 
 [node name="TopCenter" type="VBoxContainer" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -160.0
-offset_top = 8.0
-offset_right = 160.0
-offset_bottom = 36.0
+offset_left = -300.0
+offset_top = 18.0
+offset_right = 300.0
+offset_bottom = 60.0
 grow_horizontal = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 4
 
 [node name="LevelLabel" type="Label" parent="TopCenter"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
-theme_override_font_sizes/font_size = 11
-text = "LVL 01"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "[ LVL 01 ]"
 horizontal_alignment = 1
 
 [node name="XPBar" type="ProgressBar" parent="TopCenter"]
-custom_minimum_size = Vector2(320, 8)
+custom_minimum_size = Vector2(600, 14)
 layout_mode = 2
 show_percentage = false
 
@@ -54,60 +70,64 @@ show_percentage = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -140.0
-offset_top = 12.0
-offset_right = -16.0
-offset_bottom = 54.0
+offset_left = -280.0
+offset_top = 24.0
+offset_right = -32.0
+offset_bottom = 84.0
 grow_horizontal = 0
-theme_override_constants/separation = 2
+theme_override_constants/separation = 4
 
 [node name="TimerLabel" type="Label" parent="TopRight"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
 text = "00:00"
 horizontal_alignment = 2
 
 [node name="KillsLabel" type="Label" parent="TopRight"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.4, 0.4, 1)
-theme_override_font_sizes/font_size = 10
-text = "KILL: 0"
+theme_override_colors/font_color = Color(1.0, 0.35, 0.35, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 11
+text = "PURGED: 0"
 horizontal_alignment = 2
 
 [node name="ControlsReminder" type="Label" parent="."]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = -22.0
-offset_right = 260.0
-offset_bottom = -6.0
+offset_left = 32.0
+offset_top = -38.0
+offset_right = 450.0
+offset_bottom = -16.0
 grow_vertical = 0
-theme_override_colors/font_color = Color(0.45, 0.55, 0.7, 0.7)
-theme_override_font_sizes/font_size = 7
-text = "[WASD] MOVE  •  [LMB] FIRE  •  [R] RELOAD"
+theme_override_colors/font_color = Color(0.55, 0.65, 0.8, 0.8)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "[WASD] MOVE  |  [LMB] FIRE  |  [R] RELOAD"
 
 [node name="BossBarContainer" type="VBoxContainer" parent="."]
 visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -180.0
-offset_top = 40.0
-offset_right = 180.0
-offset_bottom = 66.0
+offset_left = -320.0
+offset_top = 68.0
+offset_right = 320.0
+offset_bottom = 106.0
 grow_horizontal = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 3
 
 [node name="BossNameLabel" type="Label" parent="BossBarContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.25, 0.35, 1)
-theme_override_font_sizes/font_size = 9
-text = "★ BOSS: COLOSSUS-OMEGA // SECTOR OVERLORD ★"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 10
+text = "[ ! ] BOSS: COLOSSUS-OMEGA [ ! ]"
 horizontal_alignment = 1
 
 [node name="BossHPBar" type="ProgressBar" parent="BossBarContainer"]
-custom_minimum_size = Vector2(360, 10)
+custom_minimum_size = Vector2(640, 14)
 layout_mode = 2
 show_percentage = false

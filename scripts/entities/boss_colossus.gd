@@ -122,6 +122,14 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	current_hp -= amount
 	GameState.update_boss_hp(current_hp)
 	
+	# Spawn Floating Damage Popup
+	var popup_scene = load("res://scenes/entities/DamagePopup.tscn")
+	if popup_scene:
+		var popup = popup_scene.instantiate()
+		popup.global_position = global_position + Vector2(randf_range(-18, 18), -34)
+		popup.setup(amount, true)
+		get_parent().add_child(popup)
+	
 	# Heavy boss resists 90% knockback
 	knockback_velocity = knockback * 0.1
 	

@@ -49,14 +49,23 @@ func _on_game_over(time_survived: float, kills: int, lvl: int) -> void:
 	
 	var rank := "CADET OPERATIVE [ C ]"
 	if time_survived >= 180.0 or kills >= 100:
-		rank = "OVERCLOCKED CYBER MASTER [ S ]"
+		rank = "OVERCLOCKED MASTER [ S ]"
 	elif time_survived >= 120.0 or kills >= 60:
 		rank = "VETERAN SURVIVOR [ A ]"
 	elif time_survived >= 60.0 or kills >= 25:
 		rank = "COMBAT OPERATIVE [ B ]"
 	
 	if stats_label:
-		stats_label.text = "EVALUASI MISI: %s\n\n⏱ WAKTU BERTAHAN: %02d:%02d\n☠ ROBOT DIELIMINASI: %d UNIT\n⚡ LEVEL OVERCLOCK: LVL %02d" % [rank, mins, secs, kills, lvl]
+		stats_label.text = """[ COMBAT EVALUATION // MISSION TERMINATED ]
+
+TACTICAL RANK      : %s
+OPERATIVE PROFILE  : %s
+ACTIVE ARSENAL     : %s
+
+SURVIVAL DURATION  : %02d:%02d
+AUTOMATONS PURGED  : %d UNITS
+OVERCLOCK LEVEL    : LVL %02d
+""" % [rank, GameState.selected_hero.to_upper(), GameState.selected_weapon.to_upper(), mins, secs, kills, lvl]
 
 func _on_retry_pressed() -> void:
 	get_tree().paused = false

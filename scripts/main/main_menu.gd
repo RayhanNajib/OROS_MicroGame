@@ -18,6 +18,10 @@ extends Control
 @onready var btn_smg: Button = $SelectionHBox/WeaponPanel/Margin/VBox/WeaponBtns/BtnSMG
 @onready var weapon_desc: Label = $SelectionHBox/WeaponPanel/Margin/VBox/WeaponDesc
 
+# Live Preview Stage
+@onready var preview_hero: Sprite2D = $SelectionHBox/PreviewPanel/Margin/VBox/StageControl/PreviewHero
+@onready var preview_weapon: Sprite2D = $SelectionHBox/PreviewPanel/Margin/VBox/StageControl/PreviewHero/PreviewWeapon
+
 # Modals
 @onready var controls_modal: ColorRect = $ControlsModal
 @onready var close_controls_btn: Button = $ControlsModal/Center/Panel/Margin/VBox/CloseControlsBtn
@@ -75,25 +79,39 @@ func setup_hero_btn(btn: Button, hero_id: String) -> void:
 		update_hero_ui(hero_id)
 	)
 
+func _process(_delta: float) -> void:
+	if preview_hero:
+		var breath := sin(Time.get_ticks_msec() * 0.005) * 0.04
+		preview_hero.scale = Vector2(5.5 * (1.0 + breath), 5.5 * (1.0 - breath))
+
 func update_hero_ui(hero_id: String) -> void:
 	# Reset button colors
 	if btn_kael: btn_kael.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
 	if btn_vex: btn_vex.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
 	if btn_brutus: btn_brutus.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
 
+	# Live Preview Hop Animation & Texture Switch
+	if preview_hero:
+		var tw := preview_hero.create_tween()
+		tw.tween_property(preview_hero, "position:y", 215.0, 0.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.tween_property(preview_hero, "position:y", 240.0, 0.14).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+
 	match hero_id:
 		"kael":
 			if btn_kael: btn_kael.add_theme_color_override("font_color", Color(0.2, 0.9, 1.0))
+			if preview_hero: preview_hero.texture = load("res://assets/sprites/player_kael_run.png")
 			if hero_desc:
-				hero_desc.text = "• KAEL (The CyberSmith) [BALANCED]\nHP: 4 | Kecepatan: 160\nKelebihan: Statistik seimbang, adaptif di segala situasi.\nPasif: Overclock Core (+20% Dmg, pulsa energi berkala)."
+				hero_desc.text = "> KAEL (The CyberSmith) [BALANCED]\n\nHP        : 4 HEALTH\nSPEED     : 160 PX/S\n\nKELEBIHAN : Adaptif di segala situasi.\nPASIF     : Overclock Core (+20% Bullet Damage & Pulsa Energi 360 Derajat Berkala)."
 		"vex":
 			if btn_vex: btn_vex.add_theme_color_override("font_color", Color(1.0, 0.3, 0.4))
+			if preview_hero: preview_hero.texture = load("res://assets/sprites/player_vex_run.png")
 			if hero_desc:
-				hero_desc.text = "• VEX (Phase Assassin) [AGILITY]\nHP: 3 | Kecepatan: 205 (Sangat Cepat)\nKelemahan: HP tipis (3 Hit mati).\nPasif: Phase Step (15% peluang dodge lolos dari hit musuh)."
+				hero_desc.text = "> VEX (Phase Assassin) [AGILITY]\n\nHP        : 3 HEALTH (Rentan)\nSPEED     : 205 PX/S (Sangat Lincah)\n\nKELEMAHAN : HP tipis (3 hit mati).\nPASIF     : Phase Step (15% Peluang Menghindar/Dodge dari Hit Musuh)."
 		"brutus":
 			if btn_brutus: btn_brutus.add_theme_color_override("font_color", Color(1.0, 0.7, 0.2))
+			if preview_hero: preview_hero.texture = load("res://assets/sprites/player_brutus_run.png")
 			if hero_desc:
-				hero_desc.text = "• BRUTUS (The Juggernaut) [TANK]\nHP: 6 | Kecepatan: 130 (Lambat)\nKelebihan: Sangat tebal, reduksi 1 damage kontak.\nPasif: Nano-Armor (Pulihkan 1 HP setiap 50 eliminasi robot)."
+				hero_desc.text = "> BRUTUS (The Juggernaut) [TANK]\n\nHP        : 6 HEALTH (Sangat Tebal)\nSPEED     : 130 PX/S (Lambat)\n\nKELEBIHAN : Reduksi -1 damage kontak musuh.\nPASIF     : Nano-Armor (Regenerasi 1 HP Otomatis Setiap 50 Eliminasi Robot)."
 
 func setup_weapon_btn(btn: Button, wep_id: String) -> void:
 	if not btn: return
@@ -109,19 +127,34 @@ func update_weapon_ui(wep_id: String) -> void:
 	if btn_shotgun: btn_shotgun.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
 	if btn_smg: btn_smg.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
 
+	# Live Preview Weapon Switch Flash
+	if preview_weapon:
+		var tw := preview_weapon.create_tween()
+		tw.tween_property(preview_weapon, "scale", Vector2(1.3, 1.3), 0.08)
+		tw.tween_property(preview_weapon, "scale", Vector2.ONE, 0.1)
+
 	match wep_id:
 		"revolver":
 			if btn_revolver: btn_revolver.add_theme_color_override("font_color", Color(0.2, 0.9, 1.0))
+			if preview_weapon:
+				preview_weapon.texture = load("res://assets/sprites/spr_revolver.png")
+				preview_weapon.position = Vector2(10, 0)
 			if weapon_desc:
-				weapon_desc.text = "• DUAL PLASMA REVOLVER\nKapasitas: 6 Peluru | Damage: 22 | Reload: 1.0s\nPresisi jarak menengah, konsumsi peluru stabil & seimbang."
+				weapon_desc.text = "> DUAL PLASMA REVOLVER\n\nMAGASIN   : 6 PELURU\nDAMAGE    : 22 PER HIT\nRELOAD    : 1.0 DETIK\n\nKARAKTER  : Presisi tinggi jarak menengah, konsumsi magasin seimbang untuk pertempuran stabil."
 		"shotgun":
 			if btn_shotgun: btn_shotgun.add_theme_color_override("font_color", Color(1.0, 0.85, 0.25))
+			if preview_weapon:
+				preview_weapon.texture = load("res://assets/sprites/spr_shotgun.png")
+				preview_weapon.position = Vector2(14, 0)
 			if weapon_desc:
-				weapon_desc.text = "• SCRAP SHOTGUN\nKapasitas: 4 Peluru | 5x9 DMG Pellets | Reload: 1.2s\nSemburan peluru sebar jarak dekat dengan daya tolak (knockback) tinggi."
+				weapon_desc.text = "> SCRAP SHOTGUN\n\nMAGASIN   : 4 PELURU\nDAMAGE    : 5x9 PELLETS (45 TOTAL)\nRELOAD    : 1.2 DETIK\n\nKARAKTER  : Semburan peluru sebar jarak dekat dengan daya tolak (knockback 150) sangat tinggi."
 		"smg":
 			if btn_smg: btn_smg.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
+			if preview_weapon:
+				preview_weapon.texture = load("res://assets/sprites/spr_smg.png")
+				preview_weapon.position = Vector2(10, 0)
 			if weapon_desc:
-				weapon_desc.text = "• CYBER SMG (RAPID FIRE)\nKapasitas: 24 Peluru | Damage: 8 | Reload: 0.85s\nLaju tembak super cepat (0.08s) untuk merobek gerombolan musuh rapat."
+				weapon_desc.text = "> CYBER SMG (RAPID FIRE)\n\nMAGASIN   : 24 PELURU\nDAMAGE    : 8 PER HIT\nLAJU TEMBAK: 0.08S (EKSTREM)\nRELOAD    : 0.85 DETIK\n\nKARAKTER  : Laju tembak super cepat untuk merobek gerombolan musuh rapat seketika."
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.is_pressed() and not event.is_echo():
