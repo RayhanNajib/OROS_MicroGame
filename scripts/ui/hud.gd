@@ -69,13 +69,12 @@ func _process(_delta: float) -> void:
 	if kills_label:
 		kills_label.text = "PURGED: %d" % GameState.total_kills
 
-	# Low HP Vignette Warning Pulse (HP <= 2)
+	# Low HP Vignette Warning (Only subtle pulse at critical 1 HP)
 	if low_hp_vignette:
-		if GameState.health <= 2 and GameState.health > 0:
+		if GameState.health == 1:
 			low_hp_vignette.visible = true
-			var speed := 0.009 if GameState.health == 1 else 0.005
-			var pulse := (sin(Time.get_ticks_msec() * speed) + 1.0) * 0.5
-			low_hp_vignette.modulate.a = 0.3 + (pulse * (0.55 if GameState.health == 1 else 0.35))
+			var pulse := (sin(Time.get_ticks_msec() * 0.007) + 1.0) * 0.5
+			low_hp_vignette.modulate.a = 0.12 + (pulse * 0.16) # Max alpha 0.28, completely unobtrusive
 		else:
 			low_hp_vignette.visible = false
 
@@ -93,12 +92,12 @@ func update_hearts(current: int, max_hp: int) -> void:
 	for child in hearts_container.get_children():
 		child.queue_free()
 
-	# Compact 5+ Health Rule
+	# Compact 5+ Health Rule - Sized for Full HD
 	if max_hp <= 5:
 		for i in range(max_hp):
 			var rect := TextureRect.new()
 			rect.texture = heart_full_tex if (i < current) else heart_empty_tex
-			rect.custom_minimum_size = Vector2(26, 26)
+			rect.custom_minimum_size = Vector2(40, 40)
 			rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			hearts_container.add_child(rect)
@@ -108,7 +107,7 @@ func update_hearts(current: int, max_hp: int) -> void:
 			var rect := TextureRect.new()
 			var fill_point := int(float(i + 1) / 5.0 * float(max_hp))
 			rect.texture = heart_full_tex if (current >= fill_point) else heart_empty_tex
-			rect.custom_minimum_size = Vector2(26, 26)
+			rect.custom_minimum_size = Vector2(40, 40)
 			rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			hearts_container.add_child(rect)
@@ -116,7 +115,7 @@ func update_hearts(current: int, max_hp: int) -> void:
 		var extra_lbl := Label.new()
 		extra_lbl.text = " [+%d] (%d/%d)" % [max_hp - 5, current, max_hp]
 		extra_lbl.add_theme_font_override("font", load("res://assets/fonts/PressStart2P-Regular.ttf"))
-		extra_lbl.add_theme_font_size_override("font_size", 9)
+		extra_lbl.add_theme_font_size_override("font_size", 12)
 		extra_lbl.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
 		extra_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hearts_container.add_child(extra_lbl)
@@ -130,20 +129,20 @@ func update_ammo(current: int, max_cap: int, is_reloading: bool, reload_pct: flo
 			reload_label.visible = true
 			var filled := int(reload_pct * 10)
 			var bar_str := "[" + "=".repeat(filled) + "-".repeat(10 - filled) + "]"
-			reload_label.text = "RELOADING %s %d%%" % [bar_str, int(reload_pct * 100)]
+			reload_label.text = "RELOAD %s %d%%" % [bar_str, int(reload_pct * 100)]
 	else:
 		if reload_label:
 			reload_label.visible = false
 		ammo_container.visible = true
 		
-		# Rebuild bullet icons
+		# Rebuild bullet icons - Sized for Full HD
 		for child in ammo_container.get_children():
 			child.queue_free()
 			
 		for i in range(max_cap):
 			var rect := TextureRect.new()
 			rect.texture = bullet_icon_tex
-			rect.custom_minimum_size = Vector2(10, 20)
+			rect.custom_minimum_size = Vector2(16, 34)
 			rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			rect.modulate = Color(1, 1, 1, 1) if (i < current) else Color(0.3, 0.35, 0.45, 0.4)
