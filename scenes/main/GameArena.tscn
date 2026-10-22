@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/arena_tile_floor.png" id="1_floor"]
+[ext_resource type="PackedScene" path="res://scenes/entities/Player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://scripts/main/wave_spawner.gd" id="3_spawner"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="4_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/LevelUpModal.tscn" id="5_lvl_modal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/GameOverModal.tscn" id="6_go_modal"]
+[ext_resource type="AudioStream" path="res://assets/audio/bgm_combat_loop.wav" id="7_bgm"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bottom"]
+normal = Vector2(0, -1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_left"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_right"]
+normal = Vector2(-1, 0)
+
+[node name="GameArena" type="Node2D"]
+
+[node name="Floor" type="Sprite2D" parent="."]
+texture_repeat = 2
+texture = ExtResource("1_floor")
+region_enabled = true
+region_rect = Rect2(-1500, -1500, 3000, 3000)
+
+[node name="ArenaBounds" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="Top" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(0, -1450)
+shape = SubResource("WorldBoundaryShape2D_top")
+
+[node name="Bottom" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(0, 1450)
+shape = SubResource("WorldBoundaryShape2D_bottom")
+
+[node name="Left" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(-1450, 0)
+shape = SubResource("WorldBoundaryShape2D_left")
+
+[node name="Right" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(1450, 0)
+shape = SubResource("WorldBoundaryShape2D_right")
+
+[node name="DarkAmbience" type="CanvasModulate" parent="."]
+color = Color(0.06, 0.08, 0.14, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(0, 0)
+
+[node name="WaveSpawner" type="Node2D" parent="."]
+script = ExtResource("3_spawner")
+
+[node name="HUD" parent="." instance=ExtResource("4_hud")]
+
+[node name="LevelUpModal" parent="." instance=ExtResource("5_lvl_modal")]
+
+[node name="GameOverModal" parent="." instance=ExtResource("6_go_modal")]
+
+[node name="BGMPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_bgm")
+volume_db = -5.0
+autoplay = true

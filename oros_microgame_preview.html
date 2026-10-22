@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #060911;
+    --panel-bg: #0f1523;
+    --border: #23314a;
+    --cyan: #00e5ff;
+    --gold: #ffd230;
+    --red: #ff3344;
+    --purple: #c040ff;
+    --green: #20e070;
+  }
+  body {
+    margin: 0;
+    padding: 14px;
+    background: transparent;
+    font-family: system-ui, -apple-system, sans-serif;
+    color: var(--foreground, #e2e8f0);
+    user-select: none;
+  }
+  .wrapper {
+    width: 680px;
+    background: var(--card, #0f1523);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .title-group h2 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--cyan);
+    letter-spacing: 0.5px;
+  }
+  .title-group p {
+    margin: 2px 0 0 0;
+    font-size: 11px;
+    color: #8da2c0;
+  }
+  .badge {
+    background: rgba(0, 229, 255, 0.15);
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    color: var(--cyan);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .game-screen {
+    position: relative;
+    width: 640px;
+    height: 360px;
+    background: #080b12;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0 auto;
+    cursor: crosshair;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  }
+  #arenaCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 640px;
+    height: 360px;
+    image-rendering: pixelated;
+  }
+
+  /* HUD Top Elements */
+  .hud-top-left {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    pointer-events: none;
+  }
+  .hearts {
+    display: flex;
+    gap: 4px;
+  }
+  .heart {
+    width: 18px;
+    height: 18px;
+    background: var(--red);
+    clip-path: polygon(50% 85%, 15% 45%, 15% 20%, 35% 10%, 50% 25%, 65% 10%, 85% 20%, 85% 45%);
+    filter: drop-shadow(0 0 4px rgba(255, 51, 68, 0.6));
+    transition: all 0.2s;
+  }
+  .heart.empty {
+    background: #252e42;
+    filter: none;
+    opacity: 0.5;
+  }
+  .ammo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ammo-bullets {
+    display: flex;
+    gap: 3px;
+  }
+  .bullet-pip {
+    width: 6px;
+    height: 14px;
+    background: var(--cyan);
+    border-radius: 2px;
+    box-shadow: 0 0 4px var(--cyan);
+  }
+  .bullet-pip.empty {
+    background: #232d3d;
+    box-shadow: none;
+    opacity: 0.4;
+  }
+  .reload-text {
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--cyan);
+    text-shadow: 0 0 8px var(--cyan);
+  }
+
+  /* XP Bar Center */
+  .hud-xp-bar {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    pointer-events: none;
+  }
+  .level-tag {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+  .xp-track {
+    width: 100%;
+    height: 6px;
+    background: #141c2b;
+    border: 1px solid #2a3b59;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .xp-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00c8ff, #00ffcc);
+    box-shadow: 0 0 8px #00ffcc;
+    transition: width 0.15s ease-out;
+  }
+
+  /* HUD Top Right */
+  .hud-top-right {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    text-align: right;
+    pointer-events: none;
+  }
+  .timer {
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    font-family: monospace;
+  }
+  .kills {
+    font-size: 10px;
+    color: #ff6666;
+    font-weight: bold;
+    margin-top: 1px;
+  }
+
+  /* Team Footer Banner */
+  .team-footer {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 15, 26, 0.9);
+    border: 1px solid #212c40;
+    border-radius: 6px;
+    padding: 3px 14px;
+    font-size: 9px;
+    color: #8fa1bd;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .team-footer span { color: var(--gold); font-weight: bold; }
+
+  /* Level Up Roguelite Modal */
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 8, 16, 0.88);
+    backdrop-filter: blur(4px);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+  .modal-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--gold);
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+  }
+  .modal-sub {
+    font-size: 10px;
+    color: #94a3b8;
+    margin-bottom: 16px;
+  }
+  .cards-row {
+    display: flex;
+    gap: 14px;
+  }
+  .upgrade-card {
+    width: 150px;
+    background: #12192b;
+    border: 1px solid #2f4368;
+    border-radius: 10px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  }
+  .upgrade-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--cyan);
+    background: #1a2540;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+  }
+  .upgrade-card img {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 8px;
+    image-rendering: pixelated;
+  }
+  .upgrade-card .card-name {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .upgrade-card .card-desc {
+    font-size: 9px;
+    color: #cbd5e1;
+    line-height: 1.3;
+  }
+
+  /* Game Over Screen */
+  .gameover-box {
+    text-align: center;
+    background: #101626;
+    border: 2px solid var(--red);
+    border-radius: 12px;
+    padding: 20px 30px;
+    box-shadow: 0 0 30px rgba(255, 51, 68, 0.4);
+  }
+  .gameover-box h3 { margin: 0; color: var(--red); font-size: 18px; }
+  .gameover-box p { font-size: 11px; color: #cbd5e1; margin: 10px 0 16px 0; }
+  .btn-retry {
+    background: #1e2a42;
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .btn-retry:hover { background: rgba(0, 229, 255, 0.2); }
+
+  .instructions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 10px;
+    color: #7b8ea8;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="header">
+    <div class="title-group">
+      <h2>⚔️ O.R.O.S.: Twin-Stick Survivor (20 Minutes Till Dawn Mechanics)</h2>
+      <p>Simulasi PPLG 2026 — Dosen: Harits Ar Rosyid, S.T., M.T., Ph.D.</p>
+    </div>
+    <span class="badge">Godot 4.7.2 Gameplay Engine</span>
+  </div>
+
+  <div class="game-screen" id="screen">
+    <canvas id="arenaCanvas" width="640" height="360"></canvas>
+
+    <!-- Top Left: Hearts & Ammo -->
+    <div class="hud-top-left">
+      <div class="hearts" id="heartsBox">
+        <div class="heart"></div><div class="heart"></div><div class="heart"></div><div class="heart"></div>
+      </div>
+      <div class="ammo-wrap">
+        <div class="ammo-bullets" id="ammoBox">
+          <div class="bullet-pip"></div><div class="bullet-pip"></div><div class="bullet-pip"></div>
+          <div class="bullet-pip"></div><div class="bullet-pip"></div><div class="bullet-pip"></div>
+        </div>
+        <span class="reload-text" id="reloadText" style="display:none;">RELOADING...</span>
+      </div>
+    </div>
+
+    <!-- Top Center: XP Bar -->
+    <div class="hud-xp-bar">
+      <span class="level-tag" id="levelTag">LVL 01</span>
+      <div class="xp-track">
+        <div class="xp-fill" id="xpFill"></div>
+      </div>
+    </div>
+
+    <!-- Top Right: Timer & Kills -->
+    <div class="hud-top-right">
+      <div class="timer" id="timerText">00:00</div>
+      <div class="kills" id="killsText">KILL: 0</div>
+    </div>
+
+    <!-- Bottom: Team Info (Names & NIMs only, no huge portraits) -->
+    <div class="team-footer">
+      <span>TIM:</span> M. Rayhan Najib (240533600012) • Luigy M. C. Liem S. (240533605298) • Ahmad Faizun (240533608123)
+    </div>
+
+    <!-- Roguelite Level Up Modal -->
+    <div class="modal-overlay" id="levelUpModal">
+      <div class="modal-title">★ SYSTEM OVERCLOCK: PILIH 1 MODUL UPGRADE ★</div>
+      <div class="modal-sub">Game Paused — Tingkatkan kemampuan bertahan Kael dari serbuan robot</div>
+      <div class="cards-row" id="cardsRow"></div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal-overlay" id="gameOverModal">
+      <div class="gameover-box">
+        <h3>REACTOR MELTDOWN REACHED</h3>
+        <p id="gameOverStats">Bertahan: 00:00 | Kills: 0 | Level: 1</p>
+        <button class="btn-retry" onclick="restartGame()">RETRY RUN [R]</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="instructions">
+    <span>🕹️ <b>WASD</b> Gerak (Kecepatan berkurang 50% saat menembak/reload) | <b>MOUSE</b> Arahkan Senjata</span>
+    <span>💥 <b>KLIK KIRI</b> Tembak Revolver | <b>[R]</b> Reload Manual Peluru</span>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('arenaCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+
+  let player = {
+    x: 320, y: 180,
+    hp: 4, maxHp: 4,
+    speed: 160,
+    ammo: 6, maxAmmo: 6,
+    isReloading: false,
+    reloadTimer: 0,
+    reloadDuration: 1.2,
+    fireCooldown: 0,
+    fireRate: 0.22,
+    damage: 20,
+    projectiles: 1,
+    pierce: 0,
+    hasFreeze: false,
+    hasLightning: false,
+    hasSaw: false,
+    invulnTimer: 0,
+    level: 1,
+    xp: 0,
+    xpNext: 12,
+    kills: 0,
+    time: 0
+  };
+
+  let keys = {};
+  let mouse = { x: 320, y: 180, down: false };
+  let bullets = [];
+  let enemies = [];
+  let xpGems = [];
+  let enemyBullets = [];
+  let sawAngle = 0;
+  let isPaused = false;
+  let isGameOver = false;
+
+  const upgradePool = [
+    { id: "upg_damage", title: "OVERCLOCK CORE", desc: "+30% Damage & +Knockback pada peluru plasma.", icon: "assets/sprites/upg_damage.png", apply: () => { player.damage = Math.round(player.damage * 1.3); } },
+    { id: "upg_firerate", title: "RAPID CAPACITOR", desc: "+25% Kecepatan Tembak & -20% Waktu Reload.", icon: "assets/sprites/upg_firerate.png", apply: () => { player.fireRate = Math.max(0.1, player.fireRate * 0.75); player.reloadDuration = Math.max(0.5, player.reloadDuration * 0.8); } },
+    { id: "upg_multishot", title: "SPREAD EMITTER", desc: "+1 Proyektil per tembakan (pola menyebar).", icon: "assets/sprites/upg_multishot.png", apply: () => { player.projectiles += 1; } },
+    { id: "upg_piercing", title: "TUNGSTEN SHARDS", desc: "Peluru menembus +1 musuh sekaligus.", icon: "assets/sprites/upg_piercing.png", apply: () => { player.pierce += 1; } },
+    { id: "upg_ammo", title: "EXPANDED DRUM", desc: "+3 Kapasitas Peluru Maksimal & Reload Penuh.", icon: "assets/sprites/upg_ammo.png", apply: () => { player.maxAmmo += 3; player.ammo = player.maxAmmo; updateAmmoHUD(); } },
+    { id: "upg_freeze", title: "CRYO ROUNDS", desc: "Peluru membekukan musuh, memperlambat 50% selama 2 detik.", icon: "assets/sprites/upg_freeze.png", apply: () => { player.hasFreeze = true; } },
+    { id: "upg_lightning", title: "TESLA ARC", desc: "Benturan peluru memicu petir berantai ke 2 musuh di dekatnya.", icon: "assets/sprites/upg_lightning.png", apply: () => { player.hasLightning = true; } },
+    { id: "upg_saw", title: "ORBITAL PLASMA SAW", desc: "Memunculkan gergaji plasma yang berputar mengelilingi Kael.", icon: "assets/sprites/upg_saw.png", apply: () => { player.hasSaw = true; } }
+  ];
+
+  function spawnEnemy() {
+    if (enemies.length > 35) return;
+    const angle = Math.random() * Math.PI * 2;
+    const radius = 380;
+    const type = (player.time > 20 && Math.random() < 0.35) ? "drone" : "spider";
+    enemies.push({
+      x: player.x + Math.cos(angle) * radius,
+      y: player.y + Math.sin(angle) * radius,
+      type: type,
+      hp: type === "drone" ? 30 : 18,
+      speed: type === "drone" ? 80 : 115,
+      isFrozen: 0,
+      shootCooldown: Math.random() * 2 + 1,
+      frame: 0
+    });
+  }
+
+  window.addEventListener('keydown', e => {
+    keys[e.key.toLowerCase()] = true;
+    if (e.key.toLowerCase() === 'r') {
+      if (isGameOver) restartGame();
+      else if (!player.isReloading && player.ammo < player.maxAmmo) startReload();
+    }
+  });
+  window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  canvas.addEventListener('mousedown', () => { mouse.down = true; });
+  canvas.addEventListener('mouseup', () => { mouse.down = false; });
+
+  function startReload() {
+    if (player.isReloading || player.ammo === player.maxAmmo) return;
+    player.isReloading = true;
+    player.reloadTimer = 0;
+    document.getElementById('reloadText').style.display = 'block';
+  }
+
+  function fireWeapon() {
+    player.fireCooldown = player.fireRate;
+    player.ammo--;
+    updateAmmoHUD();
+
+    const aimAngle = Math.atan2(mouse.y - player.y, mouse.x - player.x);
+    const count = player.projectiles;
+    const spread = 0.16;
+
+    for (let i = 0; i < count; i++) {
+      let angle = aimAngle;
+      if (count > 1) {
+        const t = i / (count - 1);
+        angle = aimAngle - spread * 0.5 + spread * t;
+      }
+      bullets.push({
+        x: player.x + Math.cos(angle) * 12,
+        y: player.y + Math.sin(angle) * 12,
+        vx: Math.cos(angle) * 580,
+        vy: Math.sin(angle) * 580,
+        damage: player.damage,
+        pierce: player.pierce,
+        life: 1.8
+      });
+    }
+
+    if (player.ammo <= 0) startReload();
+  }
+
+  function update(dt) {
+    if (isPaused || isGameOver) return;
+
+    player.time += dt;
+    document.getElementById('timerText').innerText =
+      `${String(Math.floor(player.time / 60)).padStart(2, '0')}:${String(Math.floor(player.time % 60)).padStart(2, '0')}`;
+
+    const isFiring = mouse.down && player.ammo > 0;
+    const speedMult = (isFiring || player.isReloading) ? 0.5 : 1.0;
+    const currentSpeed = player.speed * speedMult;
+
+    let mx = 0, my = 0;
+    if (keys['w'] || keys['arrowup']) my -= 1;
+    if (keys['s'] || keys['arrowdown']) my += 1;
+    if (keys['a'] || keys['arrowleft']) mx -= 1;
+    if (keys['d'] || keys['arrowright']) mx += 1;
+    if (mx !== 0 && my !== 0) { mx *= 0.7071; my *= 0.7071; }
+
+    player.x = Math.max(20, Math.min(620, player.x + mx * currentSpeed * dt));
+    player.y = Math.max(20, Math.min(340, player.y + my * currentSpeed * dt));
+
+    if (player.isReloading) {
+      player.reloadTimer += dt;
+      const pct = Math.min(100, Math.round((player.reloadTimer / player.reloadDuration) * 100));
+      document.getElementById('reloadText').innerText = `RELOAD ${pct}%`;
+      if (player.reloadTimer >= player.reloadDuration) {
+        player.isReloading = false;
+        player.ammo = player.maxAmmo;
+        document.getElementById('reloadText').style.display = 'none';
+        updateAmmoHUD();
+      }
+    }
+
+    if (player.fireCooldown > 0) player.fireCooldown -= dt;
+    if (mouse.down && !player.isReloading && player.fireCooldown <= 0) {
+      if (player.ammo > 0) fireWeapon();
+      else startReload();
+    }
+
+    if (player.invulnTimer > 0) player.invulnTimer -= dt;
+    if (player.hasSaw) sawAngle += 4.5 * dt;
+
+    if (Math.random() < 0.04) spawnEnemy();
+
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const b = bullets[i];
+      b.x += b.vx * dt;
+      b.y += b.vy * dt;
+      b.life -= dt;
+      if (b.life <= 0) { bullets.splice(i, 1); continue; }
+
+      for (let j = enemies.length - 1; j >= 0; j--) {
+        const en = enemies[j];
+        const dist = Math.hypot(b.x - en.x, b.y - en.y);
+        if (dist < 16) {
+          en.hp -= b.damage;
+          en.x += (b.vx / 580) * 20;
+          en.y += (b.vy / 580) * 20;
+
+          if (player.hasFreeze) en.isFrozen = 2.0;
+
+          if (player.hasLightning) {
+            enemies.forEach(other => {
+              if (other !== en && Math.hypot(other.x - en.x, other.y - en.y) < 100) {
+                other.hp -= Math.round(b.damage * 0.7);
+              }
+            });
+          }
+
+          if (b.pierce > 0) {
+            b.pierce--;
+          } else {
+            bullets.splice(i, 1);
+            break;
+          }
+        }
+      }
+    }
+
+    for (let i = enemies.length - 1; i >= 0; i--) {
+      const en = enemies[i];
+      if (en.hp <= 0) {
+        player.kills++;
+        document.getElementById('killsText').innerText = `KILL: ${player.kills}`;
+        xpGems.push({ x: en.x, y: en.y, val: en.type === 'drone' ? 15 : 5 });
+        enemies.splice(i, 1);
+        continue;
+      }
+
+      if (en.isFrozen > 0) en.isFrozen -= dt;
+      const spd = en.speed * (en.isFrozen > 0 ? 0.5 : 1.0);
+
+      const dx = player.x - en.x;
+      const dy = player.y - en.y;
+      const d = Math.hypot(dx, dy);
+
+      if (en.type === 'drone') {
+        if (d > 160) { en.x += (dx / d) * spd * dt; en.y += (dy / d) * spd * dt; }
+        else if (d < 130) { en.x -= (dx / d) * spd * dt; en.y -= (dy / d) * spd * dt; }
+
+        en.shootCooldown -= dt;
+        if (en.shootCooldown <= 0) {
+          en.shootCooldown = 2.5;
+          enemyBullets.push({ x: en.x, y: en.y, vx: (dx / d) * 200, vy: (dy / d) * 200, life: 3 });
+        }
+      } else {
+        en.x += (dx / d) * spd * dt;
+        en.y += (dy / d) * spd * dt;
+      }
+
+      if (d < 16 && player.invulnTimer <= 0) {
+        playerTakeHit();
+      }
+
+      if (player.hasSaw) {
+        const sx = player.x + Math.cos(sawAngle) * 55;
+        const sy = player.y + Math.sin(sawAngle) * 55;
+        if (Math.hypot(en.x - sx, en.y - sy) < 20) {
+          en.hp -= 2;
+        }
+      }
+    }
+
+    for (let i = enemyBullets.length - 1; i >= 0; i--) {
+      const eb = enemyBullets[i];
+      eb.x += eb.vx * dt;
+      eb.y += eb.vy * dt;
+      eb.life -= dt;
+      if (eb.life <= 0) { enemyBullets.splice(i, 1); continue; }
+
+      if (Math.hypot(eb.x - player.x, eb.y - player.y) < 14 && player.invulnTimer <= 0) {
+        playerTakeHit();
+        enemyBullets.splice(i, 1);
+      }
+    }
+
+    for (let i = xpGems.length - 1; i >= 0; i--) {
+      const gem = xpGems[i];
+      const d = Math.hypot(gem.x - player.x, gem.y - player.y);
+      if (d < 75) {
+        gem.x += ((player.x - gem.x) / d) * 450 * dt;
+        gem.y += ((player.y - gem.y) / d) * 450 * dt;
+        if (d < 14) {
+          addXP(gem.val);
+          xpGems.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  function playerTakeHit() {
+    player.hp--;
+    player.invulnTimer = 0.8;
+    updateHeartsHUD();
+    if (player.hp <= 0) {
+      isGameOver = true;
+      document.getElementById('gameOverStats').innerText =
+        `Bertahan: ${document.getElementById('timerText').innerText} | Kills: ${player.kills} | Level: ${player.level}`;
+      document.getElementById('gameOverModal').style.display = 'flex';
+    }
+  }
+
+  function addXP(val) {
+    player.xp += val;
+    if (player.xp >= player.xpNext) {
+      player.xp -= player.xpNext;
+      player.level++;
+      player.xpNext = Math.round(12 * Math.pow(player.level, 1.35));
+      document.getElementById('levelTag').innerText = `LVL ${String(player.level).padStart(2, '0')}`;
+      triggerLevelUpModal();
+    }
+    const pct = Math.min(100, Math.round((player.xp / player.xpNext) * 100));
+    document.getElementById('xpFill').style.width = pct + '%';
+  }
+
+  function triggerLevelUpModal() {
+    isPaused = true;
+    const modal = document.getElementById('levelUpModal');
+    const row = document.getElementById('cardsRow');
+    row.innerHTML = '';
+
+    const shuffled = [...upgradePool].sort(() => 0.5 - Math.random()).slice(0, 3);
+    shuffled.forEach(upg => {
+      const card = document.createElement('div');
+      card.className = 'upgrade-card';
+      card.innerHTML = `
+        <img src="${upg.icon}" alt="icon">
+        <div class="card-name">${upg.title}</div>
+        <div class="card-desc">${upg.desc}</div>
+      `;
+      card.onclick = () => {
+        upg.apply();
+        modal.style.display = 'none';
+        isPaused = false;
+      };
+      row.appendChild(card);
+    });
+    modal.style.display = 'flex';
+  }
+
+  function updateHeartsHUD() {
+    const box = document.getElementById('heartsBox');
+    box.innerHTML = '';
+    for (let i = 0; i < player.maxHp; i++) {
+      const h = document.createElement('div');
+      h.className = 'heart' + (i >= player.hp ? ' empty' : '');
+      box.appendChild(h);
+    }
+  }
+
+  function updateAmmoHUD() {
+    const box = document.getElementById('ammoBox');
+    box.innerHTML = '';
+    for (let i = 0; i < player.maxAmmo; i++) {
+      const b = document.createElement('div');
+      b.className = 'bullet-pip' + (i >= player.ammo ? ' empty' : '');
+      box.appendChild(b);
+    }
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, 640, 360);
+
+    ctx.fillStyle = '#0a0d16';
+    ctx.fillRect(0, 0, 640, 360);
+    ctx.strokeStyle = '#121826';
+    for (let x = 0; x < 640; x += 32) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 360); ctx.stroke();
+    }
+    for (let y = 0; y < 360; y += 32) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(640, y); ctx.stroke();
+    }
+
+    xpGems.forEach(g => {
+      ctx.fillStyle = g.val > 10 ? '#ffd230' : '#00e5ff';
+      ctx.beginPath();
+      ctx.arc(g.x, g.y, g.val > 10 ? 5 : 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    bullets.forEach(b => {
+      ctx.fillStyle = '#00e5ff';
+      ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(b.x, b.y, 2, 0, Math.PI * 2); ctx.fill();
+    });
+
+    enemyBullets.forEach(eb => {
+      ctx.fillStyle = '#ff2244';
+      ctx.beginPath(); ctx.arc(eb.x, eb.y, 4, 0, Math.PI * 2); ctx.fill();
+    });
+
+    enemies.forEach(en => {
+      ctx.fillStyle = en.isFrozen > 0 ? '#44aaff' : (en.type === 'drone' ? '#c040ff' : '#cc3344');
+      ctx.beginPath();
+      ctx.arc(en.x, en.y, en.type === 'drone' ? 9 : 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(en.x + 2, en.y - 1, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ff0000';
+      ctx.beginPath(); ctx.arc(en.x + 2, en.y - 1, 1.5, 0, Math.PI * 2); ctx.fill();
+    });
+
+    if (player.hasSaw) {
+      const sx = player.x + Math.cos(sawAngle) * 55;
+      const sy = player.y + Math.sin(sawAngle) * 55;
+      ctx.fillStyle = '#00e5ff';
+      ctx.beginPath(); ctx.arc(sx, sy, 10, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(sx, sy, 5, 0, Math.PI * 2); ctx.fill();
+    }
+
+    if (player.invulnTimer <= 0 || Math.floor(player.time * 20) % 2 === 0) {
+      ctx.fillStyle = '#22385c';
+      ctx.fillRect(player.x - 7, player.y - 10, 14, 20);
+      ctx.fillStyle = '#00e5ff';
+      ctx.fillRect(player.x - 4, player.y - 7, 8, 3);
+    }
+
+    const aimAngle = Math.atan2(mouse.y - player.y, mouse.x - player.x);
+    ctx.save();
+    ctx.translate(player.x, player.y);
+    ctx.rotate(aimAngle);
+    ctx.fillStyle = '#3a4a68';
+    ctx.fillRect(6, -2, 14, 4);
+    ctx.fillStyle = '#00e5ff';
+    ctx.fillRect(16, -2, 5, 4);
+    ctx.restore();
+
+    if (player.isReloading) {
+      const pct = player.reloadTimer / player.reloadDuration;
+      ctx.strokeStyle = '#00e5ff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, 22, -Math.PI * 0.5, (-Math.PI * 0.5) + (Math.PI * 2 * pct));
+      ctx.stroke();
+    }
+
+    // 20MTD Darkness Spotlight around player
+    const grad = ctx.createRadialGradient(player.x, player.y, 40, player.x, player.y, 240);
+    grad.addColorStop(0, 'rgba(6, 9, 17, 0)');
+    grad.addColorStop(0.5, 'rgba(6, 9, 17, 0.45)');
+    grad.addColorStop(1, 'rgba(6, 9, 17, 0.94)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 640, 360);
+  }
+
+  let lastT = performance.now();
+  function gameLoop(now) {
+    const dt = Math.min((now - lastT) / 1000, 0.1);
+    lastT = now;
+    update(dt);
+    render();
+    requestAnimationFrame(gameLoop);
+  }
+
+  function restartGame() {
+    player.x = 320; player.y = 180;
+    player.hp = 4; player.ammo = 6; player.maxAmmo = 6;
+    player.isReloading = false;
+    player.damage = 20; player.projectiles = 1; player.pierce = 0;
+    player.hasFreeze = false; player.hasLightning = false; player.hasSaw = false;
+    player.invulnTimer = 0; player.level = 1; player.xp = 0; player.xpNext = 12;
+    player.kills = 0; player.time = 0;
+
+    bullets = []; enemies = []; xpGems = []; enemyBullets = [];
+    isGameOver = false; isPaused = false;
+    document.getElementById('gameOverModal').style.display = 'none';
+    document.getElementById('levelUpModal').style.display = 'none';
+    document.getElementById('reloadText').style.display = 'none';
+    document.getElementById('levelTag').innerText = 'LVL 01';
+    document.getElementById('xpFill').style.width = '0%';
+    document.getElementById('killsText').innerText = 'KILL: 0';
+    updateHeartsHUD();
+    updateAmmoHUD();
+  }
+
+  updateHeartsHUD();
+  updateAmmoHUD();
+  requestAnimationFrame(gameLoop);
+</script>
+
+</body>
+</html>

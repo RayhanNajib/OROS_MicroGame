@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/entities/enemy_base.gd" id="1_scr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/spr_enemy_spider.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_spider"]
+radius = 10.0
+
+[node name="EnemySpider" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_scr")
+enemy_type = "spider"
+max_hp = 18
+base_speed = 115.0
+contact_damage = 1
+exp_reward = 5
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+hframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_spider")
+
+[node name="AnimTimer" type="Timer" parent="."]
+wait_time = 0.12
+autostart = true
