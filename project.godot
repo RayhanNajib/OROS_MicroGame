@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="O.R.O.S.: Overclocked Roguelite On Survivor"
-config/description="Twin-Stick Roguelite Survivor Mechanics (Inspired by 20 Minutes Till Dawn) - Team: M. Rayhan Najib, Luigy M. C. Liem Saunoah, Ahmad Faizun"
+config/description="Twin-Stick Cyberpunk Roguelite Survivor - Developed by M. Rayhan Najib, Luigy M. C. Liem Saunoah, Ahmad Faizun"
 config/version="1.0.0"
 run/main_scene="res://scenes/main/MainMenu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")

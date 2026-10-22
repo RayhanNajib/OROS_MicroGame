@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/entities/boss_colossus.gd" id="1_scr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/spr_boss_colossus.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_boss"]
+size = Vector2(56, 68)
+
+[node name="BossColossus" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 5
+script = ExtResource("1_scr")
+max_hp = 750
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+hframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_boss")
+
+[node name="AnimTimer" type="Timer" parent="."]
+wait_time = 0.18
+autostart = true

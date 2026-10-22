@@ -87,3 +87,27 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0.45, 0.55, 0.7, 0.7)
 theme_override_font_sizes/font_size = 7
 text = "[WASD] MOVE  •  [LMB] FIRE  •  [R] RELOAD"
+
+[node name="BossBarContainer" type="VBoxContainer" parent="."]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 40.0
+offset_right = 180.0
+offset_bottom = 66.0
+grow_horizontal = 2
+theme_override_constants/separation = 2
+
+[node name="BossNameLabel" type="Label" parent="BossBarContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.25, 0.35, 1)
+theme_override_font_sizes/font_size = 9
+text = "★ BOSS: COLOSSUS-OMEGA // SECTOR OVERLORD ★"
+horizontal_alignment = 1
+
+[node name="BossHPBar" type="ProgressBar" parent="BossBarContainer"]
+custom_minimum_size = Vector2(360, 10)
+layout_mode = 2
+show_percentage = false

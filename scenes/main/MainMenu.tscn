@@ -1,9 +1,10 @@
 [gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/main/main_menu.gd" id="1_scr"]
-[ext_resource type="Texture2D" path="res://assets/sprites/menu_keyart_nano.png" id="2_keyart"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="3_click"]
-[ext_resource type="AudioStream" path="res://assets/audio/bgm_combat_loop.wav" id="4_bgm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pixel_menu_bg.png" id="2_bg"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pixel_logo_oros.png" id="3_logo"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="4_click"]
+[ext_resource type="AudioStream" path="res://assets/audio/bgm_combat_loop.wav" id="5_bgm"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -14,110 +15,214 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_scr")
 
-[node name="KeyArtBG" type="TextureRect" parent="."]
+[node name="PixelBG" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_keyart")
+texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="DarkOverlay" type="ColorRect" parent="."]
+[node name="TopGroup" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -160.0
+offset_top = 8.0
+offset_right = 160.0
+offset_bottom = 76.0
 grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.03, 0.05, 0.09, 0.62)
+theme_override_constants/separation = 2
+alignment = 1
 
-[node name="VBoxCenter" type="VBoxContainer" parent="."]
+[node name="LogoRect" type="TextureRect" parent="TopGroup"]
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("3_logo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Subtitle" type="Label" parent="TopGroup"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
+theme_override_font_sizes/font_size = 9
+text = "OVERCLOCKED ROGUELITE ON SURVIVOR"
+horizontal_alignment = 1
+
+[node name="SelectionHBox" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -270.0
-offset_top = -142.0
-offset_right = 270.0
-offset_bottom = 125.0
+offset_left = -305.0
+offset_top = -98.0
+offset_right = 305.0
+offset_bottom = 75.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="HeroPanel" type="PanelContainer" parent="SelectionHBox"]
+custom_minimum_size = Vector2(295, 168)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="SelectionHBox/HeroPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="SelectionHBox/HeroPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Header" type="Label" parent="SelectionHBox/HeroPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.25, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "✦ PILIH HERO OPERATIVE ✦"
+horizontal_alignment = 1
+
+[node name="HeroBtns" type="HBoxContainer" parent="SelectionHBox/HeroPanel/Margin/VBox"]
+layout_mode = 2
 theme_override_constants/separation = 6
 alignment = 1
 
-[node name="Title" type="Label" parent="VBoxCenter"]
+[node name="BtnKael" type="Button" parent="SelectionHBox/HeroPanel/Margin/VBox/HeroBtns"]
+custom_minimum_size = Vector2(85, 26)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0.3, 0.6, 0.8)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 32
-text = "O . R . O . S ."
-horizontal_alignment = 1
+theme_override_font_sizes/font_size = 9
+text = "KAEL"
 
-[node name="Subtitle" type="Label" parent="VBoxCenter"]
+[node name="BtnVex" type="Button" parent="SelectionHBox/HeroPanel/Margin/VBox/HeroBtns"]
+custom_minimum_size = Vector2(85, 26)
+layout_mode = 2
+theme_override_font_sizes/font_size = 9
+text = "VEX"
+
+[node name="BtnBrutus" type="Button" parent="SelectionHBox/HeroPanel/Margin/VBox/HeroBtns"]
+custom_minimum_size = Vector2(85, 26)
+layout_mode = 2
+theme_override_font_sizes/font_size = 9
+text = "BRUTUS"
+
+[node name="HeroDesc" type="Label" parent="SelectionHBox/HeroPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 85)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "• KAEL (The CyberSmith)
+HP: 4 | Kecepatan: 160
+Pasif: Overclock Core (+20% Dmg, pulsa energi berkala)."
+autowrap_mode = 2
+
+[node name="WeaponPanel" type="PanelContainer" parent="SelectionHBox"]
+custom_minimum_size = Vector2(295, 168)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="SelectionHBox/WeaponPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="SelectionHBox/WeaponPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Header" type="Label" parent="SelectionHBox/WeaponPanel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_font_sizes/font_size = 11
-text = "OVERCLOCKED ROGUELITE ON SURVIVOR"
+theme_override_font_sizes/font_size = 10
+text = "✦ PILIH ARSENAL SENJATA ✦"
 horizontal_alignment = 1
 
-[node name="Tagline" type="Label" parent="VBoxCenter"]
+[node name="WeaponBtns" type="HBoxContainer" parent="SelectionHBox/WeaponPanel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.75, 0.88, 1, 1)
-theme_override_font_sizes/font_size = 8
-text = "20 Minutes Till Dawn Roguelite Mechanics (Dark Vision • Revolver • Kiting • 8 Synergies)"
-horizontal_alignment = 1
-
-[node name="Spacer" type="Control" parent="VBoxCenter"]
-custom_minimum_size = Vector2(0, 4)
-layout_mode = 2
-
-[node name="ButtonsVBox" type="VBoxContainer" parent="VBoxCenter"]
-layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 alignment = 1
 
-[node name="StartBtn" type="Button" parent="VBoxCenter/ButtonsVBox"]
-custom_minimum_size = Vector2(240, 36)
+[node name="BtnRevolver" type="Button" parent="SelectionHBox/WeaponPanel/Margin/VBox/WeaponBtns"]
+custom_minimum_size = Vector2(85, 26)
 layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "REVOLVER"
+
+[node name="BtnShotgun" type="Button" parent="SelectionHBox/WeaponPanel/Margin/VBox/WeaponBtns"]
+custom_minimum_size = Vector2(85, 26)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "SHOTGUN"
+
+[node name="BtnSMG" type="Button" parent="SelectionHBox/WeaponPanel/Margin/VBox/WeaponBtns"]
+custom_minimum_size = Vector2(85, 26)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "CYBER SMG"
+
+[node name="WeaponDesc" type="Label" parent="SelectionHBox/WeaponPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 85)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "• DUAL PLASMA REVOLVER
+Kapasitas: 6 Peluru | Damage: 22 | Reload: 1.0s
+Presisi tinggi untuk menghabisi robot inti dari jarak aman."
+autowrap_mode = 2
+
+[node name="BottomActions" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -68.0
+offset_right = 300.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="StartBtn" type="Button" parent="BottomActions"]
+custom_minimum_size = Vector2(190, 36)
+layout_mode = 2
 theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 10
 text = "▶ INITIATE OVERCLOCK RUN"
 
-[node name="ControlsBtn" type="Button" parent="VBoxCenter/ButtonsVBox"]
-custom_minimum_size = Vector2(240, 30)
+[node name="ControlsBtn" type="Button" parent="BottomActions"]
+custom_minimum_size = Vector2(150, 36)
 layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
 theme_override_colors/font_hover_color = Color(0.3, 0.85, 1, 1)
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 9
 text = "⚙ CONTROLS & MANUAL"
 
-[node name="CreditsBtn" type="Button" parent="VBoxCenter/ButtonsVBox"]
-custom_minimum_size = Vector2(240, 30)
+[node name="CreditsBtn" type="Button" parent="BottomActions"]
+custom_minimum_size = Vector2(150, 36)
 layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
 theme_override_colors/font_hover_color = Color(0.3, 0.85, 1, 1)
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 9
 text = "👥 CREDITS & TIM PPLG"
 
-[node name="QuitBtn" type="Button" parent="VBoxCenter/ButtonsVBox"]
-custom_minimum_size = Vector2(240, 28)
+[node name="QuitBtn" type="Button" parent="BottomActions"]
+custom_minimum_size = Vector2(70, 36)
 layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
 theme_override_colors/font_hover_color = Color(1, 0.4, 0.4, 1)
 theme_override_font_sizes/font_size = 9
-text = "✕ EXIT SIMULATION"
+text = "✕ QUIT"
 
 [node name="VersionFooter" type="Label" parent="."]
 layout_mode = 1
@@ -180,13 +285,12 @@ horizontal_alignment = 1
 [node name="Guide" type="Label" parent="ControlsModal/Center/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
-theme_override_font_sizes/font_size = 9
-text = "• [W, A, S, D] / Arrow Keys: Gerak Karakter Kael
-  ★ 20MTD Movement Penalty: Gerakan melambat 50% saat menembak atau reload! Kite musuh secara cerdas!
-
-• [MOUSE]: Arah Bidik Revolver Plasma
-• [KLIK KIRI]: Tembak Peluru Revolver
-• [R]: Reload Manual Magasin (Otomatis reload saat peluru habis)
+theme_override_font_sizes/font_size = 8
+text = "• [W, A, S, D] / Tombol Panah: Gerak Karakter Operative
+  ★ Kiting Movement Penalty: Kecepatan berkurang 25% saat menembak atau me-reload peluru.
+• [MOUSE]: Arah Bidik Senjata Plasma
+• [KLIK KIRI]: Tembak Peluru Senjata Aktif
+• [R]: Reload Manual Magasin (Otomatis me-reload saat magasin habis)
 • [1, 2, 3]: Pilih Cepat Kartu Upgrade Roguelite saat Level Up
 • [ESC]: Jeda Permainan / Tutup Menu Modal"
 autowrap_mode = 2
@@ -249,7 +353,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 8
 text = "1. Muhammad Rayhan Najib (NIM: 240533600012)
-   - Lead Programmer, Engine Integrator & 20MTD Core State Machine
+   - Lead Programmer, Engine Integrator & Twin-Stick Core State Machine
 
 2. Luigy M. C. Liem Saunoah (NIM: 240533605298)
    - 2D Pixel Artist, Animator & UI/UX Designer
@@ -267,9 +371,9 @@ size_flags_horizontal = 4
 text = "✕ KEMBALI KE MENU"
 
 [node name="SFXClick" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_click")
+stream = ExtResource("4_click")
 
 [node name="BGM" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_bgm")
+stream = ExtResource("5_bgm")
 volume_db = -6.0
 autoplay = true

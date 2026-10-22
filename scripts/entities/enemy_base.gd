@@ -25,6 +25,8 @@ var shoot_timer: float = 0.0
 var shoot_interval: float = 2.4
 var attack_cooldown: float = 0.0
 
+var medkit_scene: PackedScene
+
 func _ready() -> void:
 	add_to_group("enemies")
 	current_hp = max_hp
@@ -37,6 +39,8 @@ func _ready() -> void:
 		enemy_bullet_scene = load("res://scenes/entities/EnemyBullet.tscn")
 	if not xp_gem_scene:
 		xp_gem_scene = load("res://scenes/entities/XPGem.tscn")
+	if not medkit_scene:
+		medkit_scene = load("res://scenes/entities/MedkitPickup.tscn")
 		
 	# Setup sprite frames & animation
 	if anim_timer:
@@ -92,6 +96,18 @@ func _physics_process(delta: float) -> void:
 		if shoot_timer <= 0.0:
 			shoot_timer = shoot_interval
 			fire_drone_bullet()
+	elif enemy_type == "turret":
+		# Stationary turret with long-range shooting
+		move_dir = dir * 0.2 if dist_to_player > 220.0 else Vector2.ZERO
+		shoot_timer -= delta
+		if shoot_timer <= 0.0:
+			shoot_timer = 2.0
+			fire_drone_bullet()
+	elif enemy_type == "viper":
+		# Fast serpentine zig-zag
+		var perp := Vector2(-dir.y, dir.x)
+		var wave := sin(Time.get_ticks_msec() * 0.008) * 0.75
+		move_dir = (dir + perp * wave).normalized()
 	else:
 		# Melee chaser
 		move_dir = dir
@@ -182,5 +198,11 @@ func die() -> void:
 		gem.xp_value = exp_reward
 		gem.is_gold = (exp_reward >= 20)
 		get_parent().call_deferred("add_child", gem)
+		
+	# Chance to drop Nano-Medkit (12% normal, 100% on big enemies)
+	if medkit_scene and (randf() < 0.12 or exp_reward >= 50):
+		var med = medkit_scene.instantiate()
+		med.global_position = global_position + Vector2(randf_range(-10, 10), randf_range(-10, 10))
+		get_parent().call_deferred("add_child", med)
 		
 	queue_free()

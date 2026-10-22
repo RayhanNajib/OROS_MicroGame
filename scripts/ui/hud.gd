@@ -10,6 +10,10 @@ extends CanvasLayer
 @onready var timer_label: Label = $TopRight/TimerLabel
 @onready var kills_label: Label = $TopRight/KillsLabel
 
+@onready var boss_container: VBoxContainer = $BossBarContainer
+@onready var boss_name_label: Label = $BossBarContainer/BossNameLabel
+@onready var boss_hp_bar: ProgressBar = $BossBarContainer/BossHPBar
+
 var heart_full_tex: Texture2D
 var heart_empty_tex: Texture2D
 var bullet_icon_tex: Texture2D
@@ -23,9 +27,36 @@ func _ready() -> void:
 	GameState.ammo_changed.connect(_on_ammo_changed)
 	GameState.xp_changed.connect(_on_xp_changed)
 
+	GameState.boss_spawned.connect(_on_boss_spawned)
+	GameState.boss_hp_changed.connect(_on_boss_hp_changed)
+	GameState.boss_defeated.connect(_on_boss_defeated)
+
 	update_hearts(GameState.health, GameState.max_health)
 	update_ammo(GameState.ammo, GameState.max_ammo, false, 0.0)
 	update_xp(GameState.current_xp, GameState.xp_to_next, GameState.level)
+
+func _on_boss_spawned(b_name: String, max_hp: int) -> void:
+	if boss_container:
+		boss_container.visible = true
+	if boss_name_label:
+		boss_name_label.text = "★ BOSS: %s ★" % b_name
+	if boss_hp_bar:
+		boss_hp_bar.max_value = max_hp
+		boss_hp_bar.value = max_hp
+
+func _on_boss_hp_changed(cur_hp: int, _max_hp: int) -> void:
+	if boss_hp_bar:
+		boss_hp_bar.value = cur_hp
+
+func _on_boss_defeated() -> void:
+	if boss_name_label:
+		boss_name_label.text = "★ BOSS ANNIHILATED // SECTOR LIBERATED ★"
+	var tw := create_tween()
+	tw.tween_interval(3.0)
+	tw.tween_callback(func():
+		if boss_container:
+			boss_container.visible = false
+	)
 
 func _process(_delta: float) -> void:
 	# Update Timer

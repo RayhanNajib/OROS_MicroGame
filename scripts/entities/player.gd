@@ -49,6 +49,29 @@ func _ready() -> void:
 	if has_node("ShadowSprite"):
 		shadow_sprite = get_node("ShadowSprite")
 		
+	# Load Hero & Weapon textures dynamically based on selection
+	match GameState.selected_hero:
+		"vex":
+			body_sprite.texture = load("res://assets/sprites/player_vex_run.png")
+		"brutus":
+			body_sprite.texture = load("res://assets/sprites/player_brutus_run.png")
+		_:
+			body_sprite.texture = load("res://assets/sprites/player_kael_run.png")
+			
+	match GameState.selected_weapon:
+		"shotgun":
+			gun_sprite.texture = load("res://assets/sprites/spr_shotgun.png")
+			gun_sprite.position = Vector2(14, 0)
+			muzzle.position = Vector2(28, 0)
+		"smg":
+			gun_sprite.texture = load("res://assets/sprites/spr_smg.png")
+			gun_sprite.position = Vector2(10, 0)
+			muzzle.position = Vector2(20, 0)
+		_:
+			gun_sprite.texture = load("res://assets/sprites/spr_revolver.png")
+			gun_sprite.position = Vector2(10, 0)
+			muzzle.position = Vector2(22, 0)
+		
 	# Sync ammo & health with GameState
 	GameState.ammo = GameState.max_ammo
 	GameState.health = GameState.max_health
