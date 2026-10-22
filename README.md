@@ -46,7 +46,7 @@ Meskipun secara mekanik dan *game feel* dibuat **plek ketiplek** dengan *20 Minu
 | **Karakter Pemain** | Shana / Diamond (penyihir berbusana jubah). | **Kael (The CyberSmith)** — Teknisi pandai besi siber berjas tempur dengan visor cyan dan plasma revolver. |
 | **Musuh (Enemies)** | Pohon terkutuk, laba-laba raksasa, monster mata bertentakel. | **Corrupted Defense Automations**: *Rust Spider-Bot* (melee), *Ocular Drone* (ranged shooter), *Scrap Titan* (tank mech). |
 | **Gaya Audio** | Suara letusan pistol analog & efek horor berat. | **16-bit Cyber Chiptune Foley**: Revolver plasma terkompresi, dentang reload mekanik, dan bassline synthwave tempo 120 BPM. |
-| **Display Anggota** | Tidak ada profil pengembang. | **Clean Text HUD & Menu**: Nama dan NIM anggota tim tertera elegan di footer HUD dan Main Menu tanpa menutupi arena. |
+| **Display Anggota** | Tidak ada profil pengembang. | **Clean Text Menu & Intro**: Nama dan NIM anggota tim tersimpan profesional di modal Credits Main Menu tanpa menutupi arena gameplay saat bertarung. |
 
 ---
 
@@ -76,6 +76,7 @@ Setiap kali bar EXP di bagian atas layar terisi penuh, permainan membeku (*pause
 
 #### Cara Menjalankan di Engine:
 1. Buka aplikasi **Godot Engine 4.7**.
-2. Klik tombol **Import** $ightarrow$ Arahkan ke berkas: `C:/Users/WA/Documents/OROS_MicroGame/project.godot`.
+2. Klik tombol **Import** $
+ightarrow$ Arahkan ke berkas: `C:/Users/WA/Documents/OROS_MicroGame/project.godot`.
 3. Klik **Import & Edit**.
 4. Tekan tombol **F5** pada keyboard untuk memainkan gim langsung dari Main Menu!
