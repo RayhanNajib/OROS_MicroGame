@@ -1,0 +1,272 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/hud_controller.gd" id="1_hud_scr"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_popup.wav" id="2_pop_sfx"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud_scr")
+
+[node name="TopBar" type="PanelContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -260.0
+offset_top = 8.0
+offset_right = 260.0
+offset_bottom = 38.0
+grow_horizontal = 2
+
+[node name="HBox" type="HBoxContainer" parent="TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="StatusLabel" type="Label" parent="TopBar/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "O.R.O.S. DIAGNOSTIC: [ 0 / 3 ] TERMINALS ONLINE"
+vertical_alignment = 1
+
+[node name="LEDContainer" type="HBoxContainer" parent="TopBar/HBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="LEDNajib" type="ColorRect" parent="TopBar/HBox/LEDContainer"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+color = Color(0.2, 0.25, 0.35, 1)
+
+[node name="LEDLuigy" type="ColorRect" parent="TopBar/HBox/LEDContainer"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+color = Color(0.2, 0.25, 0.35, 1)
+
+[node name="LEDFaizun" type="ColorRect" parent="TopBar/HBox/LEDContainer"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+color = Color(0.2, 0.25, 0.35, 1)
+
+[node name="MemberCard" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -220.0
+offset_top = -105.0
+offset_right = 220.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="MemberCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBox" type="HBoxContainer" parent="MemberCard/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="AvatarRect" type="TextureRect" parent="MemberCard/MarginContainer/HBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBox" type="VBoxContainer" parent="MemberCard/MarginContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="NameLabel" type="Label" parent="MemberCard/MarginContainer/HBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.3, 1)
+theme_override_font_sizes/font_size = 12
+text = "Nama Mahasiswa"
+
+[node name="NimLabel" type="Label" parent="MemberCard/MarginContainer/HBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "NIM: 000000000000"
+
+[node name="RoleLabel" type="Label" parent="MemberCard/MarginContainer/HBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 1, 0.6, 1)
+theme_override_font_sizes/font_size = 10
+text = "Role: Peran Anggota"
+
+[node name="DescLabel" type="Label" parent="MemberCard/MarginContainer/HBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.85, 0.95, 1)
+theme_override_font_sizes/font_size = 8
+text = "Deskripsi pekerjaan & kontribusi di proyek."
+autowrap_mode = 2
+
+[node name="CardTimer" type="Timer" parent="MemberCard"]
+one_shot = true
+
+[node name="VictoryPanel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -140.0
+offset_right = 280.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="VictoryPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxMain" type="VBoxContainer" parent="VictoryPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="VictoryPanel/Margin/VBoxMain"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 1, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "★ SYSTEM ONLINE: O.R.O.S. PROTOCOL INITIALIZED ★"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="VictoryPanel/Margin/VBoxMain"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 9
+text = "Tim Pengembang PPLG PTI FT Universitas Negeri Malang - 2026"
+horizontal_alignment = 1
+
+[node name="HBoxCards" type="HBoxContainer" parent="VictoryPanel/Margin/VBoxMain"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Card1" type="PanelContainer" parent="VictoryPanel/Margin/VBoxMain/HBoxCards"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card1"]
+layout_mode = 2
+alignment = 1
+
+[node name="Avatar" type="TextureRect" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card1/VBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card1/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 9
+text = "M. Rayhan Najib"
+horizontal_alignment = 1
+
+[node name="NIM" type="Label" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card1/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "240533600012"
+horizontal_alignment = 1
+
+[node name="Role" type="Label" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card1/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 1, 0.6, 1)
+theme_override_font_sizes/font_size = 7
+text = "Lead Programmer"
+horizontal_alignment = 1
+
+[node name="Card2" type="PanelContainer" parent="VictoryPanel/Margin/VBoxMain/HBoxCards"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card2"]
+layout_mode = 2
+alignment = 1
+
+[node name="Avatar" type="TextureRect" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card2/VBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card2/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 9
+text = "Luigy M. C. Liem S."
+horizontal_alignment = 1
+
+[node name="NIM" type="Label" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card2/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "240533605298"
+horizontal_alignment = 1
+
+[node name="Role" type="Label" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card2/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.5, 1, 1)
+theme_override_font_sizes/font_size = 7
+text = "2D Pixel Artist"
+horizontal_alignment = 1
+
+[node name="Card3" type="PanelContainer" parent="VictoryPanel/Margin/VBoxMain/HBoxCards"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card3"]
+layout_mode = 2
+alignment = 1
+
+[node name="Avatar" type="TextureRect" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card3/VBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card3/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 9
+text = "Ahmad Faizun"
+horizontal_alignment = 1
+
+[node name="NIM" type="Label" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card3/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "240533608123"
+horizontal_alignment = 1
+
+[node name="Role" type="Label" parent="VictoryPanel/Margin/VBoxMain/HBoxCards/Card3/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 0.6, 1)
+theme_override_font_sizes/font_size = 7
+text = "PM & QA Tester"
+horizontal_alignment = 1
+
+[node name="FooterRestart" type="Label" parent="VictoryPanel/Margin/VBoxMain"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 9
+text = "Tekan [R] untuk Restart Simulasi  |  Dosen Pengampu: Harits Ar Rosyid, S.T., M.T., Ph.D."
+horizontal_alignment = 1
+
+[node name="SFXPopup" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_pop_sfx")
