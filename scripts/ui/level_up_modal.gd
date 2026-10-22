@@ -82,37 +82,91 @@ func _on_level_up() -> void:
 
 func create_card_node(data: Dictionary) -> Control:
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(170, 220)
+	btn.custom_minimum_size = Vector2(175, 230)
+	btn.flat = true
+	btn.pivot_offset = Vector2(87.5, 115)
+	
+	# Background Frame
+	var bg_panel := Panel.new()
+	bg_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bg_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.08, 0.12, 0.95)
+	style.border_color = Color(0.18, 0.65, 0.92, 0.75)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(6)
+	bg_panel.add_theme_stylebox_override("panel", style)
+	btn.add_child(bg_panel)
+	
+	# Content Container
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_top", 10)
+	margin.add_theme_constant_override("margin_bottom", 10)
 	
 	var vbox := VBoxContainer.new()
-	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	vbox.theme_override_constants.separation = 8
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_theme_constant_override("separation", 6)
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	
+	# Upgrade Icon
 	var icon_rect := TextureRect.new()
-	icon_rect.texture = load(data["icon"])
+	if ResourceLoader.exists(data["icon"]):
+		icon_rect.texture = load(data["icon"])
 	icon_rect.custom_minimum_size = Vector2(48, 48)
 	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	vbox.add_child(icon_rect)
 	
+	# Title
 	var title_lbl := Label.new()
 	title_lbl.text = data["title"]
-	title_lbl.theme_override_colors.font_color = Color(1.0, 0.88, 0.25)
-	title_lbl.theme_override_font_sizes.font_size = 11
+	title_lbl.add_theme_color_override("font_color", Color(1.0, 0.88, 0.25))
+	title_lbl.add_theme_font_size_override("font_size", 10)
 	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(title_lbl)
 	
+	# Description
 	var desc_lbl := Label.new()
 	desc_lbl.text = data["desc"]
-	desc_lbl.theme_override_colors.font_color = Color(0.85, 0.9, 0.98)
-	desc_lbl.theme_override_font_sizes.font_size = 9
+	desc_lbl.add_theme_color_override("font_color", Color(0.85, 0.92, 1.0))
+	desc_lbl.add_theme_font_size_override("font_size", 8)
 	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(desc_lbl)
 	
-	btn.add_child(vbox)
+	# Equip Hint
+	var equip_lbl := Label.new()
+	equip_lbl.text = "[ CLICK TO EQUIP ]"
+	equip_lbl.add_theme_color_override("font_color", Color(0.55, 0.7, 0.85))
+	equip_lbl.add_theme_font_size_override("font_size", 7)
+	equip_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(equip_lbl)
+	
+	margin.add_child(vbox)
+	btn.add_child(margin)
+	
+	# Hover Animations
+	btn.mouse_entered.connect(func():
+		var tw := btn.create_tween()
+		tw.set_parallel(true)
+		tw.tween_property(btn, "scale", Vector2(1.05, 1.05), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		style.border_color = Color(1.0, 0.85, 0.2, 1.0)
+		style.bg_color = Color(0.08, 0.12, 0.18, 0.98)
+	)
+	
+	btn.mouse_exited.connect(func():
+		var tw := btn.create_tween()
+		tw.set_parallel(true)
+		tw.tween_property(btn, "scale", Vector2(1.0, 1.0), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		style.border_color = Color(0.18, 0.65, 0.92, 0.75)
+		style.bg_color = Color(0.06, 0.08, 0.12, 0.95)
+	)
 	
 	btn.pressed.connect(func():
 		if sfx_click: sfx_click.play()
@@ -142,7 +196,7 @@ func apply_upgrade(upgrade_id: String) -> void:
 		"upg_ammo":
 			gs.max_ammo += 3
 			gs.ammo = gs.max_ammo
-			gs.emit_signal("ammo_changed", gs.ammo, gs.max_ammo, false, 0.0)
+			gs.update_ammo_state(gs.ammo, gs.max_ammo, false, 0.0)
 		"upg_freeze":
 			gs.has_freeze = true
 		"upg_lightning":

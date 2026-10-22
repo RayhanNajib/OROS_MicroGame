@@ -30,7 +30,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	# Update Timer
 	var total_sec := int(GameState.survival_time)
-	var mins := total_sec / 60
+	var mins := floori(float(total_sec) / 60.0)
 	var secs := total_sec % 60
 	if timer_label:
 		timer_label.text = "%02d:%02d" % [mins, secs]

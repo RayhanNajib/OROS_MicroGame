@@ -68,7 +68,7 @@ func _process(delta: float) -> void:
 	if is_reloading:
 		reload_timer += delta
 		var pct := clampf(reload_timer / GameState.reload_duration, 0.0, 1.0)
-		GameState.emit_signal("ammo_changed", GameState.ammo, GameState.max_ammo, true, pct)
+		GameState.update_ammo_state(GameState.ammo, GameState.max_ammo, true, pct)
 		
 		if reload_timer >= GameState.reload_duration:
 			finish_reload()
@@ -109,6 +109,18 @@ func _physics_process(delta: float) -> void:
 	var input_vector := Vector2.ZERO
 	input_vector.x = Input.get_axis("move_left", "move_right")
 	input_vector.y = Input.get_axis("move_up", "move_down")
+	
+	# Explicit fallback for direct WASD & Arrow Key events
+	if input_vector == Vector2.ZERO:
+		if Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT) or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+			input_vector.x -= 1.0
+		if Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT) or Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+			input_vector.x += 1.0
+		if Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP) or Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
+			input_vector.y -= 1.0
+		if Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN) or Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
+			input_vector.y += 1.0
+			
 	input_vector = input_vector.normalized()
 
 	# 20MTD Movement Speed Penalty: 50% speed while firing or reloading!
@@ -181,7 +193,7 @@ func finish_reload() -> void:
 	emit_ammo_update()
 
 func emit_ammo_update() -> void:
-	GameState.emit_signal("ammo_changed", GameState.ammo, GameState.max_ammo, is_reloading, 0.0)
+	GameState.update_ammo_state(GameState.ammo, GameState.max_ammo, is_reloading, 0.0)
 
 func take_hit(damage: int) -> void:
 	if is_invulnerable:

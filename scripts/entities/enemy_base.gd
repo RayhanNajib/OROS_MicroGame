@@ -19,6 +19,7 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 
 var is_frozen: bool = false
 var freeze_timer: float = 0.0
+var freeze_slow_factor: float = 0.5
 
 var shoot_timer: float = 0.0
 var shoot_interval: float = 2.4
@@ -63,7 +64,7 @@ func _physics_process(delta: float) -> void:
 			is_frozen = false
 			modulate = Color(1, 1, 1, 1)
 
-	var effective_speed := base_speed * (0.5 if is_frozen else 1.0)
+	var effective_speed := base_speed * (freeze_slow_factor if is_frozen else 1.0)
 	var to_player := (player.global_position - global_position)
 	var dist_to_player := to_player.length()
 	var dir := to_player.normalized()
@@ -135,6 +136,7 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 func apply_freeze(slow_factor: float, duration: float) -> void:
 	is_frozen = true
 	freeze_timer = duration
+	freeze_slow_factor = slow_factor
 	modulate = Color(0.5, 0.85, 1.3, 1.0) # Cyan tint
 
 func fire_drone_bullet() -> void:

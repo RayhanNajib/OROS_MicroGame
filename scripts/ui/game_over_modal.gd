@@ -23,7 +23,7 @@ func _on_game_over(time_survived: float, kills: int, lvl: int) -> void:
 	visible = true
 	
 	var total_sec := int(time_survived)
-	var mins := total_sec / 60
+	var mins := floori(float(total_sec) / 60.0)
 	var secs := total_sec % 60
 	
 	if stats_label:

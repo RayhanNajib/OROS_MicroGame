@@ -63,6 +63,12 @@ func reset_run() -> void:
 	xp_to_next = 12
 	total_kills = 0
 	survival_time = 0.0
+	ammo_changed.emit(ammo, max_ammo, false, 0.0)
+
+func update_ammo_state(current: int, max_cap: int, is_reloading: bool = false, reload_pct: float = 0.0) -> void:
+	ammo = current
+	max_ammo = max_cap
+	ammo_changed.emit(current, max_cap, is_reloading, reload_pct)
 
 func add_xp(amount: int) -> void:
 	current_xp += amount

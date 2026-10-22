@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/main/main_menu.gd" id="1_scr"]
-[ext_resource type="Texture2D" path="res://assets/sprites/arena_tile_floor.png" id="2_floor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/menu_keyart_nano.png" id="2_keyart"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="3_click"]
 [ext_resource type="AudioStream" path="res://assets/audio/bgm_combat_loop.wav" id="4_bgm"]
 
@@ -14,12 +14,25 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_scr")
 
-[node name="FloorBG" type="Sprite2D" parent="."]
-modulate = Color(0.4, 0.5, 0.7, 1)
-texture_repeat = 2
-texture = ExtResource("2_floor")
-region_enabled = true
-region_rect = Rect2(0, 0, 1280, 720)
+[node name="KeyArtBG" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_keyart")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="DarkOverlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.03, 0.05, 0.09, 0.62)
 
 [node name="VBoxCenter" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -28,44 +41,50 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -260.0
-offset_top = -140.0
-offset_right = 260.0
-offset_bottom = 120.0
+offset_left = -270.0
+offset_top = -142.0
+offset_right = 270.0
+offset_bottom = 125.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 alignment = 1
 
 [node name="Title" type="Label" parent="VBoxCenter"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.9, 1, 1)
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.3, 0.6, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 32
-text = "O. R. O. S."
+text = "O . R . O . S ."
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="VBoxCenter"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.3, 1)
+theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
 theme_override_font_sizes/font_size = 11
 text = "OVERCLOCKED ROGUELITE ON SURVIVOR"
 horizontal_alignment = 1
 
 [node name="Tagline" type="Label" parent="VBoxCenter"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.8, 0.95, 1)
-theme_override_font_sizes/font_size = 9
-text = "Twin-Stick Roguelite Survivor Mechanics (Inspired by 20 Minutes Till Dawn)"
+theme_override_colors/font_color = Color(0.75, 0.88, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "20 Minutes Till Dawn Roguelite Mechanics (Dark Vision • Revolver • Kiting • 8 Synergies)"
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="VBoxCenter"]
-custom_minimum_size = Vector2(0, 8)
+custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
 
 [node name="StartBtn" type="Button" parent="VBoxCenter"]
-custom_minimum_size = Vector2(220, 36)
+custom_minimum_size = Vector2(240, 36)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
+theme_override_font_sizes/font_size = 11
 text = "▶ START OVERCLOCK RUN"
 
 [node name="ControlsPanel" type="PanelContainer" parent="VBoxCenter"]
@@ -73,17 +92,29 @@ layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="VBoxCenter/ControlsPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 8
+theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 8
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 6
 
-[node name="ControlsText" type="Label" parent="VBoxCenter/ControlsPanel/Margin"]
+[node name="VBoxControls" type="VBoxContainer" parent="VBoxCenter/ControlsPanel/Margin"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.9, 0.98, 1)
+theme_override_constants/separation = 2
+
+[node name="ControlsHeader" type="Label" parent="VBoxCenter/ControlsPanel/Margin/VBoxControls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.85, 1, 1)
 theme_override_font_sizes/font_size = 8
-text = "KONTROL: [WASD] Gerak (Slow saat menembak/reload) | [MOUSE] Arah Tembak
-[KLIK KIRI] Tembak Revolver Plasma | [R] Reload Manual Peluru | [ESC] Pause"
+text = "PANDUAN KONTROL & MEKANIK SURVIVOR:"
+horizontal_alignment = 1
+
+[node name="ControlsText" type="Label" parent="VBoxCenter/ControlsPanel/Margin/VBoxControls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "[W, A, S, D] Gerak Karakter (Speed Penalty 50% saat Tembak & Reload)
+[MOUSE] Arah Bidik Revolver  |  [KLIK KIRI] Tembak Peluru Plasma
+[R] Reload Manual Magasin   |  [1 / 2 / 3] Pilih Kartu Upgrade Roguelite"
 horizontal_alignment = 1
 
 [node name="TeamFooter" type="PanelContainer" parent="."]
@@ -93,10 +124,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -310.0
+offset_left = -315.0
 offset_top = -34.0
-offset_right = 310.0
-offset_bottom = -6.0
+offset_right = 315.0
+offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -106,14 +137,14 @@ theme_override_constants/separation = 1
 
 [node name="TeamText" type="Label" parent="TeamFooter/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
 theme_override_font_sizes/font_size = 8
 text = "TIM PPLG: M. Rayhan Najib (240533600012) • Luigy M. C. Liem S. (240533605298) • Ahmad Faizun (240533608123)"
 horizontal_alignment = 1
 
 [node name="DosenText" type="Label" parent="TeamFooter/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.8, 0.95, 1)
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
 theme_override_font_sizes/font_size = 7
 text = "Dosen Pengampu: Harits Ar Rosyid, S.T., M.T., Ph.D. — S1 Pendidikan Teknik Informatika FT UM 2026"
 horizontal_alignment = 1
