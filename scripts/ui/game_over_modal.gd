@@ -46,7 +46,7 @@ func show_debriefing(is_victory: bool, time_survived: float, kills: int, _lvl: i
 	if ResourceLoader.exists(av_path) and avatar_frame:
 		avatar_frame.texture = load(av_path)
 		
-	var wep_path = "res://assets/sprites/icon_wep_%s.png" % GameState.selected_weapon
+	var wep_path = "res://assets/sprites/icon_wep_%s.png" % (GameState.primary_weapon if not GameState.is_melee_active else "melee")
 	if ResourceLoader.exists(wep_path) and weapon_frame:
 		weapon_frame.texture = load(wep_path)
 
@@ -60,24 +60,30 @@ func show_debriefing(is_victory: bool, time_survived: float, kills: int, _lvl: i
 
 	if title_label:
 		if is_victory:
-			title_label.text = "MISSION ACCOMPLISHED"
-			title_label.add_theme_color_override("font_color", Color(0.2, 0.9, 1.0))
+			title_label.text = "[ MISSION ACCOMPLISHED // SEKTOR DIBERSIHKAN ]"
+			title_label.add_theme_color_override("font_color", Color(0, 0.94, 1.0))
 		else:
-			title_label.text = "YOU DIED"
-			title_label.add_theme_color_override("font_color", Color(0.92, 0.36, 0.42))
+			title_label.text = "[ SYSTEM OVERHEAT // CONNECTION TERMINATED ]"
+			title_label.add_theme_color_override("font_color", Color(0.98, 0.8, 0.08))
 
 	if time_label:
-		time_label.text = "TIME SURVIVED (%02d:%02d)" % [mins, secs]
+		time_label.text = "DURASI SURVIVAL (%02d:%02d)" % [mins, secs]
 	if time_val:
-		time_val.text = "%d PTS" % (total_sec * 2)
+		time_val.text = "%02d:%02d" % [mins, secs]
 
 	if kills_label:
-		kills_label.text = "ROBOTS PURGED (%d)" % kills
+		kills_label.text = "ROBOT DIELIMINASI"
 	if kills_val:
-		kills_val.text = "%d PTS" % kills
+		kills_val.text = "%d UNITS" % kills
 
 	if rank_val:
 		rank_val.text = "RANK %s" % rank
+		if rank == "S":
+			rank_val.add_theme_color_override("font_color", Color(0.98, 0.8, 0.08))
+		elif rank == "A":
+			rank_val.add_theme_color_override("font_color", Color(0.13, 0.95, 0.4))
+		else:
+			rank_val.add_theme_color_override("font_color", Color(0, 0.94, 1.0))
 
 	if earned_val:
 		earned_val.text = "+%d NC" % total_nc

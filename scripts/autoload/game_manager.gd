@@ -1,52 +1,49 @@
 extends Node
 
-# Selected Stage, Roster & Arsenal
+# Matriks Progresi 5-Stage Nightmare
 var current_stage: int = 1
-var selected_hero: String = "kael" # "kael", "vex", "brutus"
-var selected_weapon: String = "revolver" # "revolver", "shotgun", "smg"
 
-# 5-Stage Nightmare Progression Matrix
 var stage_configs: Dictionary = {
 	1: {
-		"title": "SEKTOR 01: PABRIK SUBTERRANEAN",
+		"title": "PABRIK SUBTERRANEAN",
 		"difficulty": "NORMAL",
-		"target_time": 180.0, # 3 Menit
-		"objective": "Bertahan dari serbuan robot & kalahkan Colossus-Omega",
+		"target_time": 180.0,
+		"objective": "Bertahan hidup dari drone pengintai dan hancurkan Colossus-Omega!",
 		"boss_name": "COLOSSUS-OMEGA",
 		"boss_hp": 750,
 		"has_tower": false
 	},
 	2: {
-		"title": "SEKTOR 02: RERUNTUHAN SIBER",
+		"title": "RERUNTUHAN SIBER",
 		"difficulty": "HARD",
-		"target_time": 210.0, # 3.5 Menit
-		"objective": "Pertahankan Power Core Tower dari serangan Kamikaze Roller",
+		"target_time": 210.0,
+		"objective": "Pertahankan Power Core Tower dari Kamikaze Rollers & Spider Queen!",
 		"boss_name": "ARACHNID-SOVEREIGN",
 		"boss_hp": 1100,
 		"has_tower": true
 	},
 	3: {
-		"title": "SEKTOR 03: REAKTOR OVERCLOCK",
+		"title": "REAKTOR OVERCLOCK",
 		"difficulty": "VERY HARD",
-		"target_time": 240.0, # 4 Menit
-		"objective": "Hindari radiasi lantai reaktor & tundukkan Nexus-Prime A.I.",
+		"target_time": 240.0,
+		"objective": "Waspada radiasi thermal lantai & eliminasi Nexus-Prime A.I.!",
 		"boss_name": "NEXUS-PRIME A.I.",
 		"boss_hp": 1500,
 		"has_tower": false
 	},
 	4: {
-		"title": "SEKTOR 04: GURUN PLASMA EMP",
+		"title": "GURUN PLASMA EMP",
 		"difficulty": "EXPERT",
-		"target_time": 270.0, # 4.5 Menit
-		"objective": "Tembus badai EMP & taklukkan Dreadnought-Goliath",
+		"target_time": 270.0,
+		"objective": "Badai EMP melipatgandakan kecepatan gerak musuh. Kalahkan Goliath!",
 		"boss_name": "DREADNOUGHT-GOLIATH",
 		"boss_hp": 2100,
 		"has_tower": false
 	},
 	5: {
-		"title": "SEKTOR 05: APEX SINGULARITY",
+		"title": "APEX SINGULARITY",
 		"difficulty": "NIGHTMARE",
-		"target_time": 300.0, # 5 Menit
+		"target_time": 300.0,
 		"objective": "Singularity Meltdown total! Hancurkan Chrono-Harbinger Omega!",
 		"boss_name": "CHRONO-HARBINGER OMEGA",
 		"boss_hp": 3000,
@@ -54,10 +51,17 @@ var stage_configs: Dictionary = {
 	}
 }
 
+# 2-Weapons Loadout System (Primary Ranged + Secondary Melee)
+var primary_weapon: String = "revolver" # Selected in Wizard: revolver / shotgun / smg
+var secondary_weapon: String = "melee"   # Always Cyber Katana / Nano Blade
+var selected_hero: String = "kael"
+var selected_weapon: String = "revolver" # Active weapon ID
 
-# In-Game Inventory & Weapons
-var available_weapons: Array[String] = ["revolver", "shotgun", "smg"]
-var active_weapon_index: int = 0
+var equipped_slot: int = 1 # 1 = Primary, 2 = Secondary
+var is_melee_active: bool = false
+var swap_cooldown_timer: float = 0.0
+const SWAP_COOLDOWN_MAX: float = 0.35
+
 var is_native_synergy_active: bool = false
 
 # Character Active Skill
@@ -70,17 +74,17 @@ var max_health: int = 4
 var health: int = 4
 
 var base_speed: float = 160.0
-var move_speed_penalty: float = 0.75 # 25% speed penalty (balanced kiting)
+var move_speed_penalty: float = 0.75
 
 var max_ammo: int = 6
 var ammo: int = 6
-var fire_rate: float = 0.22 # Seconds between shots
-var reload_duration: float = 1.0 # Seconds to reload
+var fire_rate: float = 0.22
+var reload_duration: float = 1.0
 
-var bullet_damage: int = 22
+var bullet_damage: int = 18
 var bullet_speed: float = 580.0
 var projectile_count: int = 1
-var projectile_spread: float = 0.12 # Radians spread
+var projectile_spread: float = 0.12
 var bullet_pierce: int = 0
 var bullet_knockback: float = 90.0
 
@@ -125,10 +129,10 @@ signal boss_hp_changed(cur_hp: int, max_hp: int)
 signal boss_defeated()
 
 signal tower_hp_changed(cur: int, max_hp: int)
-signal weapon_swapped(weapon_id: String, slot_index: int, is_native_synergy: bool)
+
+signal weapon_slot_swapped(slot_idx: int, wep_name: String, is_melee: bool)
 signal skill_cooldown_updated(current: float, max_cd: float)
 signal skill_upgraded(new_level: int)
-
 
 func trigger_mission_victory(time_survived: float, kills: int, lvl: int) -> void:
 	mission_victory_triggered.emit(time_survived, kills, lvl)
@@ -148,7 +152,8 @@ func reset_run() -> void:
 	session_credits = 0
 	skill_level = 1
 	skill_cooldown_timer = 0.0
-	switch_weapon(0)
+	swap_cooldown_timer = 0.0
+	
 	is_boss_active = false
 	has_freeze = false
 	has_lightning = false
@@ -157,84 +162,144 @@ func reset_run() -> void:
 	has_explosive_rounds = false
 	bullet_pierce = 0
 	pickup_radius = 70.0
-	ammo_changed.emit(ammo, max_ammo, false, 0.0)
+
+	equip_slot(1) # Start with Primary Ranged
 
 func apply_selection() -> void:
-	# 1. Apply Hero Archetype
+	# 1. Apply Hero Archetype & Rune Upgrades
+	var r_hp = SaveManager.runes.get("titan_alloy", 0)
+	var r_spd = SaveManager.runes.get("ion_stride", 0) * 0.04
+	var r_cd = SaveManager.runes.get("overclock_core", 0) * 0.10
+
 	match selected_hero:
 		"kael":
-			max_health = 4
-			base_speed = 160.0
+			max_health = 4 + r_hp
+			base_speed = 160.0 * (1.0 + r_spd)
 		"vex":
-			max_health = 3
-			base_speed = 205.0 # High speed assassin
+			max_health = 3 + r_hp
+			base_speed = 205.0 * (1.0 + r_spd)
 		"brutus":
-			max_health = 6 # Heavy tank
-			base_speed = 130.0
+			max_health = 6 + r_hp
+			base_speed = 130.0 * (1.0 + r_spd)
 		_:
-			max_health = 4
-			base_speed = 160.0
+			max_health = 4 + r_hp
+			base_speed = 160.0 * (1.0 + r_spd)
 	health = max_health
+	skill_cooldown_max = maxf(2.0, 6.0 * (1.0 - r_cd))
 
-	# 2. Apply Weapon Arsenal
-	match selected_weapon:
-		"revolver":
-			max_ammo = 6
-			fire_rate = 0.22
-			reload_duration = 1.0
-			bullet_damage = 22
-			bullet_speed = 580.0
-			projectile_count = 1
-			projectile_spread = 0.12
-			bullet_knockback = 90.0
-		"shotgun":
-			max_ammo = 4
-			fire_rate = 0.45
-			reload_duration = 1.2
-			bullet_damage = 9
-			bullet_speed = 520.0
-			projectile_count = 5 # 5 pellets per blast
-			projectile_spread = 0.28
-			bullet_knockback = 150.0
-		"smg":
-			max_ammo = 24
-			fire_rate = 0.08 # Rapid fire
-			reload_duration = 0.85
-			bullet_damage = 8
-			bullet_speed = 620.0
-			projectile_count = 1
-			projectile_spread = 0.08
-			bullet_knockback = 50.0
-		_:
-			max_ammo = 6
-			fire_rate = 0.22
-			reload_duration = 1.0
-			bullet_damage = 22
-			bullet_speed = 580.0
-			projectile_count = 1
-			projectile_spread = 0.12
-			bullet_knockback = 90.0
-			
+	apply_active_slot_stats()
+
+func equip_slot(slot_idx: int) -> bool:
+	if swap_cooldown_timer > 0.0: return false
+	equipped_slot = slot_idx
+	swap_cooldown_timer = SWAP_COOLDOWN_MAX
+	
+	if equipped_slot == 1:
+		selected_weapon = primary_weapon
+		is_melee_active = false
+	else:
+		selected_weapon = "melee"
+		is_melee_active = true
+		
+	apply_active_slot_stats()
+	check_native_synergy()
+	weapon_slot_swapped.emit(equipped_slot, selected_weapon, is_melee_active)
+	update_ammo_state(ammo, max_ammo, false, 0.0)
+	return true
+
+func toggle_slot() -> bool:
+	var next_slot = 2 if equipped_slot == 1 else 1
+	return equip_slot(next_slot)
+
+func apply_active_slot_stats() -> void:
+	var r_dmg = 1.0 + (SaveManager.runes.get("cyber_caliber", 0) * 0.05)
+	var r_rel = 1.0 - (SaveManager.runes.get("rapid_vent", 0) * 0.05)
+	var r_kb = 1.0 + (SaveManager.runes.get("heavy_impulse", 0) * 0.15)
+	var r_prc = SaveManager.runes.get("plasma_pierce", 0)
+
+	if is_melee_active:
+		# Secondary Cyber Blade
+		max_ammo = 1
+		fire_rate = 0.32
+		reload_duration = 0.1
+		bullet_damage = int(45 * r_dmg)
+		bullet_speed = 0.0 # Melee arc
+		projectile_count = 1
+		projectile_spread = 0.0
+		bullet_knockback = 240.0 * r_kb
+		bullet_pierce = 999
+	else:
+		# Primary Ranged Weapon (Rebalanced)
+		match primary_weapon:
+			"revolver":
+				max_ammo = 6
+				fire_rate = 0.22
+				reload_duration = 0.95 * r_rel
+				bullet_damage = int(18 * r_dmg) # Won't 1-shot (takes 2 hits)
+				bullet_speed = 620.0
+				projectile_count = 1
+				projectile_spread = 0.08
+				bullet_knockback = 90.0 * r_kb
+				bullet_pierce = r_prc
+			"shotgun":
+				# Point-blank only one-shots (8 pellets x 10 DMG = 80 DMG)
+				max_ammo = 4
+				fire_rate = 0.48
+				reload_duration = 1.25 * r_rel
+				bullet_damage = int(10 * r_dmg)
+				bullet_speed = 520.0
+				projectile_count = 8
+				projectile_spread = 0.32
+				bullet_knockback = 180.0 * r_kb
+				bullet_pierce = r_prc
+			"smg":
+				max_ammo = 28
+				fire_rate = 0.08
+				reload_duration = 0.80 * r_rel
+				bullet_damage = int(6 * r_dmg)
+				bullet_speed = 640.0
+				projectile_count = 1
+				projectile_spread = 0.12
+				bullet_knockback = 45.0 * r_kb
+				bullet_pierce = r_prc
 	ammo = max_ammo
 
-func update_ammo_state(current: int, max_cap: int, is_reloading: bool = false, reload_pct: float = 0.0) -> void:
+func check_native_synergy() -> void:
+	is_native_synergy_active = false
+	if not is_melee_active:
+		if selected_hero == "kael" and primary_weapon == "revolver":
+			is_native_synergy_active = true
+			bullet_damage = int(bullet_damage * 1.25)
+		elif selected_hero == "vex" and primary_weapon == "smg":
+			is_native_synergy_active = true
+			fire_rate *= 0.75
+		elif selected_hero == "brutus" and primary_weapon == "shotgun":
+			is_native_synergy_active = true
+			projectile_count += 2
+			bullet_knockback *= 1.25
+
+func upgrade_skill() -> void:
+	skill_level += 1
+	skill_cooldown_max = maxf(2.0, skill_cooldown_max * 0.85)
+	skill_upgraded.emit(skill_level)
+
+func update_ammo_state(current: int, max_cap: int, is_reloading: bool, reload_pct: float) -> void:
 	ammo = current
 	max_ammo = max_cap
-	ammo_changed.emit(current, max_cap, is_reloading, reload_pct)
+	ammo_changed.emit(ammo, max_ammo, is_reloading, reload_pct)
 
 func add_xp(amount: int) -> void:
 	current_xp += amount
 	while current_xp >= xp_to_next:
 		current_xp -= xp_to_next
 		level += 1
-		xp_to_next = roundi(12.0 * pow(level, 1.35))
+		xp_to_next = int(xp_to_next * 1.35) + 6
 		level_up_triggered.emit()
 	xp_changed.emit(current_xp, xp_to_next, level)
 
 func register_kill() -> void:
 	total_kills += 1
-	session_credits += 1 # 1 kill = 1 Nano-Credit
-	
+	session_credits += 1
 	if selected_hero == "brutus" and total_kills % 50 == 0:
 		heal(1)
 	if has_vampire_chip and randf() < 0.05:
@@ -276,7 +341,7 @@ func update_boss_hp(c_hp: int) -> void:
 	boss_hp_changed.emit(boss_current_hp, boss_max_hp)
 	if boss_current_hp <= 0 and is_boss_active:
 		is_boss_active = false
-		session_credits += 150 # Boss Kill Bonus NC
+		session_credits += 150
 		boss_defeated.emit()
 
 func calculate_mission_rank() -> Dictionary:
@@ -310,67 +375,3 @@ func calculate_mission_rank() -> Dictionary:
 		"total_nc": total_earned,
 		"cleared": time_ratio >= 1.0
 	}
-
-func switch_weapon(slot_idx: int) -> void:
-	if slot_idx < 0 or slot_idx >= available_weapons.size(): return
-	active_weapon_index = slot_idx
-	selected_weapon = available_weapons[slot_idx]
-	apply_weapon_stats()
-	check_native_synergy()
-	weapon_swapped.emit(selected_weapon, active_weapon_index, is_native_synergy_active)
-	update_ammo_state(ammo, max_ammo, false, 0.0)
-
-func cycle_weapon() -> void:
-	var next_idx = (active_weapon_index + 1) % available_weapons.size()
-	switch_weapon(next_idx)
-
-func check_native_synergy() -> void:
-	is_native_synergy_active = false
-	if selected_hero == "kael" and selected_weapon == "revolver":
-		is_native_synergy_active = true
-		bullet_damage = int(bullet_damage * 1.25)
-	elif selected_hero == "vex" and selected_weapon == "smg":
-		is_native_synergy_active = true
-		fire_rate *= 0.75
-	elif selected_hero == "brutus" and selected_weapon == "shotgun":
-		is_native_synergy_active = true
-		projectile_count += 2
-		bullet_knockback *= 1.25
-
-func upgrade_skill() -> void:
-	skill_level += 1
-	skill_cooldown_max = maxf(2.5, skill_cooldown_max * 0.85)
-	skill_upgraded.emit(skill_level)
-
-func apply_weapon_stats() -> void:
-	match selected_weapon:
-		"revolver":
-			max_ammo = 6
-			fire_rate = 0.20
-			reload_duration = 0.95
-			bullet_damage = 24
-			bullet_speed = 640.0
-			projectile_count = 1
-			projectile_spread = 0.08
-			bullet_knockback = 95.0
-		"shotgun":
-			# High risk, devastating close-quarters point blank
-			max_ammo = 4
-			fire_rate = 0.48
-			reload_duration = 1.25
-			bullet_damage = 8
-			bullet_speed = 520.0
-			projectile_count = 8
-			projectile_spread = 0.32
-			bullet_knockback = 180.0
-		"smg":
-			# High capacity rapid spray
-			max_ammo = 28
-			fire_rate = 0.075
-			reload_duration = 0.80
-			bullet_damage = 7
-			bullet_speed = 650.0
-			projectile_count = 1
-			projectile_spread = 0.12
-			bullet_knockback = 45.0
-	ammo = max_ammo

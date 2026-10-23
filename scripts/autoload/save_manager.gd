@@ -32,6 +32,18 @@ var camera_shake: bool = true
 var auto_reload: bool = true
 var outline_vfx: bool = false
 
+var runes: Dictionary = {
+	"cyber_caliber": 0,
+	"rapid_vent": 0,
+	"heavy_impulse": 0,
+	"plasma_pierce": 0,
+	"titan_alloy": 0,
+	"ion_stride": 0,
+	"melee_leech": 0,
+	"overclock_core": 0
+}
+
+
 func _ready() -> void:
 	load_game()
 
@@ -46,7 +58,8 @@ func save_game() -> void:
 		"equipped_gem_skin": equipped_gem_skin,
 		"audio_bgm": audio_bgm,
 		"audio_sfx": audio_sfx,
-		"language": language
+		"language": language,
+		"runes": runes
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f:
@@ -72,6 +85,7 @@ func load_game() -> void:
 			audio_bgm = parsed.get("audio_bgm", 0.8)
 			audio_sfx = parsed.get("audio_sfx", 0.9)
 			language = parsed.get("language", "id")
+			runes = parsed.get("runes", runes)
 
 func add_credits(amount: int) -> void:
 	nano_credits += amount
@@ -100,4 +114,22 @@ func record_stage_result(stage_id: int, time_survived: float, rank: String) -> v
 	elif stage_id == 4 and rank_val.get(rank, 0) >= rank_val["S"]:
 		stages_data[5]["unlocked"] = true
 		
+	save_game()
+
+
+func buy_rune(rune_id: String, max_rank: int = 5, cost: int = 50) -> bool:
+	var cur = runes.get(rune_id, 0)
+	if cur >= max_rank: return false
+	if nano_credits < cost: return false
+	nano_credits -= cost
+	runes[rune_id] = cur + 1
+	save_game()
+	return true
+
+func respec_runes() -> void:
+	var refund := 0
+	for k in runes.keys():
+		refund += runes[k] * 50
+		runes[k] = 0
+	nano_credits += refund
 	save_game()

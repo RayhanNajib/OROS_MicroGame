@@ -20,6 +20,7 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 var is_frozen: bool = false
 var freeze_timer: float = 0.0
 var freeze_slow_factor: float = 0.5
+var was_killed_by_melee: bool = false
 
 var shoot_timer: float = 0.0
 var shoot_interval: float = 2.4
@@ -159,15 +160,16 @@ func _physics_process(delta: float) -> void:
 				attack_cooldown = 1.0
 				knockback_velocity = -dir * 280.0
 
-func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
+func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO, from_melee: bool = false) -> void:
 	current_hp -= amount
+	was_killed_by_melee = from_melee
 	
 	# Spawn Floating Damage Number Popup
 	var popup_scene = load("res://scenes/entities/DamagePopup.tscn")
 	if popup_scene:
 		var popup = popup_scene.instantiate()
 		popup.global_position = global_position + Vector2(0, -14)
-		popup.setup(amount, amount >= 30)
+		popup.setup(amount, from_melee or amount >= 30)
 		get_parent().add_child(popup)
 	
 	# Apply knockback (golem resists knockback)
@@ -176,8 +178,8 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	else:
 		knockback_velocity = knockback
 		
-	# Damage flash
-	modulate = Color(2.5, 0.4, 0.4, 1.0) # Flash bright red
+	# Damage flash in High-Voltage Yellow (NO RED)
+	modulate = Color(2.5, 2.2, 0.4, 1.0)
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", Color(0.6, 0.9, 1.2, 1.0) if is_frozen else Color(1, 1, 1, 1), 0.12)
 	
@@ -217,8 +219,10 @@ func die() -> void:
 		gem.is_gold = (exp_reward >= 20)
 		get_parent().call_deferred("add_child", gem)
 		
-	# Chance to drop Nano-Medkit (12% normal, 100% on big enemies)
-	if medkit_scene and (randf() < 0.12 or exp_reward >= 50):
+	# MELEE-ONLY HEALING DROP RULE:
+	# Nano-Medkit ONLY drops if killed by Secondary Melee Weapon!
+	# Primary Ranged kills drop 0% medkits!
+	if was_killed_by_melee and medkit_scene:
 		var med = medkit_scene.instantiate()
 		med.global_position = global_position + Vector2(randf_range(-10, 10), randf_range(-10, 10))
 		get_parent().call_deferred("add_child", med)

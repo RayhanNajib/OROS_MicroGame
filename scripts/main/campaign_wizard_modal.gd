@@ -209,6 +209,7 @@ func setup_weapon_btn(btn: Button, wep_id: String) -> void:
 	if not btn: return
 	btn.pressed.connect(func():
 		if sfx_click: sfx_click.play()
+		GameState.primary_weapon = wep_id
 		GameState.selected_weapon = wep_id
 		update_weapon_ui(wep_id)
 		check_synergy()
@@ -223,30 +224,30 @@ func update_weapon_ui(wep_id: String) -> void:
 		"revolver":
 			if wep_name_lbl: wep_name_lbl.text = "DUAL REVOLVER [BALANCED]"
 			if wep_stats_lbl:
-				wep_stats_lbl.text = "DAMAGE: 24  |  PROYEKTIL: 1  |  RELOAD: 0.95s  |  FIRE RATE: 0.20s  |  MAX AMMO: 06\nKARAKTER: Presisi tinggi tembakan tajam jarak menengah-jauh untuk eliminasi aman."
+				wep_stats_lbl.text = "DAMAGE: 18 (2-Hit Kill) | PROYEKTIL: 1 | RELOAD: 0.95s | FIRE RATE: 0.22s | AMMO: 06\\nSEKUNDER: CYBER KATANA TERPASANG (TEBASAN MELEE MEMICU 100% HEAL DROP)"
 		"shotgun":
 			if wep_name_lbl: wep_name_lbl.text = "SCRAP SHOTGUN [POINT-BLANK]"
 			if wep_stats_lbl:
-				wep_stats_lbl.text = "DAMAGE: 8x8 PELLETS (64 POINT-BLANK)  |  PROYEKTIL: 8  |  RELOAD: 1.25s  |  AMMO: 04\nKARAKTER: Jarak sangat pendek (170px), mematikan jika ditembakkan langsung di depan robot musuh."
+				wep_stats_lbl.text = "DAMAGE: 8x10 PELLETS (80 POINT-BLANK) | RELOAD: 1.25s | AMMO: 04 (Jarak < 110px)\\nSEKUNDER: CYBER KATANA TERPASANG (TEBASAN MELEE MEMICU 100% HEAL DROP)"
 		"smg":
 			if wep_name_lbl: wep_name_lbl.text = "CYBER SMG [RAPID SPRAY]"
 			if wep_stats_lbl:
-				wep_stats_lbl.text = "DAMAGE: 7  |  PROYEKTIL: 1  |  RELOAD: 0.80s  |  FIRE RATE: 0.075s  |  MAX AMMO: 28\nKARAKTER: Laju semprotan peluru cepat untuk memotong kerumunan musuh banyak seketika."
+				wep_stats_lbl.text = "DAMAGE: 6 | PROYEKTIL: 1 | RELOAD: 0.80s | FIRE RATE: 0.08s | AMMO: 28\\nSEKUNDER: CYBER KATANA TERPASANG (TEBASAN MELEE MEMICU 100% HEAL DROP)"
 
 func check_synergy() -> void:
 	if not synergy_banner: return
-	if GameState.selected_hero == "kael" and GameState.selected_weapon == "revolver":
+	if GameState.selected_hero == "kael" and GameState.primary_weapon == "revolver":
 		synergy_banner.text = "[ NATIVE SYNERGY AKTIF: KAEL + REVOLVER -> +25% DMG ]"
-		synergy_banner.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
-	elif GameState.selected_hero == "vex" and GameState.selected_weapon == "smg":
+		synergy_banner.add_theme_color_override("font_color", Color(0.13, 0.95, 0.4))
+	elif GameState.selected_hero == "vex" and GameState.primary_weapon == "smg":
 		synergy_banner.text = "[ NATIVE SYNERGY AKTIF: VEX + SMG -> +25% LAJU TEMBAK ]"
-		synergy_banner.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
-	elif GameState.selected_hero == "brutus" and GameState.selected_weapon == "shotgun":
+		synergy_banner.add_theme_color_override("font_color", Color(0.13, 0.95, 0.4))
+	elif GameState.selected_hero == "brutus" and GameState.primary_weapon == "shotgun":
 		synergy_banner.text = "[ NATIVE SYNERGY AKTIF: BRUTUS + SHOTGUN -> +3 PELLETS ]"
-		synergy_banner.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
+		synergy_banner.add_theme_color_override("font_color", Color(0.13, 0.95, 0.4))
 	else:
-		synergy_banner.text = "[ NON-NATIVE: BUFF SENJATA PASIF NONAKTIF (DAPAT DIUPGRADE DI SHOP) ]"
-		synergy_banner.add_theme_color_override("font_color", Color(0.85, 0.6, 0.35))
+		synergy_banner.text = "[ NON-NATIVE: BUFF SENJATA PASIF NONAKTIF (DAPAT DIUPGRADE DI RUNE SKILL TREE) ]"
+		synergy_banner.add_theme_color_override("font_color", Color(0.98, 0.8, 0.08))
 
 func _on_back_pressed() -> void:
 	if sfx_click: sfx_click.play()

@@ -7,6 +7,7 @@ extends CharacterBody2D
 @onready var weapon_pivot: Node2D = $WeaponPivot
 @onready var gun_sprite: Sprite2D = $WeaponPivot/GunSprite
 @onready var muzzle: Marker2D = $WeaponPivot/Muzzle
+@onready var slash_arc_sprite: Sprite2D = $WeaponPivot/SlashArcSprite
 
 # SFX Nodes
 @onready var sfx_gunshot: AudioStreamPlayer2D = $SFXGunshot
@@ -23,8 +24,13 @@ extends CharacterBody2D
 @onready var sfx_weapon_swap: AudioStreamPlayer2D = $SFXWeaponSwap
 @onready var sfx_pickup_core: AudioStreamPlayer2D = $SFXPickupCore
 
+@onready var sfx_melee_slash: AudioStreamPlayer2D = $SFXMeleeSlash
+@onready var sfx_melee_hit: AudioStreamPlayer2D = $SFXMeleeHit
+
 @onready var reload_bar: ProgressBar = $ReloadBar
 @onready var camera: Camera2D = $Camera2D
+
+@onready var telegraph_line: Line2D = $SkillTelegraph/TelegraphLine
 
 # Reload & Shooting state
 var shoot_cooldown: float = 0.0
@@ -61,7 +67,7 @@ func _ready() -> void:
 	if has_node("ShadowSprite"):
 		shadow_sprite = get_node("ShadowSprite")
 		
-	GameState.weapon_swapped.connect(_on_weapon_swapped)
+	GameState.weapon_slot_swapped.connect(_on_weapon_slot_swapped)
 	update_hero_visuals()
 	update_weapon_visuals()
 
@@ -83,33 +89,45 @@ func update_hero_visuals() -> void:
 			body_sprite.texture = load(skin)
 
 func update_weapon_visuals() -> void:
-	match GameState.selected_weapon:
-		"shotgun":
-			var wep = "res://assets/sprites/skins/spr_shotgun_cyber.png" if SaveManager.equipped_weapon_skin == "cyber" else "res://assets/sprites/spr_shotgun.png"
-			gun_sprite.texture = load(wep)
-			gun_sprite.position = Vector2(14, 0)
-			muzzle.position = Vector2(28, 0)
-		"smg":
-			var wep = "res://assets/sprites/skins/spr_smg_violet.png" if SaveManager.equipped_weapon_skin == "violet" else "res://assets/sprites/spr_smg.png"
-			gun_sprite.texture = load(wep)
-			gun_sprite.position = Vector2(10, 0)
-			muzzle.position = Vector2(20, 0)
-		_:
-			var wep = "res://assets/sprites/skins/spr_revolver_gold.png" if SaveManager.equipped_weapon_skin == "gold" else "res://assets/sprites/spr_revolver.png"
-			gun_sprite.texture = load(wep)
-			gun_sprite.position = Vector2(10, 0)
-			muzzle.position = Vector2(22, 0)
+	if GameState.is_melee_active:
+		# Secondary Cyber Blade
+		gun_sprite.texture = load("res://assets/sprites/spr_melee_blade.png")
+		gun_sprite.position = Vector2(12, 0)
+		muzzle.position = Vector2(24, 0)
+	else:
+		# Primary Ranged Weapon
+		match GameState.primary_weapon:
+			"shotgun":
+				var wep = "res://assets/sprites/skins/spr_shotgun_cyber.png" if SaveManager.equipped_weapon_skin == "cyber" else "res://assets/sprites/spr_shotgun.png"
+				gun_sprite.texture = load(wep)
+				gun_sprite.position = Vector2(14, 0)
+				muzzle.position = Vector2(28, 0)
+			"smg":
+				var wep = "res://assets/sprites/skins/spr_smg_violet.png" if SaveManager.equipped_weapon_skin == "violet" else "res://assets/sprites/spr_smg.png"
+				gun_sprite.texture = load(wep)
+				gun_sprite.position = Vector2(10, 0)
+				muzzle.position = Vector2(20, 0)
+			_:
+				var wep = "res://assets/sprites/skins/spr_revolver_gold.png" if SaveManager.equipped_weapon_skin == "gold" else "res://assets/sprites/spr_revolver.png"
+				gun_sprite.texture = load(wep)
+				gun_sprite.position = Vector2(10, 0)
+				muzzle.position = Vector2(22, 0)
 
-func _on_weapon_swapped(_wep_id: String, _slot_idx: int, _is_syn: bool) -> void:
+func _on_weapon_slot_swapped(_slot_idx: int, _wep_name: String, _is_melee: bool) -> void:
 	update_weapon_visuals()
 	if sfx_weapon_swap:
 		sfx_weapon_swap.play()
 	is_reloading = false
 	reload_timer = 0.0
+	shoot_cooldown = 0.15 # Brief readying delay
 	emit_ammo_update()
 
 func _process(delta: float) -> void:
-	# 1. Aim gun towards mouse & Dynamic Cursor Look-Ahead Camera
+	# Weapon swap timer tick
+	if GameState.swap_cooldown_timer > 0.0:
+		GameState.swap_cooldown_timer -= delta
+
+	# 1. Aim gun towards mouse & Dynamic Cursor Look-Ahead Camera (100px max)
 	var mouse_pos := get_global_mouse_position()
 	weapon_pivot.look_at(mouse_pos)
 	
@@ -149,40 +167,52 @@ func _process(delta: float) -> void:
 	else:
 		if reload_bar:
 			reload_bar.visible = false
-		if Input.is_action_just_pressed("reload") and GameState.ammo < GameState.max_ammo:
+		if not GameState.is_melee_active and Input.is_action_just_pressed("reload") and GameState.ammo < GameState.max_ammo:
 			start_reload()
 
-	# 4. Shooting
+	# 4. Shooting / Melee Slashing
 	if shoot_cooldown > 0.0:
 		shoot_cooldown -= delta
 		
-	var is_trying_to_shoot := Input.is_action_pressed("primary_attack")
-	if is_trying_to_shoot and not is_reloading and shoot_cooldown <= 0.0:
-		if GameState.ammo > 0:
-			fire_weapon()
+	var is_trying_to_attack := Input.is_action_pressed("primary_attack")
+	if is_trying_to_attack and not is_reloading and shoot_cooldown <= 0.0:
+		if GameState.is_melee_active:
+			perform_melee_slash()
 		else:
-			start_reload()
+			if GameState.ammo > 0:
+				fire_ranged_weapon()
+			else:
+				start_reload()
 
-	# 5. In-Game Weapon Switch Shortcuts (Q cycle, or 1/2/3)
-	if Input.is_physical_key_pressed(KEY_Q) and not is_reloading:
-		if not get_tree().paused:
-			GameState.cycle_weapon()
+	# 5. Weapon Swap Inputs: [Q], [1], [2], [Numpad 1], [Numpad 2]
+	if not get_tree().paused and GameState.swap_cooldown_timer <= 0.0:
+		if Input.is_physical_key_pressed(KEY_1) or Input.is_physical_key_pressed(KEY_KP_1):
+			if GameState.equipped_slot != 1:
+				GameState.equip_slot(1)
+		elif Input.is_physical_key_pressed(KEY_2) or Input.is_physical_key_pressed(KEY_KP_2):
+			if GameState.equipped_slot != 2:
+				GameState.equip_slot(2)
+		elif Input.is_physical_key_pressed(KEY_Q):
+			GameState.toggle_slot()
 
 	# 6. Active Character Skill (SPACE / SHIFT / E)
 	var wants_skill := Input.is_physical_key_pressed(KEY_SPACE) or Input.is_physical_key_pressed(KEY_SHIFT) or Input.is_physical_key_pressed(KEY_E)
 	if wants_skill and GameState.skill_cooldown_timer <= 0.0 and not is_dashing:
 		trigger_active_skill()
 
-	# 7. Invulnerability Flash
+	# 7. Update Skill Telegraphing Projection Indicator
+	update_skill_telegraph(mouse_pos)
+
+	# 8. Invulnerability Flash
 	if is_invulnerable:
 		invuln_timer -= delta
 		var is_flash := int(invuln_timer * 18.0) % 2 == 0
-		modulate = Color(2.0, 0.4, 0.4, 0.6) if is_flash else Color(1.0, 1.0, 1.0, 0.9)
+		modulate = Color(2.5, 2.0, 0.4, 0.6) if is_flash else Color(1.0, 1.0, 1.0, 0.9)
 		if invuln_timer <= 0.0:
 			is_invulnerable = false
 			modulate = Color(1.0, 1.0, 1.0, 1.0)
 
-	# 8. Dynamic Animation
+	# 9. Dynamic Animation Stride
 	if velocity.length() > 8.0:
 		anim_timer += delta * (velocity.length() / 14.0)
 		current_frame = int(anim_timer) % 4
@@ -199,13 +229,43 @@ func _process(delta: float) -> void:
 		body_sprite.rotation = lerp_angle(body_sprite.rotation, 0.0, delta * 12.0)
 		body_sprite.frame = 1
 
+func update_skill_telegraph(mouse_pos: Vector2) -> void:
+	if not telegraph_line: return
+	
+	if GameState.skill_cooldown_timer > 0.0:
+		telegraph_line.visible = false
+		return
+		
+	telegraph_line.visible = true
+	telegraph_line.clear_points()
+	
+	var to_mouse = (mouse_pos - global_position)
+	var dir = to_mouse.normalized()
+	
+	match GameState.selected_hero:
+		"kael":
+			# Cyan dashed laser arrow to mouse (260px)
+			telegraph_line.default_color = Color(0.0, 0.94, 1.0, 0.6)
+			telegraph_line.add_point(Vector2.ZERO)
+			telegraph_line.add_point(dir * 260.0)
+		"vex":
+			# Emerald green target point (320px)
+			telegraph_line.default_color = Color(0.13, 0.95, 0.4, 0.6)
+			telegraph_line.add_point(Vector2.ZERO)
+			telegraph_line.add_point(dir * 320.0)
+		"brutus":
+			# High-voltage yellow circular ring (220px)
+			telegraph_line.default_color = Color(1.0, 0.9, 0.1, 0.5)
+			var pts := 24
+			for i in range(pts + 1):
+				var ang = (float(i) / float(pts)) * TAU
+				telegraph_line.add_point(Vector2(cos(ang), sin(ang)) * 220.0)
+
 func _physics_process(delta: float) -> void:
-	# Skill Cooldown Loop
 	if GameState.skill_cooldown_timer > 0.0:
 		GameState.skill_cooldown_timer -= delta
 		GameState.skill_cooldown_updated.emit(GameState.skill_cooldown_timer, GameState.skill_cooldown_max)
 
-	# Handle Dash Movement
 	if is_dashing:
 		dash_timer -= delta
 		velocity = dash_velocity
@@ -230,8 +290,8 @@ func _physics_process(delta: float) -> void:
 			
 	input_vector = input_vector.normalized()
 
-	var is_firing := Input.is_action_pressed("primary_attack") and GameState.ammo > 0
-	var speed_multiplier := GameState.move_speed_penalty if (is_firing or is_reloading) else 1.0
+	var is_attacking := Input.is_action_pressed("primary_attack")
+	var speed_multiplier := GameState.move_speed_penalty if (is_attacking or is_reloading) else 1.0
 	var target_speed := GameState.base_speed * speed_multiplier
 
 	if input_vector != Vector2.ZERO:
@@ -246,7 +306,6 @@ func trigger_active_skill() -> void:
 	
 	match GameState.selected_hero:
 		"kael":
-			# EMP Cryo Dash: Dashes forward + freeze shockwave
 			is_dashing = true
 			dash_timer = 0.16
 			var aim_dir := (get_global_mouse_position() - global_position).normalized()
@@ -257,25 +316,22 @@ func trigger_active_skill() -> void:
 			if sfx_skill_dash: sfx_skill_dash.play()
 			if sfx_skill_freeze: sfx_skill_freeze.play()
 			
-			# Freeze enemies in area
 			var enemies = get_tree().get_nodes_in_group("enemies")
 			for e in enemies:
 				if is_instance_valid(e) and global_position.distance_to(e.global_position) < (180.0 + GameState.skill_level * 15.0):
 					if e.has_method("take_damage"):
-						e.take_damage(30 + GameState.skill_level * 5, aim_dir * 120.0)
+						e.take_damage(30 + GameState.skill_level * 5, aim_dir * 120.0, false)
 					if e.has_method("apply_freeze"):
 						e.apply_freeze(0.4, 3.0)
 						
 		"vex":
-			# Phase Blink: Instant teleport + Decoy bomb
 			var aim_dir := (get_global_mouse_position() - global_position).normalized()
-			var blink_dest = global_position + aim_dir * (260.0 + GameState.skill_level * 20.0)
+			var blink_dest = global_position + aim_dir * (280.0 + GameState.skill_level * 20.0)
 			global_position = blink_dest
 			is_invulnerable = true
 			invuln_timer = 0.4
 			if sfx_skill_dash: sfx_skill_dash.play()
 			
-			# Decoy shock blast
 			var tw := create_tween()
 			tw.tween_interval(0.2)
 			tw.tween_callback(func():
@@ -283,14 +339,13 @@ func trigger_active_skill() -> void:
 				for e in enemies:
 					if is_instance_valid(e) and global_position.distance_to(e.global_position) < 140.0:
 						if e.has_method("take_damage"):
-							e.take_damage(60 + GameState.skill_level * 10, Vector2.ZERO)
+							e.take_damage(60 + GameState.skill_level * 10, Vector2.ZERO, false)
 			)
 
 		"brutus":
-			# Titan Seismic Slam: High damage ring + massive knockback + 2.0s Kinetic Shield
 			is_invulnerable = true
-			invuln_timer = 2.0 # 2s shield!
-			modulate = Color(2.5, 1.5, 0.4, 1.0) # Golden shield
+			invuln_timer = 2.0
+			modulate = Color(2.5, 2.2, 0.4, 1.0) # Yellow Kinetic Shield
 			if sfx_skill_slam: sfx_skill_slam.play()
 			
 			var enemies = get_tree().get_nodes_in_group("enemies")
@@ -300,9 +355,45 @@ func trigger_active_skill() -> void:
 					if dist < (220.0 + GameState.skill_level * 20.0):
 						var to_e = (e.global_position - global_position).normalized()
 						if e.has_method("take_damage"):
-							e.take_damage(65 + GameState.skill_level * 8, to_e * 380.0)
+							e.take_damage(65 + GameState.skill_level * 8, to_e * 380.0, false)
 
-func fire_weapon() -> void:
+func perform_melee_slash() -> void:
+	shoot_cooldown = GameState.fire_rate
+	
+	if sfx_melee_slash:
+		sfx_melee_slash.pitch_scale = randf_range(0.95, 1.1)
+		sfx_melee_slash.play()
+		
+	# Slash visual arc
+	if slash_arc_sprite:
+		slash_arc_sprite.visible = true
+		slash_arc_sprite.rotation = randf_range(-0.3, 0.3)
+		slash_arc_sprite.scale = Vector2(1.2, 1.2)
+		var tw := create_tween()
+		tw.tween_property(slash_arc_sprite, "scale", Vector2(1.4, 1.4), 0.1)
+		tw.tween_callback(func(): slash_arc_sprite.visible = false)
+
+	# Melee Cleave: 110px radius in frontal 120 degree arc
+	var aim_dir := (get_global_mouse_position() - global_position).normalized()
+	var enemies = get_tree().get_nodes_in_group("enemies")
+	var hit_any := false
+	
+	for e in enemies:
+		if is_instance_valid(e):
+			var to_e = (e.global_position - global_position)
+			var dist = to_e.length()
+			if dist <= 110.0:
+				var angle_diff = absf(aim_dir.angle_to(to_e.normalized()))
+				if angle_diff <= deg_to_rad(65.0): # Within frontal arc
+					hit_any = true
+					if e.has_method("take_damage"):
+						# CRUCIAL: from_melee = true triggers 100% Medkit Drop upon kill!
+						e.take_damage(GameState.bullet_damage, aim_dir * GameState.bullet_knockback, true)
+						
+	if hit_any and sfx_melee_hit:
+		sfx_melee_hit.play()
+
+func fire_ranged_weapon() -> void:
 	shoot_cooldown = GameState.fire_rate
 	GameState.ammo -= 1
 	emit_ammo_update()
@@ -353,18 +444,16 @@ func spawn_bullet(angle: float) -> void:
 	b.has_freeze = GameState.has_freeze
 	b.has_lightning = GameState.has_lightning
 	
-	# Weapon-specific projectile balancing and skin colors
-	match GameState.selected_weapon:
+	match GameState.primary_weapon:
 		"shotgun":
 			b.bullet_tex = load("res://assets/sprites/spr_bullet_pellet.png")
-			b.lifespan = 0.30 # Short range! Pellets evaporate after ~160px
+			b.lifespan = 0.28 # Point-blank range (< 110px)
 		"smg":
-			b.bullet_tex = load("res://assets/sprites/spr_bullet_violet.png")
-			b.lifespan = 1.3
+			b.bullet_tex = load("res://assets/sprites/spr_bullet_cyan.png")
+			b.lifespan = 1.2
 		_:
-			var tex = "res://assets/sprites/spr_bullet_gold.png" if SaveManager.equipped_weapon_skin == "gold" else "res://assets/sprites/spr_bullet_cyan.png"
-			b.bullet_tex = load(tex)
-			b.lifespan = 1.8
+			b.bullet_tex = load("res://assets/sprites/spr_bullet_gold.png") if SaveManager.equipped_weapon_skin == "gold" else load("res://assets/sprites/spr_bullet_cyan.png")
+			b.lifespan = 1.6
 			
 	get_parent().add_child(b)
 

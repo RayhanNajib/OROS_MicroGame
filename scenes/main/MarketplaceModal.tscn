@@ -1,18 +1,44 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/main/marketplace_modal.gd" id="1_scr"]
 [ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_orb"]
-[ext_resource type="FontFile" path="res://assets/fonts/PixelifySans-Regular.ttf" id="3_pix"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="4_click"]
+[ext_resource type="FontFile" path="res://assets/fonts/Silkscreen-Bold.ttf" id="3_silk"]
+[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="4_tech"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="5_click"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_normal.png" id="6_btn_n"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_hover.png" id="7_btn_h"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_normal.png" id="8_conf_n"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_hover.png" id="9_conf_h"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_n"]
+texture = ExtResource("8_conf_n")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sci_n"]
+texture = ExtResource("6_btn_n")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sci_h"]
+texture = ExtResource("7_btn_h")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
 
 [node name="MarketplaceModal" type="ColorRect"]
-visible = false
+process_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.04, 0.08, 0.96)
+color = Color(0.04, 0.06, 0.09, 0.98)
 script = ExtResource("1_scr")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
@@ -24,15 +50,15 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(1050, 720)
+custom_minimum_size = Vector2(1720, 940)
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="CenterContainer/Panel"]
 layout_mode = 2
 theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 28
+theme_override_constants/margin_top = 22
 theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 28
+theme_override_constants/margin_bottom = 22
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin"]
 layout_mode = 2
@@ -40,49 +66,134 @@ theme_override_constants/separation = 16
 
 [node name="HeaderBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 24
 
 [node name="Title" type="Label" parent="CenterContainer/Panel/Margin/VBox/HeaderBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
 theme_override_fonts/font = ExtResource("2_orb")
-theme_override_font_sizes/font_size = 18
-text = "[ CYBER ARMORY // MARKETPLACE KOSMETIK ]"
+theme_override_font_sizes/font_size = 26
+text = "[ CYBER ARMORY & RUNE UPGRADE SYSTEM ]"
 
 [node name="CreditsLabel" type="Label" parent="CenterContainer/Panel/Margin/VBox/HeaderBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_fonts/font = ExtResource("2_orb")
-theme_override_font_sizes/font_size = 14
-text = "SALDO: 300 NANO-CREDITS"
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 18
+text = "SALDO: 300 NC"
 
-[node name="Sub" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
+[node name="TabButtons" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
-theme_override_fonts/font = ExtResource("3_pix")
-theme_override_font_sizes/font_size = 12
-text = "Tukarkan Nano-Credits hasil misi survival untuk membuka skin Hero, skin Senjata, dan model Core EXP."
+theme_override_constants/separation = 16
 
-[node name="Scroll" type="ScrollContainer" parent="CenterContainer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(0, 480)
+[node name="ShopTabBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/TabButtons"]
+custom_minimum_size = Vector2(360, 50)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
+text = "[ 1. VISUAL SHOP KOSMETIK ]"
+
+[node name="RunesTabBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/TabButtons"]
+custom_minimum_size = Vector2(360, 50)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "[ 2. RUNE SKILL TREE ]"
+
+[node name="ShopContainer" type="Control" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 680)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ItemsGrid" type="GridContainer" parent="CenterContainer/Panel/Margin/VBox/Scroll"]
+[node name="Scroll" type="ScrollContainer" parent="CenterContainer/Panel/Margin/VBox/ShopContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ItemsGrid" type="GridContainer" parent="CenterContainer/Panel/Margin/VBox/ShopContainer/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/h_separation = 18
-theme_override_constants/v_separation = 16
-columns = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 4
 
-[node name="CloseBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(300, 48)
+[node name="RunesContainer" type="Control" parent="CenterContainer/Panel/Margin/VBox"]
+visible = false
+custom_minimum_size = Vector2(0, 680)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="TreeHBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox/RunesContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 28
+
+[node name="OffenseBranch" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox/RunesContainer/TreeHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="BranchTitle" type="Label" parent="CenterContainer/Panel/Margin/VBox/RunesContainer/TreeHBox/OffenseBranch"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
 theme_override_fonts/font = ExtResource("2_orb")
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 20
+text = "[ JALUR SIBER OFFENSE (CYAN) ]"
+
+[node name="NodesVBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox/RunesContainer/TreeHBox/OffenseBranch"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DefenseBranch" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox/RunesContainer/TreeHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="BranchTitle" type="Label" parent="CenterContainer/Panel/Margin/VBox/RunesContainer/TreeHBox/DefenseBranch"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.13, 0.95, 0.4, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+text = "[ JALUR SIBER DEFENSE (EMERALD) ]"
+
+[node name="NodesVBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox/RunesContainer/TreeHBox/DefenseBranch"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BottomBar" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="RespecBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/BottomBar"]
+custom_minimum_size = Vector2(340, 54)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "[ FREE RESPEC (REFUND 100%) ]"
+
+[node name="CloseBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/BottomBar"]
+custom_minimum_size = Vector2(340, 54)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
 text = "[ KEMBALI KE TERMINAL ]"
 
 [node name="SFXClick" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_click")
+stream = ExtResource("5_click")

@@ -100,7 +100,7 @@ shape = SubResource("WorldBoundaryShape2D_right")
 
 [node name="ZoneLine" type="Line2D" parent="ContainmentZone"]
 width = 5.0
-default_color = Color(1, 0.2, 0.35, 0.9)
+default_color = Color(1, 0.88, 0.1, 0.9)
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
@@ -134,7 +134,7 @@ offset_top = -45.0
 offset_bottom = 45.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.8, 0.1, 0.2, 0.88)
+color = Color(0.08, 0.16, 0.26, 0.94)
 
 [node name="Label" type="Label" parent="BossAlertLayer/Banner"]
 layout_mode = 1
@@ -143,6 +143,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.2, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2

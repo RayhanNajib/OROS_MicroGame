@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_scr"]
 [ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_orb"]
-[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="3_tech"]
-[ext_resource type="Texture2D" path="res://assets/sprites/pixel_low_hp_vignette.png" id="4_vig"]
+[ext_resource type="FontFile" path="res://assets/fonts/Silkscreen-Bold.ttf" id="3_silk"]
+[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="4_tech"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pixel_low_hp_vignette.png" id="5_vig"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_scr")
@@ -16,14 +17,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("4_vig")
+texture = ExtResource("5_vig")
 expand_mode = 1
 stretch_mode = 6
 
 [node name="TopLeft" type="VBoxContainer" parent="."]
 offset_left = 36.0
 offset_top = 28.0
-offset_right = 420.0
+offset_right = 440.0
 offset_bottom = 120.0
 theme_override_constants/separation = 8
 
@@ -38,8 +39,8 @@ theme_override_constants/separation = 6
 [node name="ReloadLabel" type="Label" parent="TopLeft"]
 visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_fonts/font = ExtResource("3_tech")
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_fonts/font = ExtResource("3_silk")
 theme_override_font_sizes/font_size = 16
 text = "RELOADING [====------] 40%"
 
@@ -56,8 +57,8 @@ theme_override_constants/separation = 6
 
 [node name="LevelLabel" type="Label" parent="TopCenter"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
-theme_override_fonts/font = ExtResource("2_orb")
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("3_silk")
 theme_override_font_sizes/font_size = 18
 text = "[ LVL 01 ]"
 horizontal_alignment = 1
@@ -71,7 +72,7 @@ show_percentage = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -360.0
+offset_left = -380.0
 offset_top = 24.0
 offset_right = -36.0
 offset_bottom = 96.0
@@ -80,18 +81,18 @@ theme_override_constants/separation = 6
 
 [node name="TimerLabel" type="Label" parent="TopRight"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("2_orb")
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 24
 text = "00:00"
 horizontal_alignment = 2
 
 [node name="KillsLabel" type="Label" parent="TopRight"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.35, 0.35, 1)
-theme_override_fonts/font = ExtResource("3_tech")
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_fonts/font = ExtResource("4_tech")
 theme_override_font_sizes/font_size = 16
-text = "PURGED: 0 UNITS"
+text = "SURVIVE! | PURGED: 0"
 horizontal_alignment = 2
 
 [node name="BossBarContainer" type="VBoxContainer" parent="."]
@@ -108,9 +109,9 @@ theme_override_constants/separation = 4
 
 [node name="BossNameLabel" type="Label" parent="BossBarContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.25, 0.35, 1)
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
 theme_override_fonts/font = ExtResource("2_orb")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 text = "[ ! ] BOSS: COLOSSUS-OMEGA [ ! ]"
 horizontal_alignment = 1
 
@@ -133,8 +134,8 @@ theme_override_constants/separation = 3
 
 [node name="TowerNameLabel" type="Label" parent="TowerBarContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_fonts/font = ExtResource("3_tech")
+theme_override_colors/font_color = Color(0.13, 0.95, 0.4, 1)
+theme_override_fonts/font = ExtResource("4_tech")
 theme_override_font_sizes/font_size = 14
 text = "[ ! ] PERTAHANKAN POWER CORE TOWER [ ! ]"
 horizontal_alignment = 1
@@ -161,16 +162,16 @@ theme_override_constants/separation = 12
 
 [node name="SkillNameLabel" type="Label" parent="BottomLeftSkill/SkillHeader"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
 theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 16
-text = "[ SPACE / E: AKTIFKAN SKILL ]"
+text = "[ SPACE/E: AKTIFKAN SKILL ]"
 
 [node name="SkillLvlBadge" type="Label" parent="BottomLeftSkill/SkillHeader"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
-theme_override_fonts/font = ExtResource("3_tech")
-theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 14
 text = "[ LVL 01 ]"
 
 [node name="SkillCDBar" type="ProgressBar" parent="BottomLeftSkill"]
@@ -180,10 +181,10 @@ show_percentage = false
 
 [node name="ControlsReminder" type="Label" parent="BottomLeftSkill"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.75, 0.9, 0.85)
-theme_override_fonts/font = ExtResource("3_tech")
+theme_override_colors/font_color = Color(0.58, 0.69, 0.8, 0.9)
+theme_override_fonts/font = ExtResource("4_tech")
 theme_override_font_sizes/font_size = 14
-text = "[WASD] JALAN  |  [LMB] TEMBAK  |  [R] RELOAD  |  [Q] GANTI SENJATA"
+text = "[WASD] JALAN | [LMB] TEMBAK/TEBAS | [R] RELOAD | [Q/1/2] SWAP"
 
 [node name="BottomRightInventory" type="VBoxContainer" parent="."]
 anchors_preset = 3
@@ -191,7 +192,7 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -520.0
+offset_left = -560.0
 offset_top = -140.0
 offset_right = -36.0
 offset_bottom = -24.0
@@ -200,12 +201,12 @@ grow_vertical = 0
 theme_override_constants/separation = 6
 alignment = 2
 
-[node name="SynergyBadge" type="Label" parent="BottomRightInventory"]
+[node name="HealingRuleBadge" type="Label" parent="BottomRightInventory"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.3, 1.0, 0.5, 1)
-theme_override_fonts/font = ExtResource("3_tech")
-theme_override_font_sizes/font_size = 15
-text = "[ NATIVE SYNERGY BUFF AKTIF ]"
+theme_override_colors/font_color = Color(0.13, 0.95, 0.4, 1)
+theme_override_fonts/font = ExtResource("4_tech")
+theme_override_font_sizes/font_size = 14
+text = "[ ATURAN: MELEE KILL = 100% NANO-MEDKIT HEAL DROP ]"
 horizontal_alignment = 2
 
 [node name="WeaponSlots" type="HBoxContainer" parent="BottomRightInventory"]
@@ -214,45 +215,33 @@ theme_override_constants/separation = 12
 alignment = 2
 
 [node name="Slot1" type="PanelContainer" parent="BottomRightInventory/WeaponSlots"]
-custom_minimum_size = Vector2(145, 46)
+custom_minimum_size = Vector2(250, 48)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="BottomRightInventory/WeaponSlots/Slot1"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_orb")
-theme_override_font_sizes/font_size = 12
-text = "[1] REVOLVER"
+theme_override_font_sizes/font_size = 13
+text = "[1] PRIMARY (GUN)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Slot2" type="PanelContainer" parent="BottomRightInventory/WeaponSlots"]
-custom_minimum_size = Vector2(145, 46)
+custom_minimum_size = Vector2(250, 48)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="BottomRightInventory/WeaponSlots/Slot2"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_orb")
-theme_override_font_sizes/font_size = 12
-text = "[2] SHOTGUN"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Slot3" type="PanelContainer" parent="BottomRightInventory/WeaponSlots"]
-custom_minimum_size = Vector2(145, 46)
-layout_mode = 2
-
-[node name="Label" type="Label" parent="BottomRightInventory/WeaponSlots/Slot3"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_orb")
-theme_override_font_sizes/font_size = 12
-text = "[3] CYBER SMG"
+theme_override_font_sizes/font_size = 13
+text = "[2] SECONDARY (BLADE)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SwapHint" type="Label" parent="BottomRightInventory"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.75, 0.9, 0.85)
-theme_override_fonts/font = ExtResource("3_tech")
+theme_override_colors/font_color = Color(0.58, 0.69, 0.8, 0.9)
+theme_override_fonts/font = ExtResource("4_tech")
 theme_override_font_sizes/font_size = 14
-text = "TEKAN [Q] ATAU TOMBOL [1-3] UNTUK GANTI SENJATA"
+text = "TEKAN [Q] ATAU [1] / [2] UNTUK GANTI SENJATA (DELAY 0.35S)"
 horizontal_alignment = 2

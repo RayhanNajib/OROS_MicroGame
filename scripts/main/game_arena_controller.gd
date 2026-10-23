@@ -146,7 +146,7 @@ func _process(delta: float) -> void:
 			zone_damage_timer += delta
 			
 			if zone_line:
-				zone_line.default_color = Color(2.5, 0.3, 0.3, 1.0)
+				zone_line.default_color = Color(2.5, 2.0, 0.2, 1.0) # High-voltage yellow pulse
 				zone_line.width = 7.0
 				
 			if alert_banner and not alert_banner.visible:
@@ -166,7 +166,7 @@ func _process(delta: float) -> void:
 		else:
 			zone_damage_timer = 0.0
 			if zone_line:
-				zone_line.default_color = Color(1.0, 0.25, 0.35, 0.85)
+				zone_line.default_color = Color(0.0, 0.9, 1.0, 0.85) # Electric Cyan
 				zone_line.width = 4.5
 			if alert_banner and alert_banner.visible and not is_zone_shrinking:
 				alert_banner.visible = false
@@ -232,7 +232,7 @@ func trigger_elite_invasion() -> void:
 			var g = golem_scene.instantiate()
 			g.global_position = player.global_position + Vector2(300, 0).rotated(randf_range(0, TAU))
 			g.max_hp = 350
-			g.modulate = Color(2.5, 0.4, 0.4, 1.0) # Elite Red Glow
+			g.modulate = Color(2.5, 2.2, 0.4, 1.0) # Elite Gold Glow
 			add_child(g)
 
 func trigger_overclock_surge() -> void:

@@ -24,13 +24,11 @@ extends CanvasLayer
 @onready var skill_lvl_badge: Label = $BottomLeftSkill/SkillHeader/SkillLvlBadge
 @onready var skill_cd_bar: ProgressBar = $BottomLeftSkill/SkillCDBar
 
-@onready var synergy_badge: Label = $BottomRightInventory/SynergyBadge
+@onready var healing_rule_badge: Label = $BottomRightInventory/HealingRuleBadge
 @onready var slot1_panel: PanelContainer = $BottomRightInventory/WeaponSlots/Slot1
 @onready var slot2_panel: PanelContainer = $BottomRightInventory/WeaponSlots/Slot2
-@onready var slot3_panel: PanelContainer = $BottomRightInventory/WeaponSlots/Slot3
 @onready var slot1_label: Label = $BottomRightInventory/WeaponSlots/Slot1/Label
 @onready var slot2_label: Label = $BottomRightInventory/WeaponSlots/Slot2/Label
-@onready var slot3_label: Label = $BottomRightInventory/WeaponSlots/Slot3/Label
 
 var heart_full_tex: Texture2D
 var heart_empty_tex: Texture2D
@@ -50,7 +48,7 @@ func _ready() -> void:
 	GameState.boss_defeated.connect(_on_boss_defeated)
 	GameState.tower_hp_changed.connect(_on_tower_hp_changed)
 
-	GameState.weapon_swapped.connect(_on_weapon_swapped)
+	GameState.weapon_slot_swapped.connect(_on_weapon_slot_swapped)
 	GameState.skill_cooldown_updated.connect(_on_skill_cooldown)
 	GameState.skill_upgraded.connect(_on_skill_upgraded)
 
@@ -64,12 +62,12 @@ func _ready() -> void:
 	update_xp(GameState.current_xp, GameState.xp_to_next, GameState.level)
 	
 	init_skill_ui()
-	update_inventory_ui(GameState.active_weapon_index, GameState.is_native_synergy_active)
+	update_inventory_ui(GameState.equipped_slot, GameState.is_melee_active)
 
 func init_skill_ui() -> void:
 	var s_name := "CRYO DASH"
 	if GameState.selected_hero == "vex": s_name = "PHASE BLINK"
-	elif GameState.selected_hero == "brutus": s_name = "SEISMIC SLAM"
+	elif GameState.selected_hero == "brutus": s_name = "TITAN SLAM"
 	
 	if skill_name_label:
 		skill_name_label.text = "[ SPACE/E: %s ]" % s_name
@@ -86,14 +84,14 @@ func _on_skill_cooldown(cur_cd: float, max_cd: float) -> void:
 	if skill_name_label:
 		var s_name := "CRYO DASH"
 		if GameState.selected_hero == "vex": s_name = "PHASE BLINK"
-		elif GameState.selected_hero == "brutus": s_name = "SEISMIC SLAM"
+		elif GameState.selected_hero == "brutus": s_name = "TITAN SLAM"
 		
 		if cur_cd <= 0.05:
 			skill_name_label.text = "[ SPACE/E: %s READY ]" % s_name
-			skill_name_label.add_theme_color_override("font_color", Color(0.2, 1.0, 0.5))
+			skill_name_label.add_theme_color_override("font_color", Color(0, 0.94, 1.0))
 		else:
 			skill_name_label.text = "[ %s CD: %.1fS ]" % [s_name, cur_cd]
-			skill_name_label.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
+			skill_name_label.add_theme_color_override("font_color", Color(0.6, 0.7, 0.8))
 
 func _on_skill_upgraded(new_lvl: int) -> void:
 	if skill_lvl_badge:
@@ -106,48 +104,49 @@ func _on_skill_upgraded(new_lvl: int) -> void:
 			skill_lvl_badge.text = "[ LVL %02d ]" % new_lvl
 		)
 
-func _on_weapon_swapped(_wep_id: String, slot_idx: int, is_syn: bool) -> void:
-	update_inventory_ui(slot_idx, is_syn)
+func _on_weapon_slot_swapped(slot_idx: int, _wep_name: String, is_melee: bool) -> void:
+	update_inventory_ui(slot_idx, is_melee)
 
-func update_inventory_ui(slot_idx: int, is_syn: bool) -> void:
-	var panels = [slot1_panel, slot2_panel, slot3_panel]
-	var labels = [slot1_label, slot2_label, slot3_label]
-	
-	for i in range(3):
-		var p = panels[i]
-		var l = labels[i]
-		if not p or not l: continue
-		
-		var style := StyleBoxFlat.new()
-		if i == slot_idx:
-			# Active Weapon Highlight
-			style.bg_color = Color(0.12, 0.22, 0.35, 0.95)
-			style.border_color = Color(1.0, 0.85, 0.25, 1.0)
-			style.set_border_width_all(3)
-			style.set_corner_radius_all(4)
-			p.add_theme_stylebox_override("panel", style)
-			l.add_theme_color_override("font_color", Color(1.0, 0.9, 0.3))
+func update_inventory_ui(slot_idx: int, is_melee: bool) -> void:
+	if slot1_panel and slot1_label:
+		var style1 := StyleBoxFlat.new()
+		style1.set_corner_radius_all(4)
+		if slot_idx == 1:
+			style1.bg_color = Color(0.12, 0.22, 0.35, 0.95)
+			style1.border_color = Color(0.98, 0.8, 0.08, 1.0) # Yellow highlight
+			style1.set_border_width_all(3)
+			slot1_label.add_theme_color_override("font_color", Color(0.98, 0.8, 0.08))
 		else:
-			# Inactive Slot
-			style.bg_color = Color(0.04, 0.06, 0.1, 0.8)
-			style.border_color = Color(0.2, 0.3, 0.45, 0.5)
-			style.set_border_width_all(1)
-			style.set_corner_radius_all(4)
-			p.add_theme_stylebox_override("panel", style)
-			l.add_theme_color_override("font_color", Color(0.6, 0.65, 0.75))
+			style1.bg_color = Color(0.04, 0.06, 0.1, 0.8)
+			style1.border_color = Color(0.2, 0.35, 0.5, 0.5)
+			style1.set_border_width_all(1)
+			slot1_label.add_theme_color_override("font_color", Color(0.55, 0.65, 0.75))
+		slot1_panel.add_theme_stylebox_override("panel", style1)
+		slot1_label.text = "[1] PRIMARY: %s" % GameState.primary_weapon.to_upper()
 
-	if synergy_badge:
-		if is_syn:
-			synergy_badge.visible = true
-			var syn_text = "+25% DMG"
-			if GameState.selected_hero == "vex": syn_text = "+25% LAJU TEMBAK"
-			elif GameState.selected_hero == "brutus": syn_text = "+3 PELLET & +20% KNOCKBACK"
-			synergy_badge.text = "[ NATIVE SYNERGY BUFF AKTIF: %s ]" % syn_text
-			synergy_badge.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
+	if slot2_panel and slot2_label:
+		var style2 := StyleBoxFlat.new()
+		style2.set_corner_radius_all(4)
+		if slot_idx == 2:
+			style2.bg_color = Color(0.08, 0.25, 0.16, 0.95)
+			style2.border_color = Color(0.13, 0.95, 0.4, 1.0) # Emerald highlight
+			style2.set_border_width_all(3)
+			slot2_label.add_theme_color_override("font_color", Color(0.13, 0.95, 0.4))
 		else:
-			synergy_badge.visible = true
-			synergy_badge.text = "[ NON-NATIVE: BUFF SENJATA PASIF NONAKTIF ]"
-			synergy_badge.add_theme_color_override("font_color", Color(0.8, 0.55, 0.3))
+			style2.bg_color = Color(0.04, 0.06, 0.1, 0.8)
+			style2.border_color = Color(0.2, 0.35, 0.5, 0.5)
+			style2.set_border_width_all(1)
+			slot2_label.add_theme_color_override("font_color", Color(0.55, 0.65, 0.75))
+		slot2_panel.add_theme_stylebox_override("panel", style2)
+		slot2_label.text = "[2] SECONDARY: CYBER BLADE"
+
+	if healing_rule_badge:
+		if is_melee:
+			healing_rule_badge.text = "[ MODE MELEE: TEBASAN MEMICU 100% HEAL DROP! ]"
+			healing_rule_badge.add_theme_color_override("font_color", Color(0.13, 0.95, 0.4))
+		else:
+			healing_rule_badge.text = "[ MODE RANGED: TEMBAKAN JARAK JAUH TIDAK DROP HEAL (0%) ]"
+			healing_rule_badge.add_theme_color_override("font_color", Color(0.98, 0.8, 0.08))
 
 func _on_tower_hp_changed(cur: int, max_hp: int) -> void:
 	if tower_container:
@@ -232,14 +231,28 @@ func update_hearts(current: int, max_hp: int) -> void:
 			
 		var extra_lbl := Label.new()
 		extra_lbl.text = " [+%d] (%d/%d)" % [max_hp - 5, current, max_hp]
-		extra_lbl.add_theme_font_override("font", load("res://assets/fonts/tech_font.ttf"))
+		extra_lbl.add_theme_font_override("font", load("res://assets/fonts/Silkscreen-Bold.ttf"))
 		extra_lbl.add_theme_font_size_override("font_size", 16)
-		extra_lbl.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
+		extra_lbl.add_theme_color_override("font_color", Color(0.98, 0.8, 0.08))
 		extra_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hearts_container.add_child(extra_lbl)
 
 func update_ammo(current: int, max_cap: int, is_reloading: bool, reload_pct: float) -> void:
 	if not ammo_container: return
+	
+	if GameState.is_melee_active:
+		if reload_label:
+			reload_label.visible = false
+		ammo_container.visible = true
+		for child in ammo_container.get_children():
+			child.queue_free()
+		var melee_lbl := Label.new()
+		melee_lbl.text = "CYBER BLADE: UNLIMITED ENERGY"
+		melee_lbl.add_theme_font_override("font", load("res://assets/fonts/Silkscreen-Bold.ttf"))
+		melee_lbl.add_theme_font_size_override("font_size", 16)
+		melee_lbl.add_theme_color_override("font_color", Color(0.13, 0.95, 0.4))
+		ammo_container.add_child(melee_lbl)
+		return
 	
 	if is_reloading:
 		ammo_container.visible = false
@@ -267,9 +280,9 @@ func update_ammo(current: int, max_cap: int, is_reloading: bool, reload_pct: flo
 			
 		var num_lbl := Label.new()
 		num_lbl.text = "  %03d / %03d" % [current, max_cap]
-		num_lbl.add_theme_font_override("font", load("res://assets/fonts/tech_font.ttf"))
+		num_lbl.add_theme_font_override("font", load("res://assets/fonts/Silkscreen-Bold.ttf"))
 		num_lbl.add_theme_font_size_override("font_size", 18)
-		num_lbl.add_theme_color_override("font_color", Color(0.92, 0.36, 0.42) if current <= 2 else Color(0.93, 0.89, 0.85))
+		num_lbl.add_theme_color_override("font_color", Color(0.98, 0.8, 0.08) if current <= 2 else Color(0, 0.94, 1.0))
 		num_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		ammo_container.add_child(num_lbl)
 

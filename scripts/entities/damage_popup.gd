@@ -8,10 +8,10 @@ func setup(amount: int, is_crit: bool = false) -> void:
 	label.text = str(amount)
 	
 	if is_crit or amount >= 30:
-		label.add_theme_color_override("font_color", Color(1.0, 0.25, 0.25, 1.0))
-		scale = Vector2(1.2, 1.2)
+		label.add_theme_color_override("font_color", Color(0.0, 0.95, 1.0, 1.0)) # Electric Cyan
+		scale = Vector2(1.3, 1.3)
 	else:
-		label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.35, 1.0))
+		label.add_theme_color_override("font_color", Color(1.0, 0.92, 0.15, 1.0)) # High-Voltage Yellow
 		scale = Vector2.ONE
 		
 	# Floating parabola animation

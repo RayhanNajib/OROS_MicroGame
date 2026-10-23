@@ -232,9 +232,9 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	# Slot hotkey indicator
 	var key_lbl := Label.new()
 	key_lbl.text = "[ MODUL %d ]  (TOMBOL %d)" % [slot_index + 1, slot_index + 1]
-	key_lbl.add_theme_color_override("font_color", Color(0.2, 0.9, 1.0))
-	key_lbl.add_theme_font_override("font", font_raj_bold)
-	key_lbl.add_theme_font_size_override("font_size", 16)
+	key_lbl.add_theme_color_override("font_color", Color(0, 0.94, 1.0))
+	key_lbl.add_theme_font_override("font", load("res://assets/fonts/Silkscreen-Bold.ttf"))
+	key_lbl.add_theme_font_size_override("font_size", 14)
 	key_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(key_lbl)
 	

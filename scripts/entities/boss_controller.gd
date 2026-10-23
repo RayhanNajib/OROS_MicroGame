@@ -178,7 +178,7 @@ func spawn_bullet(angle: float, speed: float) -> void:
 	b.speed = speed
 	get_parent().add_child(b)
 
-func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
+func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO, from_melee: bool = false) -> void:
 	current_hp -= amount
 	GameState.update_boss_hp(current_hp)
 	
@@ -187,14 +187,14 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	if popup_scene:
 		var popup = popup_scene.instantiate()
 		popup.global_position = global_position + Vector2(randf_range(-18, 18), -34)
-		popup.setup(amount, true)
+		popup.setup(amount, from_melee or true)
 		get_parent().add_child(popup)
 	
 	# Boss resists 90% knockback
 	knockback_velocity = knockback * 0.1
 	
-	# Damage flash
-	modulate = Color(2.0, 0.5, 0.5, 1.0)
+	# Damage flash in Yellow (NO RED)
+	modulate = Color(2.5, 2.2, 0.4, 1.0)
 	var tw := create_tween()
 	tw.tween_property(self, "modulate", Color(1, 1, 1, 1), 0.1)
 

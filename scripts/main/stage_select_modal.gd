@@ -24,8 +24,9 @@ func build_stage_list() -> void:
 	for child in stages_grid.get_children():
 		child.queue_free()
 		
-	var font_raj_bold = load("res://assets/fonts/Orbitron-Bold.ttf")
-	var font_raj_semi = load("res://assets/fonts/tech_font.ttf")
+	var font_orb = load("res://assets/fonts/Orbitron-Bold.ttf")
+	var font_silk = load("res://assets/fonts/Silkscreen-Bold.ttf")
+	var font_tech = load("res://assets/fonts/tech_font.ttf")
 	
 	for s_id in range(1, 6):
 		var cfg = GameState.stage_configs[s_id]
@@ -40,7 +41,7 @@ func build_stage_list() -> void:
 		style.bg_color = Color(0.08, 0.12, 0.18, 0.96) if is_unlocked else Color(0.04, 0.05, 0.08, 0.85)
 		style.border_color = Color(0.0, 0.9, 1.0, 0.9) if is_current else (Color(0.2, 0.6, 0.85, 0.7) if is_unlocked else Color(0.3, 0.35, 0.45, 0.4))
 		if s_id == 5 and is_unlocked:
-			style.border_color = Color(1.0, 0.25, 0.35, 1.0) # Red glow for Nightmare
+			style.border_color = Color(1.0, 0.9, 0.1, 1.0) # High-voltage yellow for Nightmare
 		style.set_border_width_all(3 if is_current else 2)
 		style.set_corner_radius_all(6)
 		panel.add_theme_stylebox_override("panel", style)
@@ -60,26 +61,23 @@ func build_stage_list() -> void:
 		
 		var title_lbl := Label.new()
 		title_lbl.text = "[ STAGE %02d ] %s // TINGKAT: %s" % [s_id, cfg["title"], cfg["difficulty"]]
-		title_lbl.add_theme_font_override("font", font_raj_bold)
+		title_lbl.add_theme_font_override("font", font_orb)
 		title_lbl.add_theme_font_size_override("font_size", 18)
-		if s_id == 5:
-			title_lbl.add_theme_color_override("font_color", Color(1.0, 0.35, 0.45))
-		else:
-			title_lbl.add_theme_color_override("font_color", Color(1.0, 0.88, 0.25) if is_unlocked else Color(0.5, 0.55, 0.65))
+		title_lbl.add_theme_color_override("font_color", Color(1.0, 0.9, 0.1) if (s_id == 5 and is_unlocked) else (Color(0.0, 0.94, 1.0) if is_unlocked else Color(0.5, 0.55, 0.65)))
 		info_vbox.add_child(title_lbl)
 		
 		var desc_lbl := Label.new()
 		desc_lbl.text = "TARGET SURVIVE: %d DETIK  |  MISI: %s  |  APEX BOSS: %s" % [int(cfg["target_time"]), cfg["objective"], cfg["boss_name"]]
-		desc_lbl.add_theme_font_override("font", font_raj_semi)
+		desc_lbl.add_theme_font_override("font", font_tech)
 		desc_lbl.add_theme_font_size_override("font_size", 15)
 		desc_lbl.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0) if is_unlocked else Color(0.45, 0.5, 0.6))
 		info_vbox.add_child(desc_lbl)
 		
 		var rank_lbl := Label.new()
 		rank_lbl.text = "EVALUASI RANK TERTINGGI: %s" % s_data.get("high_rank", "-")
-		rank_lbl.add_theme_font_override("font", font_raj_bold)
-		rank_lbl.add_theme_font_size_override("font_size", 14)
-		rank_lbl.add_theme_color_override("font_color", Color(0.3, 0.9, 1.0))
+		rank_lbl.add_theme_font_override("font", font_silk)
+		rank_lbl.add_theme_font_size_override("font_size", 13)
+		rank_lbl.add_theme_color_override("font_color", Color(0.13, 0.95, 0.4))
 		info_vbox.add_child(rank_lbl)
 		
 		hbox.add_child(info_vbox)
@@ -92,7 +90,7 @@ func build_stage_list() -> void:
 		if is_unlocked:
 			var launch_btn := Button.new()
 			launch_btn.custom_minimum_size = Vector2(240, 48)
-			launch_btn.add_theme_font_override("font", font_raj_bold)
+			launch_btn.add_theme_font_override("font", font_orb)
 			launch_btn.add_theme_font_size_override("font_size", 15)
 			launch_btn.text = "[ > LUNCURKAN MISI < ]" if is_current else "[ PILIH & LUNCURKAN ]"
 			launch_btn.pressed.connect(func():
@@ -110,8 +108,8 @@ func build_stage_list() -> void:
 			elif s_id == 5: req = "BUTUH RANK S DI STAGE 4"
 			var lock_btn := Button.new()
 			lock_btn.custom_minimum_size = Vector2(240, 48)
-			lock_btn.add_theme_font_override("font", font_raj_semi)
-			lock_btn.add_theme_font_size_override("font_size", 11)
+			lock_btn.add_theme_font_override("font", font_tech)
+			lock_btn.add_theme_font_size_override("font_size", 12)
 			lock_btn.text = "[ TERKUNCI ]\n%s" % req
 			lock_btn.disabled = true
 			btn_vbox.add_child(lock_btn)

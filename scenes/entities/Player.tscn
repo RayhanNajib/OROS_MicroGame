@@ -18,6 +18,10 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_skill_slam.wav" id="16_slam"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_weapon_swap.wav" id="17_swap"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_pickup_core.wav" id="18_core"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_melee_slash.wav" id="19_slash_sfx"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_melee_hit.wav" id="20_hit_sfx"]
+[ext_resource type="Texture2D" path="res://assets/sprites/fx_slash_arc.png" id="21_slash_tex"]
+
 
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rel_bg"]
@@ -131,3 +135,22 @@ stream = ExtResource("17_swap")
 
 [node name="SFXPickupCore" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("18_core")
+[node name="SlashArcSprite" type="Sprite2D" parent="WeaponPivot"]
+visible = false
+position = Vector2(28, 0)
+texture = ExtResource("21_slash_tex")
+
+[node name="SkillTelegraph" type="Node2D" parent="."]
+
+[node name="TelegraphLine" type="Line2D" parent="SkillTelegraph"]
+width = 3.0
+default_color = Color(0, 0.94, 1, 0.7)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="SFXMeleeSlash" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("19_slash_sfx")
+
+[node name="SFXMeleeHit" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("20_hit_sfx")
