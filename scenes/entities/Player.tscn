@@ -13,6 +13,12 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_xp_pickup.wav" id="11_xp"]
 [ext_resource type="Texture2D" path="res://assets/sprites/fx_shadow.png" id="12_shadow"]
 [ext_resource type="Texture2D" path="res://assets/sprites/fx_muzzle_flash.png" id="13_flash"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_skill_dash.wav" id="14_dash"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_skill_freeze.wav" id="15_freeze"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_skill_slam.wav" id="16_slam"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_weapon_swap.wav" id="17_swap"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_pickup_core.wav" id="18_core"]
+
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 6.0
@@ -86,3 +92,17 @@ volume_db = -3.0
 [node name="SFXXPPickup" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("11_xp")
 volume_db = -4.0
+[node name="SFXSkillDash" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("14_dash")
+
+[node name="SFXSkillFreeze" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("15_freeze")
+
+[node name="SFXSkillSlam" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("16_slam")
+
+[node name="SFXWeaponSwap" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("17_swap")
+
+[node name="SFXPickupCore" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("18_core")

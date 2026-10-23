@@ -19,6 +19,19 @@ extends CanvasLayer
 @onready var tower_hp_bar: ProgressBar = $TowerBarContainer/TowerHPBar
 @onready var tower_name_label: Label = $TowerBarContainer/TowerNameLabel
 
+# Skill & Inventory UI
+@onready var skill_name_label: Label = $BottomLeftSkill/SkillHeader/SkillNameLabel
+@onready var skill_lvl_badge: Label = $BottomLeftSkill/SkillHeader/SkillLvlBadge
+@onready var skill_cd_bar: ProgressBar = $BottomLeftSkill/SkillCDBar
+
+@onready var synergy_badge: Label = $BottomRightInventory/SynergyBadge
+@onready var slot1_panel: PanelContainer = $BottomRightInventory/WeaponSlots/Slot1
+@onready var slot2_panel: PanelContainer = $BottomRightInventory/WeaponSlots/Slot2
+@onready var slot3_panel: PanelContainer = $BottomRightInventory/WeaponSlots/Slot3
+@onready var slot1_label: Label = $BottomRightInventory/WeaponSlots/Slot1/Label
+@onready var slot2_label: Label = $BottomRightInventory/WeaponSlots/Slot2/Label
+@onready var slot3_label: Label = $BottomRightInventory/WeaponSlots/Slot3/Label
+
 var heart_full_tex: Texture2D
 var heart_empty_tex: Texture2D
 var bullet_icon_tex: Texture2D
@@ -37,6 +50,10 @@ func _ready() -> void:
 	GameState.boss_defeated.connect(_on_boss_defeated)
 	GameState.tower_hp_changed.connect(_on_tower_hp_changed)
 
+	GameState.weapon_swapped.connect(_on_weapon_swapped)
+	GameState.skill_cooldown_updated.connect(_on_skill_cooldown)
+	GameState.skill_upgraded.connect(_on_skill_upgraded)
+
 	if GameState.has_tower_event and tower_container:
 		tower_container.visible = true
 		tower_hp_bar.max_value = GameState.tower_max_hp
@@ -45,6 +62,92 @@ func _ready() -> void:
 	update_hearts(GameState.health, GameState.max_health)
 	update_ammo(GameState.ammo, GameState.max_ammo, false, 0.0)
 	update_xp(GameState.current_xp, GameState.xp_to_next, GameState.level)
+	
+	init_skill_ui()
+	update_inventory_ui(GameState.active_weapon_index, GameState.is_native_synergy_active)
+
+func init_skill_ui() -> void:
+	var s_name := "CRYO DASH"
+	if GameState.selected_hero == "vex": s_name = "PHASE BLINK"
+	elif GameState.selected_hero == "brutus": s_name = "SEISMIC SLAM"
+	
+	if skill_name_label:
+		skill_name_label.text = "[ SPACE/E: %s ]" % s_name
+	if skill_lvl_badge:
+		skill_lvl_badge.text = "[ LVL %02d ]" % GameState.skill_level
+	if skill_cd_bar:
+		skill_cd_bar.max_value = GameState.skill_cooldown_max
+		skill_cd_bar.value = 0.0
+
+func _on_skill_cooldown(cur_cd: float, max_cd: float) -> void:
+	if skill_cd_bar:
+		skill_cd_bar.max_value = max_cd
+		skill_cd_bar.value = maxf(0.0, max_cd - cur_cd)
+	if skill_name_label:
+		var s_name := "CRYO DASH"
+		if GameState.selected_hero == "vex": s_name = "PHASE BLINK"
+		elif GameState.selected_hero == "brutus": s_name = "SEISMIC SLAM"
+		
+		if cur_cd <= 0.05:
+			skill_name_label.text = "[ SPACE/E: %s READY ]" % s_name
+			skill_name_label.add_theme_color_override("font_color", Color(0.2, 1.0, 0.5))
+		else:
+			skill_name_label.text = "[ %s CD: %.1fS ]" % [s_name, cur_cd]
+			skill_name_label.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
+
+func _on_skill_upgraded(new_lvl: int) -> void:
+	if skill_lvl_badge:
+		skill_lvl_badge.text = "[ LVL %02d UPGRADED! ]" % new_lvl
+		skill_lvl_badge.pivot_offset = skill_lvl_badge.size * 0.5
+		var tw := skill_lvl_badge.create_tween()
+		tw.tween_property(skill_lvl_badge, "scale", Vector2(1.3, 1.3), 0.15)
+		tw.tween_property(skill_lvl_badge, "scale", Vector2.ONE, 0.2)
+		tw.tween_callback(func():
+			skill_lvl_badge.text = "[ LVL %02d ]" % new_lvl
+		)
+
+func _on_weapon_swapped(_wep_id: String, slot_idx: int, is_syn: bool) -> void:
+	update_inventory_ui(slot_idx, is_syn)
+
+func update_inventory_ui(slot_idx: int, is_syn: bool) -> void:
+	var panels = [slot1_panel, slot2_panel, slot3_panel]
+	var labels = [slot1_label, slot2_label, slot3_label]
+	
+	for i in range(3):
+		var p = panels[i]
+		var l = labels[i]
+		if not p or not l: continue
+		
+		var style := StyleBoxFlat.new()
+		if i == slot_idx:
+			# Active Weapon Highlight
+			style.bg_color = Color(0.12, 0.22, 0.35, 0.95)
+			style.border_color = Color(1.0, 0.85, 0.25, 1.0)
+			style.set_border_width_all(3)
+			style.set_corner_radius_all(4)
+			p.add_theme_stylebox_override("panel", style)
+			l.add_theme_color_override("font_color", Color(1.0, 0.9, 0.3))
+		else:
+			# Inactive Slot
+			style.bg_color = Color(0.04, 0.06, 0.1, 0.8)
+			style.border_color = Color(0.2, 0.3, 0.45, 0.5)
+			style.set_border_width_all(1)
+			style.set_corner_radius_all(4)
+			p.add_theme_stylebox_override("panel", style)
+			l.add_theme_color_override("font_color", Color(0.6, 0.65, 0.75))
+
+	if synergy_badge:
+		if is_syn:
+			synergy_badge.visible = true
+			var syn_text = "+25% DMG"
+			if GameState.selected_hero == "vex": syn_text = "+25% LAJU TEMBAK"
+			elif GameState.selected_hero == "brutus": syn_text = "+3 PELLET & +20% KNOCKBACK"
+			synergy_badge.text = "[ NATIVE SYNERGY BUFF AKTIF: %s ]" % syn_text
+			synergy_badge.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
+		else:
+			synergy_badge.visible = true
+			synergy_badge.text = "[ NON-NATIVE: BUFF SENJATA PASIF NONAKTIF ]"
+			synergy_badge.add_theme_color_override("font_color", Color(0.8, 0.55, 0.3))
 
 func _on_tower_hp_changed(cur: int, max_hp: int) -> void:
 	if tower_container:
@@ -59,7 +162,7 @@ func _on_boss_spawned(b_name: String, max_hp: int) -> void:
 	if boss_container:
 		boss_container.visible = true
 	if boss_name_label:
-		boss_name_label.text = "★ BOSS: %s ★" % b_name
+		boss_name_label.text = "[ ! ] BOSS: %s [ ! ]" % b_name
 	if boss_hp_bar:
 		boss_hp_bar.max_value = max_hp
 		boss_hp_bar.value = max_hp
@@ -70,7 +173,7 @@ func _on_boss_hp_changed(cur_hp: int, _max_hp: int) -> void:
 
 func _on_boss_defeated() -> void:
 	if boss_name_label:
-		boss_name_label.text = "★ BOSS ANNIHILATED // SECTOR LIBERATED ★"
+		boss_name_label.text = "[ BOSS ANNIHILATED // SEKTOR DIBERSIHKAN ]"
 	var tw := create_tween()
 	tw.tween_interval(3.0)
 	tw.tween_callback(func():
@@ -79,21 +182,19 @@ func _on_boss_defeated() -> void:
 	)
 
 func _process(_delta: float) -> void:
-	# Update Timer
 	var total_sec := int(GameState.survival_time)
 	var mins := floori(float(total_sec) / 60.0)
 	var secs := total_sec % 60
 	if timer_label:
 		timer_label.text = "%02d:%02d" % [mins, secs]
 	if kills_label:
-		kills_label.text = "PURGED: %d" % GameState.total_kills
+		kills_label.text = "PURGED: %d UNITS" % GameState.total_kills
 
-	# Low HP Vignette Warning (Only subtle pulse at critical 1 HP)
 	if low_hp_vignette:
 		if GameState.health == 1:
 			low_hp_vignette.visible = true
 			var pulse := (sin(Time.get_ticks_msec() * 0.007) + 1.0) * 0.5
-			low_hp_vignette.modulate.a = 0.12 + (pulse * 0.16) # Max alpha 0.28, completely unobtrusive
+			low_hp_vignette.modulate.a = 0.12 + (pulse * 0.16)
 		else:
 			low_hp_vignette.visible = false
 
@@ -111,7 +212,6 @@ func update_hearts(current: int, max_hp: int) -> void:
 	for child in hearts_container.get_children():
 		child.queue_free()
 
-	# Compact 5+ Health Rule - Sized for Full HD
 	if max_hp <= 5:
 		for i in range(max_hp):
 			var rect := TextureRect.new()
@@ -121,7 +221,6 @@ func update_hearts(current: int, max_hp: int) -> void:
 			rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			hearts_container.add_child(rect)
 	else:
-		# Show 5 hearts scaled to proportion + Badge [+N] (Current/Max)
 		for i in range(5):
 			var rect := TextureRect.new()
 			var fill_point := int(float(i + 1) / 5.0 * float(max_hp))
@@ -133,8 +232,8 @@ func update_hearts(current: int, max_hp: int) -> void:
 			
 		var extra_lbl := Label.new()
 		extra_lbl.text = " [+%d] (%d/%d)" % [max_hp - 5, current, max_hp]
-		extra_lbl.add_theme_font_override("font", load("res://assets/fonts/PressStart2P-Regular.ttf"))
-		extra_lbl.add_theme_font_size_override("font_size", 12)
+		extra_lbl.add_theme_font_override("font", load("res://assets/fonts/tech_font.ttf"))
+		extra_lbl.add_theme_font_size_override("font_size", 16)
 		extra_lbl.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
 		extra_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		hearts_container.add_child(extra_lbl)
@@ -154,7 +253,6 @@ func update_ammo(current: int, max_cap: int, is_reloading: bool, reload_pct: flo
 			reload_label.visible = false
 		ammo_container.visible = true
 		
-		# Rebuild bullet icons - Sized for Full HD
 		for child in ammo_container.get_children():
 			child.queue_free()
 			

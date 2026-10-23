@@ -7,6 +7,8 @@ var pierce: int = 0
 var knockback: float = 90.0
 var has_freeze: bool = false
 var has_lightning: bool = false
+var lifespan: float = 2.0
+var bullet_tex: Texture2D = null
 
 var enemies_hit: Array[Node2D] = []
 
@@ -14,8 +16,11 @@ func _ready() -> void:
 	area_entered.connect(_on_area_entered)
 	body_entered.connect(_on_body_entered)
 	
+	if bullet_tex and has_node("Sprite2D"):
+		get_node("Sprite2D").texture = bullet_tex
+	
 	# Despawn timer
-	var timer := get_tree().create_timer(2.2)
+	var timer := get_tree().create_timer(lifespan)
 	timer.timeout.connect(queue_free)
 
 func _physics_process(delta: float) -> void:

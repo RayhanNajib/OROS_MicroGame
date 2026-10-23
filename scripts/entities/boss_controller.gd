@@ -226,5 +226,13 @@ func die() -> void:
 			var med = medkit_scene.instantiate()
 			med.global_position = global_position + Vector2(randf_range(-25, 25), randf_range(-25, 25))
 			get_parent().call_deferred("add_child", med)
+
+	# Guaranteed Boss Loot: Skill Cores
+	var core_scene = load("res://scenes/entities/SkillCorePickup.tscn")
+	if core_scene:
+		for i in range(2):
+			var core = core_scene.instantiate()
+			core.global_position = global_position + Vector2(randf_range(-20, 20), randf_range(-20, 20))
+			get_parent().call_deferred("add_child", core)
 			
 	queue_free()

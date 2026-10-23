@@ -1,0 +1,344 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scripts/main/campaign_wizard_modal.gd" id="1_scr"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_orb"]
+[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="3_tech"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pixel_pedestal.png" id="4_pedestal"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player_kael_run.png" id="5_kael"]
+[ext_resource type="Texture2D" path="res://assets/sprites/spr_revolver.png" id="6_revolver"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_normal.png" id="7_btn_n"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_hover.png" id="8_btn_h"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_normal.png" id="9_conf_n"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_hover.png" id="10_conf_h"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="11_click"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_n"]
+texture = ExtResource("9_conf_n")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_h"]
+texture = ExtResource("10_conf_h")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sci_n"]
+texture = ExtResource("7_btn_n")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sci_h"]
+texture = ExtResource("8_btn_h")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+
+[node name="CampaignWizardModal" type="ColorRect"]
+process_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.08, 0.96)
+script = ExtResource("1_scr")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(1780, 960)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 22
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="HeaderBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="WizardTitle" type="Label" parent="CenterContainer/Panel/Margin/VBox/HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 26
+text = "[ LANGKAH 1: PILIH SEKTOR MISI ]"
+horizontal_alignment = 1
+
+[node name="StepIndicator" type="Label" parent="CenterContainer/Panel/Margin/VBox/HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_fonts/font = ExtResource("3_tech")
+theme_override_font_sizes/font_size = 17
+text = "PILIH SEKTOR OPERASI YANG AKAN DIINFILTRASI"
+horizontal_alignment = 1
+
+[node name="Step1StageSelect" type="Control" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 720)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Scroll" type="ScrollContainer" parent="CenterContainer/Panel/Margin/VBox/Step1StageSelect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StagesVBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox/Step1StageSelect/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="Step2LoadoutPrep" type="Control" parent="CenterContainer/Panel/Margin/VBox"]
+visible = false
+custom_minimum_size = Vector2(0, 720)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="HeroPanel" type="PanelContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox"]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeroTitle" type="Label" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+text = "[ 1. PILIH HERO OPERATIVE ]"
+horizontal_alignment = 1
+
+[node name="HeroBtns" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="BtnKael" type="Button" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox/HeroBtns"]
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "KAEL"
+
+[node name="BtnVex" type="Button" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox/HeroBtns"]
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "VEX"
+
+[node name="BtnBrutus" type="Button" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox/HeroBtns"]
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "BRUTUS"
+
+[node name="HeroDesc" type="Label" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 520)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_fonts/font = ExtResource("3_tech")
+theme_override_font_sizes/font_size = 15
+text = "Deskripsi Operative"
+autowrap_mode = 2
+
+[node name="PreviewPanel" type="PanelContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox"]
+custom_minimum_size = Vector2(620, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PrepStageBanner" type="Label" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+text = "[ SEKTOR AKTIF: STAGE 01 ]"
+horizontal_alignment = 1
+
+[node name="StageControl" type="Control" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox"]
+custom_minimum_size = Vector2(560, 420)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PedestalSprite" type="Sprite2D" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox/StageControl"]
+position = Vector2(280, 310)
+scale = Vector2(6.5, 6.5)
+texture = ExtResource("4_pedestal")
+
+[node name="PreviewHero" type="Sprite2D" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox/StageControl"]
+position = Vector2(280, 260)
+scale = Vector2(5.5, 5.5)
+texture = ExtResource("5_kael")
+hframes = 4
+
+[node name="PreviewWeapon" type="Sprite2D" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox/StageControl/PreviewHero"]
+position = Vector2(10, 0)
+texture = ExtResource("6_revolver")
+
+[node name="SynergyBanner" type="Label" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.5, 1)
+theme_override_fonts/font = ExtResource("3_tech")
+theme_override_font_sizes/font_size = 15
+text = "[ NATIVE SYNERGY BUFF AKTIF ]"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="WeaponPanel" type="PanelContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox"]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="WeaponTitle" type="Label" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+text = "[ 2. PILIH ARSENAL SENJATA ]"
+horizontal_alignment = 1
+
+[node name="WeaponBtns" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="BtnRevolver" type="Button" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox/WeaponBtns"]
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "REVOLVER"
+
+[node name="BtnShotgun" type="Button" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox/WeaponBtns"]
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "SHOTGUN"
+
+[node name="BtnSMG" type="Button" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox/WeaponBtns"]
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "CYBER SMG"
+
+[node name="WeaponDesc" type="Label" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 520)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_fonts/font = ExtResource("3_tech")
+theme_override_font_sizes/font_size = 15
+text = "Deskripsi Senjata"
+autowrap_mode = 2
+
+[node name="BottomNav" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BackBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/BottomNav"]
+custom_minimum_size = Vector2(340, 56)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "[ KEMBALI KE MENU UTAMA ]"
+
+[node name="ShopShortcutBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/BottomNav"]
+custom_minimum_size = Vector2(340, 56)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "[ KUNJUNGI CYBER SHOP ]"
+
+[node name="LaunchBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/BottomNav"]
+custom_minimum_size = Vector2(460, 58)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_conf_h")
+text = "[ > LUNCURKAN OPERASI SIBER < ]"
+
+[node name="SFXClick" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_click")

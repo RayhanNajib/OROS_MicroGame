@@ -11,6 +11,11 @@
 [ext_resource type="AudioStream" path="res://assets/audio/bgm_combat_loop.wav" id="7_bgm"]
 [ext_resource type="FontFile" path="res://assets/fonts/PressStart2P-Regular.ttf" id="8_font"]
 [ext_resource type="Texture2D" path="res://assets/sprites/pixel_hazard_fence.png" id="9_fence"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="11_orb"]
+[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="12_tech"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_countdown_beep.wav" id="13_beep"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_countdown_start.wav" id="14_start_sfx"]
+
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
 normal = Vector2(0, 1)
@@ -151,3 +156,55 @@ vertical_alignment = 1
 stream = ExtResource("7_bgm")
 volume_db = -5.0
 autoplay = true
+[node name="IntroLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="BlackOverlay" type="ColorRect" parent="IntroLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.02, 0.04, 1)
+
+[node name="Center" type="CenterContainer" parent="IntroLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="IntroLayer/Center"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="StageBanner" type="Label" parent="IntroLayer/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("11_orb")
+theme_override_font_sizes/font_size = 32
+text = "[ SEKTOR 01: PABRIK SUBTERRANEAN ]"
+horizontal_alignment = 1
+
+[node name="StageSub" type="Label" parent="IntroLayer/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_fonts/font = ExtResource("12_tech")
+theme_override_font_sizes/font_size = 20
+text = "TINGKAT: NORMAL // TARGET SURVIVE: 180 DETIK"
+horizontal_alignment = 1
+
+[node name="CountdownLabel" type="Label" parent="IntroLayer/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_fonts/font = ExtResource("11_orb")
+theme_override_font_sizes/font_size = 72
+text = "3"
+horizontal_alignment = 1
+
+[node name="SFXBeep" type="AudioStreamPlayer" parent="IntroLayer"]
+stream = ExtResource("13_beep")
+
+[node name="SFXStart" type="AudioStreamPlayer" parent="IntroLayer"]
+stream = ExtResource("14_start_sfx")

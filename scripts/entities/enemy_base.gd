@@ -222,5 +222,13 @@ func die() -> void:
 		var med = medkit_scene.instantiate()
 		med.global_position = global_position + Vector2(randf_range(-10, 10), randf_range(-10, 10))
 		get_parent().call_deferred("add_child", med)
+
+	# Chance to drop Skill Core (Elites / Golems / 8% general drop)
+	if (randf() < 0.08 or exp_reward >= 40):
+		var core_scene = load("res://scenes/entities/SkillCorePickup.tscn")
+		if core_scene:
+			var core = core_scene.instantiate()
+			core.global_position = global_position + Vector2(randf_range(-14, 14), randf_range(-14, 14))
+			get_parent().call_deferred("add_child", core)
 		
 	queue_free()

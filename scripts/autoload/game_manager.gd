@@ -54,6 +54,17 @@ var stage_configs: Dictionary = {
 	}
 }
 
+
+# In-Game Inventory & Weapons
+var available_weapons: Array[String] = ["revolver", "shotgun", "smg"]
+var active_weapon_index: int = 0
+var is_native_synergy_active: bool = false
+
+# Character Active Skill
+var skill_level: int = 1
+var skill_cooldown_max: float = 6.0
+var skill_cooldown_timer: float = 0.0
+
 # Player Runtime Stats
 var max_health: int = 4
 var health: int = 4
@@ -114,6 +125,10 @@ signal boss_hp_changed(cur_hp: int, max_hp: int)
 signal boss_defeated()
 
 signal tower_hp_changed(cur: int, max_hp: int)
+signal weapon_swapped(weapon_id: String, slot_index: int, is_native_synergy: bool)
+signal skill_cooldown_updated(current: float, max_cd: float)
+signal skill_upgraded(new_level: int)
+
 
 func trigger_mission_victory(time_survived: float, kills: int, lvl: int) -> void:
 	mission_victory_triggered.emit(time_survived, kills, lvl)
@@ -131,6 +146,9 @@ func reset_run() -> void:
 	total_kills = 0
 	survival_time = 0.0
 	session_credits = 0
+	skill_level = 1
+	skill_cooldown_timer = 0.0
+	switch_weapon(0)
 	is_boss_active = false
 	has_freeze = false
 	has_lightning = false
@@ -292,3 +310,67 @@ func calculate_mission_rank() -> Dictionary:
 		"total_nc": total_earned,
 		"cleared": time_ratio >= 1.0
 	}
+
+func switch_weapon(slot_idx: int) -> void:
+	if slot_idx < 0 or slot_idx >= available_weapons.size(): return
+	active_weapon_index = slot_idx
+	selected_weapon = available_weapons[slot_idx]
+	apply_weapon_stats()
+	check_native_synergy()
+	weapon_swapped.emit(selected_weapon, active_weapon_index, is_native_synergy_active)
+	update_ammo_state(ammo, max_ammo, false, 0.0)
+
+func cycle_weapon() -> void:
+	var next_idx = (active_weapon_index + 1) % available_weapons.size()
+	switch_weapon(next_idx)
+
+func check_native_synergy() -> void:
+	is_native_synergy_active = false
+	if selected_hero == "kael" and selected_weapon == "revolver":
+		is_native_synergy_active = true
+		bullet_damage = int(bullet_damage * 1.25)
+	elif selected_hero == "vex" and selected_weapon == "smg":
+		is_native_synergy_active = true
+		fire_rate *= 0.75
+	elif selected_hero == "brutus" and selected_weapon == "shotgun":
+		is_native_synergy_active = true
+		projectile_count += 2
+		bullet_knockback *= 1.25
+
+func upgrade_skill() -> void:
+	skill_level += 1
+	skill_cooldown_max = maxf(2.5, skill_cooldown_max * 0.85)
+	skill_upgraded.emit(skill_level)
+
+func apply_weapon_stats() -> void:
+	match selected_weapon:
+		"revolver":
+			max_ammo = 6
+			fire_rate = 0.20
+			reload_duration = 0.95
+			bullet_damage = 24
+			bullet_speed = 640.0
+			projectile_count = 1
+			projectile_spread = 0.08
+			bullet_knockback = 95.0
+		"shotgun":
+			# High risk, devastating close-quarters point blank
+			max_ammo = 4
+			fire_rate = 0.48
+			reload_duration = 1.25
+			bullet_damage = 8
+			bullet_speed = 520.0
+			projectile_count = 8
+			projectile_spread = 0.32
+			bullet_knockback = 180.0
+		"smg":
+			# High capacity rapid spray
+			max_ammo = 28
+			fire_rate = 0.075
+			reload_duration = 0.80
+			bullet_damage = 7
+			bullet_speed = 650.0
+			projectile_count = 1
+			projectile_spread = 0.12
+			bullet_knockback = 45.0
+	ammo = max_ammo
