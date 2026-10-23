@@ -104,23 +104,23 @@ func refresh_shop() -> void:
 	for child in items_container.get_children():
 		child.queue_free()
 		
-	var font_orb = load("res://assets/fonts/Orbitron-Bold.ttf")
-	var font_pix = load("res://assets/fonts/PixelifySans-Regular.ttf")
+	var font_raj_bold = load("res://assets/fonts/Orbitron-Bold.ttf")
+	var font_raj_semi = load("res://assets/fonts/tech_font.ttf")
 	
 	for item in catalog:
 		var panel := PanelContainer.new()
-		panel.custom_minimum_size = Vector2(440, 160)
+		panel.custom_minimum_size = Vector2(440, 170)
 		
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color(0.08, 0.12, 0.18, 0.95)
 		style.border_color = Color(0.18, 0.65, 0.92, 0.8)
 		style.set_border_width_all(2)
-		style.set_corner_radius_all(4)
+		style.set_corner_radius_all(6)
 		panel.add_theme_stylebox_override("panel", style)
 		
 		var margin := MarginContainer.new()
-		margin.add_theme_constant_override("margin_left", 14)
-		margin.add_theme_constant_override("margin_right", 14)
+		margin.add_theme_constant_override("margin_left", 16)
+		margin.add_theme_constant_override("margin_right", 16)
 		margin.add_theme_constant_override("margin_top", 12)
 		margin.add_theme_constant_override("margin_bottom", 12)
 		
@@ -129,16 +129,16 @@ func refresh_shop() -> void:
 		
 		var name_lbl := Label.new()
 		name_lbl.text = item["name"]
-		name_lbl.add_theme_font_override("font", font_orb)
-		name_lbl.add_theme_font_size_override("font_size", 12)
-		name_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.25))
+		name_lbl.add_theme_font_override("font", font_raj_bold)
+		name_lbl.add_theme_font_size_override("font_size", 18)
+		name_lbl.add_theme_color_override("font_color", Color(1.0, 0.88, 0.25))
 		vbox.add_child(name_lbl)
 		
 		var desc_lbl := Label.new()
 		desc_lbl.text = item["desc"]
-		desc_lbl.add_theme_font_override("font", font_pix)
-		desc_lbl.add_theme_font_size_override("font_size", 11)
-		desc_lbl.add_theme_color_override("font_color", Color(0.85, 0.92, 1.0))
+		desc_lbl.add_theme_font_override("font", font_raj_semi)
+		desc_lbl.add_theme_font_size_override("font_size", 15)
+		desc_lbl.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
 		desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vbox.add_child(desc_lbl)
 		
@@ -155,9 +155,9 @@ func refresh_shop() -> void:
 			is_equipped = (SaveManager.equipped_gem_skin == item["variant"])
 			
 		var action_btn := Button.new()
-		action_btn.custom_minimum_size = Vector2(260, 38)
-		action_btn.add_theme_font_override("font", font_pix)
-		action_btn.add_theme_font_size_override("font_size", 11)
+		action_btn.custom_minimum_size = Vector2(280, 44)
+		action_btn.add_theme_font_override("font", font_raj_bold)
+		action_btn.add_theme_font_size_override("font_size", 16)
 		
 		if not is_unlocked:
 			action_btn.text = "BELI [ %d NC ]" % item["cost"]

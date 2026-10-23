@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/level_up_modal.gd" id="1_scr"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_levelup.wav" id="2_lvl_sfx"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="3_click_sfx"]
-[ext_resource type="FontFile" path="res://assets/fonts/PressStart2P-Regular.ttf" id="4_font"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="4_raj_bold"]
 
 [node name="LevelUpModal" type="CanvasLayer"]
 process_mode = 3
@@ -15,7 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.03, 0.06, 0.92)
+color = Color(0.02, 0.03, 0.06, 0.94)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 anchors_preset = 15
@@ -25,41 +25,54 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(1150, 580)
+custom_minimum_size = Vector2(1340, 720)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 22
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 14
 
 [node name="Header" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_fonts/font = ExtResource("4_font")
-theme_override_font_sizes/font_size = 17
-text = "[ SYSTEM OVERCLOCK // SELECT UPGRADE MODULE ]"
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_fonts/font = ExtResource("4_raj_bold")
+theme_override_font_sizes/font_size = 28
+text = "[ OVERCLOCK SISTEM TERCAPAI // PILIH 1 MODUL AUGMENTASI ]"
 horizontal_alignment = 1
 
 [node name="Sub" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
-theme_override_fonts/font = ExtResource("4_font")
-theme_override_font_sizes/font_size = 10
-text = "Pilih 1 modul augmentasi persenjataan operative untuk memperkuat sistem tempur"
+theme_override_colors/font_color = Color(0.6, 0.85, 1, 1)
+theme_override_fonts/font = ExtResource("4_raj_bold")
+theme_override_font_sizes/font_size = 18
+text = "Klik kartu pilihanmu (atau tekan tombol [ 1 / 2 / 3 ]), lalu klik tombol KONFIRMASI di bawah untuk memasang."
 horizontal_alignment = 1
 
 [node name="CardsHBox" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 28
+theme_override_constants/separation = 32
 alignment = 1
+
+[node name="ConfirmHBox" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ConfirmBtn" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBox/ConfirmHBox"]
+custom_minimum_size = Vector2(720, 58)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_raj_bold")
+theme_override_font_sizes/font_size = 20
+text = "[ PILIH SALAH SATU KARTU DI ATAS DAHULU ]"
+disabled = true
 
 [node name="SFXLevelUp" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_lvl_sfx")

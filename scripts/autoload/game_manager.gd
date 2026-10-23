@@ -115,6 +115,9 @@ signal boss_defeated()
 
 signal tower_hp_changed(cur: int, max_hp: int)
 
+func trigger_mission_victory(time_survived: float, kills: int, lvl: int) -> void:
+	mission_victory_triggered.emit(time_survived, kills, lvl)
+
 func reset_run() -> void:
 	apply_selection()
 	var cfg = stage_configs.get(current_stage, stage_configs[1])

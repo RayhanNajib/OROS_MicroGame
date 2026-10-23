@@ -201,8 +201,11 @@ func is_any_modal_open() -> bool:
 		(marketplace_modal and marketplace_modal.visible)
 
 func _on_start_pressed() -> void:
-	GameState.reset_run()
-	get_tree().change_scene_to_file("res://scenes/main/GameArena.tscn")
+	if stage_select_modal:
+		stage_select_modal.open_stage_select()
+	else:
+		GameState.reset_run()
+		get_tree().change_scene_to_file("res://scenes/main/GameArena.tscn")
 
 func _on_stage_pressed() -> void:
 	if stage_select_modal:

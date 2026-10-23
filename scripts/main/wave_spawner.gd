@@ -57,7 +57,7 @@ func _process(delta: float) -> void:
 	# Check Stage Clear Victory
 	if time >= target_time and not stage_victory_flag:
 		stage_victory_flag = true
-		GameState.mission_victory_triggered.emit(time, GameState.total_kills, GameState.level)
+		GameState.trigger_mission_victory(time, GameState.total_kills, GameState.level)
 
 	# Nightmare difficulty spawn multiplier
 	var rate_mult := 1.5 if GameState.current_stage == 5 else (1.2 if GameState.current_stage >= 3 else 1.0)
