@@ -1,8 +1,58 @@
 extends Node
 
-# Selected Roster & Arsenal
+# Selected Stage, Roster & Arsenal
+var current_stage: int = 1
 var selected_hero: String = "kael" # "kael", "vex", "brutus"
 var selected_weapon: String = "revolver" # "revolver", "shotgun", "smg"
+
+# 5-Stage Nightmare Progression Matrix
+var stage_configs: Dictionary = {
+	1: {
+		"title": "SEKTOR 01: PABRIK SUBTERRANEAN",
+		"difficulty": "NORMAL",
+		"target_time": 180.0, # 3 Menit
+		"objective": "Bertahan dari serbuan robot & kalahkan Colossus-Omega",
+		"boss_name": "COLOSSUS-OMEGA",
+		"boss_hp": 750,
+		"has_tower": false
+	},
+	2: {
+		"title": "SEKTOR 02: RERUNTUHAN SIBER",
+		"difficulty": "HARD",
+		"target_time": 210.0, # 3.5 Menit
+		"objective": "Pertahankan Power Core Tower dari serangan Kamikaze Roller",
+		"boss_name": "ARACHNID-SOVEREIGN",
+		"boss_hp": 1100,
+		"has_tower": true
+	},
+	3: {
+		"title": "SEKTOR 03: REAKTOR OVERCLOCK",
+		"difficulty": "VERY HARD",
+		"target_time": 240.0, # 4 Menit
+		"objective": "Hindari radiasi lantai reaktor & tundukkan Nexus-Prime A.I.",
+		"boss_name": "NEXUS-PRIME A.I.",
+		"boss_hp": 1500,
+		"has_tower": false
+	},
+	4: {
+		"title": "SEKTOR 04: GURUN PLASMA EMP",
+		"difficulty": "EXPERT",
+		"target_time": 270.0, # 4.5 Menit
+		"objective": "Tembus badai EMP & taklukkan Dreadnought-Goliath",
+		"boss_name": "DREADNOUGHT-GOLIATH",
+		"boss_hp": 2100,
+		"has_tower": false
+	},
+	5: {
+		"title": "SEKTOR 05: APEX SINGULARITY",
+		"difficulty": "NIGHTMARE",
+		"target_time": 300.0, # 5 Menit
+		"objective": "Singularity Meltdown total! Hancurkan Chrono-Harbinger Omega!",
+		"boss_name": "CHRONO-HARBINGER OMEGA",
+		"boss_hp": 3000,
+		"has_tower": false
+	}
+}
 
 # Player Runtime Stats
 var max_health: int = 4
@@ -38,6 +88,12 @@ var current_xp: int = 0
 var xp_to_next: int = 12
 var total_kills: int = 0
 var survival_time: float = 0.0
+var session_credits: int = 0
+
+# Tower Defense Event (Stage 2)
+var tower_max_hp: int = 500
+var tower_hp: int = 500
+var has_tower_event: bool = false
 
 # Boss State
 var is_boss_active: bool = false
@@ -51,18 +107,27 @@ signal ammo_changed(current: int, max_cap: int, is_reloading: bool, reload_pct: 
 signal xp_changed(current: int, needed: int, lvl: int)
 signal level_up_triggered()
 signal game_over_triggered(time_survived: float, kills: int, lvl: int)
+signal mission_victory_triggered(time_survived: float, kills: int, lvl: int)
 
 signal boss_spawned(b_name: String, max_hp: int)
 signal boss_hp_changed(cur_hp: int, max_hp: int)
 signal boss_defeated()
 
+signal tower_hp_changed(cur: int, max_hp: int)
+
 func reset_run() -> void:
 	apply_selection()
+	var cfg = stage_configs.get(current_stage, stage_configs[1])
+	has_tower_event = cfg.get("has_tower", false)
+	tower_max_hp = 500
+	tower_hp = 500
+	
 	level = 1
 	current_xp = 0
 	xp_to_next = 12
 	total_kills = 0
 	survival_time = 0.0
+	session_credits = 0
 	is_boss_active = false
 	has_freeze = false
 	has_lightning = false
@@ -147,19 +212,24 @@ func add_xp(amount: int) -> void:
 
 func register_kill() -> void:
 	total_kills += 1
-	# Brutus Passive: Regenerate 1 HP every 50 kills
+	session_credits += 1 # 1 kill = 1 Nano-Credit
+	
 	if selected_hero == "brutus" and total_kills % 50 == 0:
 		heal(1)
-	# Vampiric chip synergy: 5% chance heal
 	if has_vampire_chip and randf() < 0.05:
 		heal(1)
 
+func damage_tower(amount: int) -> void:
+	if not has_tower_event: return
+	tower_hp = max(0, tower_hp - amount)
+	tower_hp_changed.emit(tower_hp, tower_max_hp)
+	if tower_hp <= 0:
+		game_over_triggered.emit(survival_time, total_kills, level)
+
 func take_damage(amount: int) -> void:
-	# Vex Passive: 15% chance to dodge attack completely
 	if selected_hero == "vex" and randf() < 0.15:
 		return
 		
-	# Brutus Passive: -1 incoming damage reduction (min 1)
 	var final_dmg := amount
 	if selected_hero == "brutus" and amount > 1:
 		final_dmg = amount - 1
@@ -185,4 +255,37 @@ func update_boss_hp(c_hp: int) -> void:
 	boss_hp_changed.emit(boss_current_hp, boss_max_hp)
 	if boss_current_hp <= 0 and is_boss_active:
 		is_boss_active = false
+		session_credits += 150 # Boss Kill Bonus NC
 		boss_defeated.emit()
+
+func calculate_mission_rank() -> Dictionary:
+	var cfg = stage_configs.get(current_stage, stage_configs[1])
+	var target: float = cfg.get("target_time", 180.0)
+	var time_ratio := survival_time / target
+	
+	var rank := "C"
+	var bonus_nc := 25
+	
+	if time_ratio >= 1.0 and (health >= max_health - 1 or total_kills >= 80):
+		rank = "S"
+		bonus_nc = 350
+	elif time_ratio >= 0.85 or total_kills >= 60:
+		rank = "A"
+		bonus_nc = 200
+	elif time_ratio >= 0.65 or total_kills >= 35:
+		rank = "B"
+		bonus_nc = 100
+	else:
+		rank = "C"
+		bonus_nc = 40
+		
+	var total_earned := session_credits + bonus_nc
+	SaveManager.add_credits(total_earned)
+	SaveManager.record_stage_result(current_stage, survival_time, rank)
+	
+	return {
+		"rank": rank,
+		"bonus_nc": bonus_nc,
+		"total_nc": total_earned,
+		"cleared": time_ratio >= 1.0
+	}

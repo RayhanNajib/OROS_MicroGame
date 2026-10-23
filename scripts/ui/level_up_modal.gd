@@ -9,85 +9,99 @@ var upgrade_defs: Array[Dictionary] = [
 	{
 		"id": "upg_damage",
 		"title": "OVERCLOCK CORE",
-		"desc": "+30% Bullet Damage & +40% Knockback force against robot hordes.",
+		"desc": "+30% Damage Peluru & +40% Gaya Tolak (Knockback).",
+		"detail": "• FORMULA: Base DMG x 1.30 (22 -> 29 DMG)\n• KNOCKBACK: 90 -> 126 Force\n• SINERGI: Efektif menembus armor musuh golem & dipadu Shotgun.",
 		"icon": "res://assets/sprites/upg_damage.png"
 	},
 	{
 		"id": "upg_firerate",
-		"title": "RAPID CAPACITOR",
-		"desc": "+25% Fire Rate and -20% Reload Duration.",
+		"title": "KAPASITOR CEPAT",
+		"desc": "+25% Laju Tembak & -20% Waktu Reload Magasin.",
+		"detail": "• LAJU TEMBAK: Interval tembak dipangkas 25%\n• RELOAD TIME: Durasi reload dipersingkat 20%\n• SINERGI: Sangat mematikan untuk senjata Revolver & Cyber SMG.",
 		"icon": "res://assets/sprites/upg_firerate.png"
 	},
 	{
 		"id": "upg_multishot",
-		"title": "SPREAD EMITTER",
-		"desc": "+1 Additional Projectile per shot in a tight fan pattern.",
+		"title": "EMITTER PENYEBAR",
+		"desc": "+1 Proyektil Tambahan per tembakan dalam formasi kipas.",
+		"detail": "• PROYEKTIL: +1 Peluru ekstra per tembakan\n• SPREAD: Formasi kipas menyebar 0.08 radian\n• SINERGI: Menggandakan luas zona hancur saat dikepung gerombolan.",
 		"icon": "res://assets/sprites/upg_multishot.png"
 	},
 	{
 		"id": "upg_piercing",
-		"title": "TUNGSTEN SHARDS",
-		"desc": "Bullets penetrate and pierce through +1 enemy.",
+		"title": "PECAHAN TUNGSTEN",
+		"desc": "Peluru menembus +1 lapisan badan robot musuh.",
+		"detail": "• PIERCE: +1 musuh dapat ditembus sebelum peluru hancur\n• APEX DAMAGE: Peluru terus meluncur menghantam barisan belakang.",
 		"icon": "res://assets/sprites/upg_piercing.png"
 	},
 	{
 		"id": "upg_ammo",
-		"title": "EXPANDED DRUM",
-		"desc": "+3 Max Ammo capacity and instant full magazine reload.",
+		"title": "MAGASIN EKSPANSI",
+		"desc": "+3 Kapasitas Peluru Maksimal & Isi Penuh Seketika.",
+		"detail": "• KAPASITAS: Max Ammo bertambah +3\n• INSTANT RELOAD: Magasin langsung terisi penuh 100% seketika.",
 		"icon": "res://assets/sprites/upg_ammo.png"
 	},
 	{
 		"id": "upg_freeze",
-		"title": "CRYO ROUNDS",
-		"desc": "Bullets freeze enemies on hit, slowing movement by 50% for 2.0s.",
+		"title": "PELURU CRYO ES",
+		"desc": "Membekukan musuh, memperlambat gerak 50% selama 2.0s.",
+		"detail": "• EFEK STATUS: Musuh membeku (tint cyan) 2.0 detik\n• SLOW FACTOR: Kecepatan gerak musuh dipangkas 50% untuk kiting aman.",
 		"icon": "res://assets/sprites/upg_freeze.png"
 	},
 	{
 		"id": "upg_lightning",
-		"title": "TESLA ARC",
-		"desc": "Bullet impacts trigger chain lightning striking 2 nearby enemies.",
+		"title": "BUSUR TESLA",
+		"desc": "Benturan peluru memicu percikan petir ke 2 musuh di dekatnya.",
+		"detail": "• EFEK LISTRIK: Petir menyambar 2 musuh dalam radius 120px\n• CHAIN DMG: Menyalurkan 14 damage listrik tambahan.",
 		"icon": "res://assets/sprites/upg_lightning.png"
 	},
 	{
 		"id": "upg_saw",
-		"title": "ORBITAL PLASMA SAW",
-		"desc": "Spawns a spinning plasma blade that circles around Kael dealing constant damage.",
+		"title": "PLASMA SAW ORBITAL",
+		"desc": "Memunculkan bilah gergaji plasma berputar mengelilingi hero.",
+		"detail": "• ORBITAL DRONE: 1 Bilah pisau berputar konstan radius 65px\n• CONTACT DMG: Menghasilkan 18 damage/detik konstan pada musuh dekat.",
 		"icon": "res://assets/sprites/upg_saw.png"
 	},
 	{
 		"id": "upg_heal",
-		"title": "NANO RESTORATION",
-		"desc": "Instantly heals +2 HP and permanently expands Max HP by +1.",
+		"title": "NANO RESTORASI",
+		"desc": "Sembuhkan 2 HP & permanen tambah +1 Max HP.",
+		"detail": "• HEALING: +2 HP pulih instan\n• MAX HP: Kapasitas darah bertambah permanen +1.",
 		"icon": "res://assets/sprites/spr_pickup_medkit.png"
 	},
 	{
 		"id": "upg_vampire",
-		"title": "VAMPIRIC CHIP",
-		"desc": "5% chance on each robot kill to siphon energy and repair 1 HP.",
+		"title": "CHIP VAMPIRIK",
+		"desc": "5% Peluang menyerap daya robot untuk pulihkan 1 HP.",
+		"detail": "• SIPHON RATE: 5% kemungkinan regenerasi darah per robot hancur\n• SUSTAIN: Menjaga darah tetap penuh di ronde survival panjang.",
 		"icon": "res://assets/sprites/upg_damage.png"
 	},
 	{
 		"id": "upg_speed",
-		"title": "NITRO ACTUATORS",
-		"desc": "+25% Movement Speed and reduces kiting firing penalties.",
+		"title": "AKTUATOR NITRO",
+		"desc": "+25% Kecepatan Gerak & kurangi penalti jalan saat menembak.",
+		"detail": "• SPEED: Base speed meningkat +25%\n• KITING: Hero tetap lincah menggocek musuh sambil menembak & reload.",
 		"icon": "res://assets/sprites/upg_firerate.png"
 	},
 	{
 		"id": "upg_magnet",
-		"title": "MAGNETIC VORTEX",
-		"desc": "+100% XP core magnetic attraction radius across the foundry.",
+		"title": "VORTEX MAGNETIK",
+		"desc": "+100% Radius Tarik Magnet Core EXP di seluruh arena.",
+		"detail": "• MAGNET RADIUS: 70px -> 140px\n• LOOTING: EXP tersedot otomatis tanpa harus mendekati kerumunan bahaya.",
 		"icon": "res://assets/sprites/upg_ammo.png"
 	},
 	{
 		"id": "upg_explosive",
-		"title": "PLASMA GRENADE",
-		"desc": "Bullets detonate on impact with a 45px area-of-effect blast.",
+		"title": "GRANAT PLASMA",
+		"desc": "Peluru meledak area 45px saat benturan menghantam musuh.",
+		"detail": "• AREA OF EFFECT: Ledakan plasma beradius 45px\n• BLAST DMG: Menghasilkan damage splash ke seluruh robot berdekatan.",
 		"icon": "res://assets/sprites/upg_multishot.png"
 	},
 	{
 		"id": "upg_shield",
-		"title": "REACTIVE ARMOR",
-		"desc": "Reinforces chassis, reducing incoming contact damage by 1.",
+		"title": "ARMOR REAKTIF",
+		"desc": "Perkuat sasis, kurangi -1 damage tabrakan & tambah 2 HP.",
+		"detail": "• DAMAGE REDUCTION: -1 damage kontak musuh (min 1)\n• MAX HP: +2 HP maksimal sasis robot.",
 		"icon": "res://assets/sprites/upg_piercing.png"
 	}
 ]
@@ -124,7 +138,6 @@ func _on_level_up() -> void:
 	for child in cards_hbox.get_children():
 		child.queue_free()
 
-	# Staggered Poker Card Dealing Animation
 	for i in range(active_cards.size()):
 		var card := create_card_node(active_cards[i], i)
 		cards_hbox.add_child(card)
@@ -132,9 +145,8 @@ func _on_level_up() -> void:
 
 func animate_poker_deal(card: Control, index: int) -> void:
 	card.modulate.a = 0.0
-	card.position.y = 260.0
+	card.position.y = 280.0
 	card.scale = Vector2(0.7, 0.7)
-	# Slight poker fan angle: left card -4 deg, center 0 deg, right +4 deg
 	var fan_angle: float = deg_to_rad(-4.0 if index == 0 else (4.0 if index == 2 else 0.0))
 	card.rotation = fan_angle
 	
@@ -153,45 +165,45 @@ func animate_poker_deal(card: Control, index: int) -> void:
 
 func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(330, 440)
+	btn.custom_minimum_size = Vector2(360, 480)
 	btn.flat = true
-	btn.pivot_offset = Vector2(165, 220)
+	btn.pivot_offset = Vector2(180, 240)
 	
-	# Background Frame - Retro Pixel Border
+	# Background Frame
 	var bg_panel := Panel.new()
 	bg_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.06, 0.08, 0.12, 0.96)
+	style.bg_color = Color(0.06, 0.09, 0.14, 0.96)
 	style.border_color = Color(0.18, 0.65, 0.92, 0.85)
 	style.set_border_width_all(3)
 	style.set_corner_radius_all(6)
 	bg_panel.add_theme_stylebox_override("panel", style)
 	btn.add_child(bg_panel)
 	
-	# Content Container
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 16)
-	margin.add_theme_constant_override("margin_right", 16)
-	margin.add_theme_constant_override("margin_top", 16)
-	margin.add_theme_constant_override("margin_bottom", 16)
+	margin.add_theme_constant_override("margin_left", 18)
+	margin.add_theme_constant_override("margin_right", 18)
+	margin.add_theme_constant_override("margin_top", 18)
+	margin.add_theme_constant_override("margin_bottom", 18)
 	
 	var vbox := VBoxContainer.new()
 	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vbox.add_theme_constant_override("separation", 12)
+	vbox.add_theme_constant_override("separation", 10)
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	
-	var font_pixel = load("res://assets/fonts/PressStart2P-Regular.ttf")
+	var font_orb = load("res://assets/fonts/Orbitron-Bold.ttf")
+	var font_pix = load("res://assets/fonts/PixelifySans-Regular.ttf")
 	
 	# Slot hotkey indicator
 	var key_lbl := Label.new()
-	key_lbl.text = "[ KARTU %d ]" % (slot_index + 1)
+	key_lbl.text = "[ MODUL %d ]" % (slot_index + 1)
 	key_lbl.add_theme_color_override("font_color", Color(0.3, 0.85, 1.0))
-	key_lbl.add_theme_font_override("font", font_pixel)
-	key_lbl.add_theme_font_size_override("font_size", 10)
+	key_lbl.add_theme_font_override("font", font_orb)
+	key_lbl.add_theme_font_size_override("font_size", 11)
 	key_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(key_lbl)
 	
@@ -208,8 +220,8 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	var title_lbl := Label.new()
 	title_lbl.text = data["title"]
 	title_lbl.add_theme_color_override("font_color", Color(1.0, 0.88, 0.25))
-	title_lbl.add_theme_font_override("font", font_pixel)
-	title_lbl.add_theme_font_size_override("font_size", 11)
+	title_lbl.add_theme_font_override("font", font_orb)
+	title_lbl.add_theme_font_size_override("font_size", 13)
 	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(title_lbl)
@@ -218,30 +230,53 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 	var desc_lbl := Label.new()
 	desc_lbl.text = data["desc"]
 	desc_lbl.add_theme_color_override("font_color", Color(0.85, 0.92, 1.0))
-	desc_lbl.add_theme_font_override("font", font_pixel)
-	desc_lbl.add_theme_font_size_override("font_size", 9)
+	desc_lbl.add_theme_font_override("font", font_pix)
+	desc_lbl.add_theme_font_size_override("font_size", 12)
 	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(desc_lbl)
 	
+	# Detailed Stats Box (Toggleable info)
+	var detail_lbl := Label.new()
+	detail_lbl.visible = false
+	detail_lbl.text = data.get("detail", "")
+	detail_lbl.add_theme_color_override("font_color", Color(0.4, 1.0, 0.6))
+	detail_lbl.add_theme_font_override("font", font_pix)
+	detail_lbl.add_theme_font_size_override("font_size", 10)
+	detail_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vbox.add_child(detail_lbl)
+	
+	# Info Toggle Button
+	var info_btn := Button.new()
+	info_btn.text = "[ ? BEDAH STATS ]"
+	info_btn.add_theme_font_override("font", font_pix)
+	info_btn.add_theme_font_size_override("font_size", 10)
+	info_btn.pressed.connect(func():
+		detail_lbl.visible = not detail_lbl.visible
+		desc_lbl.visible = not detail_lbl.visible
+		info_btn.text = "[ TUTUP STATS ]" if detail_lbl.visible else "[ ? BEDAH STATS ]"
+		if sfx_click: sfx_click.play()
+	)
+	vbox.add_child(info_btn)
+	
 	# Equip Hint
 	var equip_lbl := Label.new()
-	equip_lbl.text = "TEKAN [%d] ATAU KLIK" % (slot_index + 1)
+	equip_lbl.text = "TEKAN [%d] ATAU KLIK PASANG" % (slot_index + 1)
 	equip_lbl.add_theme_color_override("font_color", Color(0.55, 0.7, 0.85))
-	equip_lbl.add_theme_font_override("font", font_pixel)
-	equip_lbl.add_theme_font_size_override("font_size", 8)
+	equip_lbl.add_theme_font_override("font", font_pix)
+	equip_lbl.add_theme_font_size_override("font_size", 10)
 	equip_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(equip_lbl)
 	
 	margin.add_child(vbox)
 	btn.add_child(margin)
 	
-	# Hover Animations - Poker Elevate
+	# Hover Animations
 	btn.mouse_entered.connect(func():
 		var tw := btn.create_tween()
 		tw.set_parallel(true)
-		tw.tween_property(btn, "position:y", -12.0, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		tw.tween_property(btn, "scale", Vector2(1.06, 1.06), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.tween_property(btn, "position:y", -14.0, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.tween_property(btn, "scale", Vector2(1.05, 1.05), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		style.border_color = Color(1.0, 0.85, 0.2, 1.0)
 		style.bg_color = Color(0.08, 0.14, 0.22, 0.98)
 	)
@@ -252,7 +287,7 @@ func create_card_node(data: Dictionary, slot_index: int = 0) -> Control:
 		tw.tween_property(btn, "position:y", 0.0, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		tw.tween_property(btn, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		style.border_color = Color(0.18, 0.65, 0.92, 0.85)
-		style.bg_color = Color(0.06, 0.08, 0.12, 0.95)
+		style.bg_color = Color(0.06, 0.09, 0.14, 0.96)
 	)
 	
 	btn.pressed.connect(func():

@@ -14,6 +14,16 @@ func _ready() -> void:
 	var players = get_tree().get_nodes_in_group("player")
 	if players.size() > 0:
 		player = players[0]
+		
+	# Apply Custom Loot Skin from Marketplace
+	if has_node("Sprite2D"):
+		var sprite = get_node("Sprite2D")
+		if not is_gold:
+			match SaveManager.equipped_gem_skin:
+				"battery":
+					sprite.texture = load("res://assets/sprites/skins/spr_gem_battery.png")
+				"emerald":
+					sprite.texture = load("res://assets/sprites/skins/spr_gem_emerald.png")
 
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(player):

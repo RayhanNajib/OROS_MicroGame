@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/game_over_modal.gd" id="1_scr"]
-[ext_resource type="FontFile" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_orb"]
+[ext_resource type="FontFile" path="res://assets/fonts/PixelifySans-Regular.ttf" id="3_pix"]
 
 [node name="GameOverModal" type="CanvasLayer"]
 process_mode = 3
@@ -13,7 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.03, 0.06, 0.94)
+color = Color(0.02, 0.03, 0.06, 0.95)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 anchors_preset = 15
@@ -23,43 +24,49 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(920, 560)
+custom_minimum_size = Vector2(980, 620)
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="CenterContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 34
-theme_override_constants/margin_top = 30
+theme_override_constants/margin_top = 28
 theme_override_constants/margin_right = 34
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_bottom = 28
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 22
+theme_override_constants/separation = 20
 
 [node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.25, 0.35, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
-text = "[ CRITICAL OVERHEAT // REACTOR MELTDOWN ]"
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+text = "[ CRITICAL OVERHEAT // REAKTOR MELTDOWN ]"
 horizontal_alignment = 1
 
 [node name="StatsLabel" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
-custom_minimum_size = Vector2(0, 320)
+custom_minimum_size = Vector2(0, 380)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
-text = "[ COMBAT EVALUATION // MISSION TERMINATED ]
+theme_override_fonts/font = ExtResource("3_pix")
+theme_override_font_sizes/font_size = 14
+text = "[ LAPORAN DEBRIEFING OPERASI SIBER ]
 
-TACTICAL RANK      : CADET OPERATIVE [ C ]
-OPERATIVE PROFILE  : KAEL
-ACTIVE ARSENAL     : DUAL REVOLVER
+STATUS MISI        : GAGAL // REAKTOR HANCUR
+SEKTOR OPERASI     : STAGE 01 // PABRIK SUBTERRANEAN
+EVALUASI RANK      : RANK [ C ]
 
-SURVIVAL DURATION  : 00:00
-AUTOMATONS PURGED  : 0 UNITS
-OVERCLOCK LEVEL    : LVL 01"
+HERO OPERATIVE     : KAEL
+SENJATA AKTIF      : DUAL REVOLVER
+
+DURASI SURVIVAL    : 00:00 (TARGET: 03:00)
+ROBOT DIELIMINASI  : 0 UNIT
+LEVEL OVERCLOCK    : LVL 01
+
+HADIAH MISI        : +40 NANO-CREDITS
+SALDO REKENING     : 340 NANO-CREDITS"
 autowrap_mode = 2
 
 [node name="HBoxBtns" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
@@ -68,17 +75,17 @@ theme_override_constants/separation = 24
 alignment = 1
 
 [node name="RetryBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBoxBtns"]
-custom_minimum_size = Vector2(340, 52)
+custom_minimum_size = Vector2(360, 54)
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 13
 text = "[ RE-ENGAGE SIMULATION (R) ]"
 
 [node name="MenuBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBoxBtns"]
-custom_minimum_size = Vector2(340, 52)
+custom_minimum_size = Vector2(360, 54)
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(0.3, 0.85, 1, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 13
 text = "[ RETURN TO TERMINAL (ESC) ]"

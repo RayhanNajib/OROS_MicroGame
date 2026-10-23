@@ -15,6 +15,10 @@ extends CanvasLayer
 @onready var boss_hp_bar: ProgressBar = $BossBarContainer/BossHPBar
 @onready var low_hp_vignette: TextureRect = $LowHPVignette
 
+@onready var tower_container: VBoxContainer = $TowerBarContainer
+@onready var tower_hp_bar: ProgressBar = $TowerBarContainer/TowerHPBar
+@onready var tower_name_label: Label = $TowerBarContainer/TowerNameLabel
+
 var heart_full_tex: Texture2D
 var heart_empty_tex: Texture2D
 var bullet_icon_tex: Texture2D
@@ -31,10 +35,25 @@ func _ready() -> void:
 	GameState.boss_spawned.connect(_on_boss_spawned)
 	GameState.boss_hp_changed.connect(_on_boss_hp_changed)
 	GameState.boss_defeated.connect(_on_boss_defeated)
+	GameState.tower_hp_changed.connect(_on_tower_hp_changed)
+
+	if GameState.has_tower_event and tower_container:
+		tower_container.visible = true
+		tower_hp_bar.max_value = GameState.tower_max_hp
+		tower_hp_bar.value = GameState.tower_hp
 
 	update_hearts(GameState.health, GameState.max_health)
 	update_ammo(GameState.ammo, GameState.max_ammo, false, 0.0)
 	update_xp(GameState.current_xp, GameState.xp_to_next, GameState.level)
+
+func _on_tower_hp_changed(cur: int, max_hp: int) -> void:
+	if tower_container:
+		tower_container.visible = true
+	if tower_hp_bar:
+		tower_hp_bar.max_value = max_hp
+		tower_hp_bar.value = cur
+	if tower_name_label:
+		tower_name_label.text = "[ ! ] POWER CORE TOWER: %d / %d [ ! ]" % [cur, max_hp]
 
 func _on_boss_spawned(b_name: String, max_hp: int) -> void:
 	if boss_container:
@@ -151,6 +170,15 @@ func update_ammo(current: int, max_cap: int, is_reloading: bool, reload_pct: flo
 func update_xp(current: int, needed: int, lvl: int) -> void:
 	if xp_bar:
 		xp_bar.max_value = needed
-		xp_bar.value = current
+		var tw := xp_bar.create_tween()
+		tw.tween_property(xp_bar, "value", float(current), 0.15)
+		
 	if level_label:
-		level_label.text = "LVL %02d" % lvl
+		var old_text = level_label.text
+		var new_text = "[ LVL %02d ]" % lvl
+		if old_text != new_text:
+			level_label.text = new_text
+			level_label.pivot_offset = level_label.size * 0.5
+			var pop_tw := level_label.create_tween()
+			pop_tw.tween_property(level_label, "scale", Vector2(1.35, 1.35), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+			pop_tw.tween_property(level_label, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)

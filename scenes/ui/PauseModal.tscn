@@ -1,0 +1,122 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/pause_modal.gd" id="1_scr"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_orb"]
+[ext_resource type="FontFile" path="res://assets/fonts/PixelifySans-Regular.ttf" id="3_pix"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="4_click"]
+
+[node name="PauseModal" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_scr")
+
+[node name="Overlay" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.07, 0.94)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(720, 520)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 28
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Title" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+text = "[ SYSTEM PAUSED // PROTOKOL JEDA ]"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
+theme_override_fonts/font = ExtResource("3_pix")
+theme_override_font_sizes/font_size = 13
+text = "Simulasi pertempuran dibekukan. Sesuaikan pengaturan sistem."
+horizontal_alignment = 1
+
+[node name="ResumeBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(380, 54)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 14
+text = "[ > LANJUTKAN TEMPUR < ]"
+
+[node name="BGMBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="BGMLbl" type="Label" parent="CenterContainer/Panel/Margin/VBox/BGMBox"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_pix")
+theme_override_font_sizes/font_size = 14
+text = "VOLUME MUSIK BGM:"
+
+[node name="BGMSlider" type="HSlider" parent="CenterContainer/Panel/Margin/VBox/BGMBox"]
+custom_minimum_size = Vector2(300, 24)
+layout_mode = 2
+value = 80.0
+
+[node name="SFXBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="SFXLbl" type="Label" parent="CenterContainer/Panel/Margin/VBox/SFXBox"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_pix")
+theme_override_font_sizes/font_size = 14
+text = "VOLUME EFEK SFX:"
+
+[node name="SFXSlider" type="HSlider" parent="CenterContainer/Panel/Margin/VBox/SFXBox"]
+custom_minimum_size = Vector2(300, 24)
+layout_mode = 2
+value = 90.0
+
+[node name="LangBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="LangBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/LangBox"]
+custom_minimum_size = Vector2(320, 44)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_pix")
+theme_override_font_sizes/font_size = 13
+text = "BAHASA: INDONESIA"
+
+[node name="MenuBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(380, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(1, 0.4, 0.4, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 13
+text = "[ KEMBALI KE MAIN TERMINAL ]"
+
+[node name="SFXClick" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_click")

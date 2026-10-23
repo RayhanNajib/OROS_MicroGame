@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/entities/boss_controller.gd" id="1_scr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/spr_boss_arachnid.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arachnid"]
+size = Vector2(80, 80)
+
+[node name="BossArachnid" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 5
+script = ExtResource("1_scr")
+boss_type = "arachnid"
+boss_name = "ARACHNID-SOVEREIGN"
+max_hp = 1100
+base_speed = 52.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+hframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_arachnid")
+
+[node name="AnimTimer" type="Timer" parent="."]
+wait_time = 0.16
+autostart = true

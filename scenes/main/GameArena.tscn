@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="4_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/LevelUpModal.tscn" id="5_lvl_modal"]
 [ext_resource type="PackedScene" path="res://scenes/ui/GameOverModal.tscn" id="6_go_modal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PauseModal.tscn" id="10_pause_modal"]
 [ext_resource type="AudioStream" path="res://assets/audio/bgm_combat_loop.wav" id="7_bgm"]
 [ext_resource type="FontFile" path="res://assets/fonts/PressStart2P-Regular.ttf" id="8_font"]
 [ext_resource type="Texture2D" path="res://assets/sprites/pixel_hazard_fence.png" id="9_fence"]
@@ -113,6 +114,8 @@ script = ExtResource("3_spawner")
 [node name="LevelUpModal" parent="." instance=ExtResource("5_lvl_modal")]
 
 [node name="GameOverModal" parent="." instance=ExtResource("6_go_modal")]
+
+[node name="PauseModal" parent="." instance=ExtResource("10_pause_modal")]
 
 [node name="BossAlertLayer" type="CanvasLayer" parent="."]
 visible = false

@@ -84,7 +84,17 @@ func _physics_process(delta: float) -> void:
 
 	# Movement logic by type
 	var move_dir := dir
-	if enemy_type == "drone":
+	if enemy_type == "kamikaze" and GameState.has_tower_event:
+		var towers = get_tree().get_nodes_in_group("defense_tower")
+		if towers.size() > 0 and is_instance_valid(towers[0]):
+			var to_tower = (towers[0].global_position - global_position)
+			move_dir = to_tower.normalized()
+			if to_tower.length() < 30.0 and attack_cooldown <= 0.0:
+				towers[0].take_damage(25) # Kamikaze detonation against tower
+				attack_cooldown = 1.0
+				die()
+				return
+	elif enemy_type == "drone":
 		# Maintain standoff distance of 160px
 		if dist_to_player < 150.0:
 			move_dir = -dir * 0.7 # Back off

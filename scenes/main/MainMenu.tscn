@@ -1,14 +1,17 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/main/main_menu.gd" id="1_scr"]
 [ext_resource type="Texture2D" path="res://assets/sprites/pixel_menu_bg.png" id="2_bg"]
 [ext_resource type="Texture2D" path="res://assets/sprites/pixel_logo_oros.png" id="3_logo"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="4_click"]
 [ext_resource type="AudioStream" path="res://assets/audio/bgm_combat_loop.wav" id="5_bgm"]
-[ext_resource type="FontFile" path="res://assets/fonts/PressStart2P-Regular.ttf" id="6_font"]
-[ext_resource type="Texture2D" path="res://assets/sprites/pixel_pedestal.png" id="7_pedestal"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player_kael_run.png" id="8_kael"]
-[ext_resource type="Texture2D" path="res://assets/sprites/spr_revolver.png" id="9_revolver"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="6_orb"]
+[ext_resource type="FontFile" path="res://assets/fonts/PixelifySans-Regular.ttf" id="7_pix"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pixel_pedestal.png" id="8_pedestal"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player_kael_run.png" id="9_kael"]
+[ext_resource type="Texture2D" path="res://assets/sprites/spr_revolver.png" id="10_revolver"]
+[ext_resource type="PackedScene" path="res://scenes/main/StageSelectModal.tscn" id="11_stage_modal"]
+[ext_resource type="PackedScene" path="res://scenes/main/MarketplaceModal.tscn" id="12_shop_modal"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -36,7 +39,7 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -300.0
-offset_top = 28.0
+offset_top = 24.0
 offset_right = 300.0
 offset_bottom = 145.0
 grow_horizontal = 2
@@ -54,9 +57,17 @@ stretch_mode = 5
 [node name="Subtitle" type="Label" parent="TopGroup"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_fonts/font = ExtResource("6_font")
-theme_override_font_sizes/font_size = 13
+theme_override_fonts/font = ExtResource("6_orb")
+theme_override_font_sizes/font_size = 14
 text = "OVERCLOCKED ROGUELITE ON SURVIVOR"
+horizontal_alignment = 1
+
+[node name="ActiveStageIndicator" type="Label" parent="TopGroup"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("7_pix")
+theme_override_font_sizes/font_size = 13
+text = "SEKTOR AKTIF: [ STAGE 01: PABRIK SUBTERRANEAN ]"
 horizontal_alignment = 1
 
 [node name="SelectionHBox" type="HBoxContainer" parent="."]
@@ -66,9 +77,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -820.0
-offset_top = -340.0
-offset_right = 820.0
+offset_left = -840.0
+offset_top = -330.0
+offset_right = 840.0
 offset_bottom = 240.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -93,7 +104,7 @@ theme_override_constants/separation = 16
 [node name="Header" type="Label" parent="SelectionHBox/HeroPanel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.25, 0.85, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 14
 text = "[ PILIH HERO OPERATIVE ]"
 horizontal_alignment = 1
@@ -106,21 +117,21 @@ alignment = 1
 [node name="BtnKael" type="Button" parent="SelectionHBox/HeroPanel/Margin/VBox/HeroBtns"]
 custom_minimum_size = Vector2(145, 46)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 11
 text = "KAEL"
 
 [node name="BtnVex" type="Button" parent="SelectionHBox/HeroPanel/Margin/VBox/HeroBtns"]
 custom_minimum_size = Vector2(145, 46)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 11
 text = "VEX"
 
 [node name="BtnBrutus" type="Button" parent="SelectionHBox/HeroPanel/Margin/VBox/HeroBtns"]
 custom_minimum_size = Vector2(145, 46)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 11
 text = "BRUTUS"
 
@@ -128,8 +139,8 @@ text = "BRUTUS"
 custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
-theme_override_font_sizes/font_size = 11
+theme_override_fonts/font = ExtResource("7_pix")
+theme_override_font_sizes/font_size = 13
 text = "> KAEL (The CyberSmith) [BALANCED]
 
 HP        : 4 HEALTH
@@ -157,7 +168,7 @@ theme_override_constants/separation = 16
 [node name="Header" type="Label" parent="SelectionHBox/PreviewPanel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 14
 text = "[ LIVE OPERATIVE INSPECTION ]"
 horizontal_alignment = 1
@@ -180,27 +191,27 @@ offset_right = 160.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
-texture = ExtResource("7_pedestal")
+texture = ExtResource("8_pedestal")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="PreviewHero" type="Sprite2D" parent="SelectionHBox/PreviewPanel/Margin/VBox/StageControl"]
 position = Vector2(240, 240)
 scale = Vector2(5.5, 5.5)
-texture = ExtResource("8_kael")
+texture = ExtResource("9_kael")
 hframes = 4
 frame = 1
 
 [node name="PreviewWeapon" type="Sprite2D" parent="SelectionHBox/PreviewPanel/Margin/VBox/StageControl/PreviewHero"]
 position = Vector2(10, 0)
-texture = ExtResource("9_revolver")
+texture = ExtResource("10_revolver")
 
 [node name="StatusPill" type="Label" parent="SelectionHBox/PreviewPanel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
-theme_override_font_sizes/font_size = 11
-text = "SYSTEM READY // OVERCLOCK READY"
+theme_override_fonts/font = ExtResource("7_pix")
+theme_override_font_sizes/font_size = 13
+text = "SYSTEM READY // OVERCLOCK ARMED"
 horizontal_alignment = 1
 
 [node name="WeaponPanel" type="PanelContainer" parent="SelectionHBox"]
@@ -221,7 +232,7 @@ theme_override_constants/separation = 16
 [node name="Header" type="Label" parent="SelectionHBox/WeaponPanel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 14
 text = "[ PILIH ARSENAL SENJATA ]"
 horizontal_alignment = 1
@@ -234,21 +245,21 @@ alignment = 1
 [node name="BtnRevolver" type="Button" parent="SelectionHBox/WeaponPanel/Margin/VBox/WeaponBtns"]
 custom_minimum_size = Vector2(145, 46)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 10
 text = "REVOLVER"
 
 [node name="BtnShotgun" type="Button" parent="SelectionHBox/WeaponPanel/Margin/VBox/WeaponBtns"]
 custom_minimum_size = Vector2(145, 46)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 10
 text = "SHOTGUN"
 
 [node name="BtnSMG" type="Button" parent="SelectionHBox/WeaponPanel/Margin/VBox/WeaponBtns"]
 custom_minimum_size = Vector2(145, 46)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 10
 text = "CYBER SMG"
 
@@ -256,8 +267,8 @@ text = "CYBER SMG"
 custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
-theme_override_font_sizes/font_size = 11
+theme_override_fonts/font = ExtResource("7_pix")
+theme_override_font_sizes/font_size = 13
 text = "> DUAL PLASMA REVOLVER
 
 MAGASIN   : 6 PELURU
@@ -274,44 +285,60 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -780.0
-offset_top = -110.0
-offset_right = 780.0
-offset_bottom = -50.0
+offset_left = -900.0
+offset_top = -105.0
+offset_right = 900.0
+offset_bottom = -45.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_constants/separation = 18
+theme_override_constants/separation = 14
 alignment = 1
 
 [node name="StartBtn" type="Button" parent="BottomActions"]
-custom_minimum_size = Vector2(400, 56)
+custom_minimum_size = Vector2(340, 56)
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(1, 0.9, 0.3, 1)
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 13
 text = "[ > START OVERCLOCK RUN < ]"
 
-[node name="ControlsBtn" type="Button" parent="BottomActions"]
-custom_minimum_size = Vector2(360, 56)
+[node name="StageBtn" type="Button" parent="BottomActions"]
+custom_minimum_size = Vector2(300, 56)
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(0.3, 0.85, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 11
-text = "[ CONTROLS & MANUAL ]"
+text = "[ SELEKSI STAGE (1-5) ]"
+
+[node name="ShopBtn" type="Button" parent="BottomActions"]
+custom_minimum_size = Vector2(300, 56)
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 0.85, 0.25, 1)
+theme_override_fonts/font = ExtResource("6_orb")
+theme_override_font_sizes/font_size = 11
+text = "[ CYBER ARMORY (MARKET) ]"
+
+[node name="ControlsBtn" type="Button" parent="BottomActions"]
+custom_minimum_size = Vector2(280, 56)
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.3, 0.85, 1, 1)
+theme_override_fonts/font = ExtResource("6_orb")
+theme_override_font_sizes/font_size = 11
+text = "[ KONTROL & PANDUAN ]"
 
 [node name="CreditsBtn" type="Button" parent="BottomActions"]
-custom_minimum_size = Vector2(360, 56)
+custom_minimum_size = Vector2(280, 56)
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(0.3, 0.85, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 11
-text = "[ CREDITS & TIM PPLG ]"
+text = "[ TIM PPLG & CREDITS ]"
 
 [node name="QuitBtn" type="Button" parent="BottomActions"]
-custom_minimum_size = Vector2(160, 56)
+custom_minimum_size = Vector2(130, 56)
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(1, 0.4, 0.4, 1)
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 11
 text = "[ QUIT ]"
 
@@ -329,10 +356,14 @@ offset_bottom = -14.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.45, 0.55, 0.7, 0.8)
-theme_override_fonts/font = ExtResource("6_font")
-theme_override_font_sizes/font_size = 9
-text = "O.R.O.S. v1.2.0-FHD • GODOT 4.7.2 • FT PTI UNIVERSITAS NEGERI MALANG"
+theme_override_fonts/font = ExtResource("7_pix")
+theme_override_font_sizes/font_size = 11
+text = "O.R.O.S. v1.3.0-NIGHTMARE • GODOT 4.7.2 • FT PTI UNIVERSITAS NEGERI MALANG"
 horizontal_alignment = 1
+
+[node name="StageSelectModal" parent="." instance=ExtResource("11_stage_modal")]
+
+[node name="MarketplaceModal" parent="." instance=ExtResource("12_shop_modal")]
 
 [node name="ControlsModal" type="ColorRect" parent="."]
 visible = false
@@ -370,7 +401,7 @@ theme_override_constants/separation = 20
 [node name="Header" type="Label" parent="ControlsModal/Center/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 16
 text = "[ PROTOKOL KONTROL & MEKANIK PERMAINAN ]"
 horizontal_alignment = 1
@@ -378,8 +409,8 @@ horizontal_alignment = 1
 [node name="Guide" type="Label" parent="ControlsModal/Center/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
-theme_override_font_sizes/font_size = 11
+theme_override_fonts/font = ExtResource("7_pix")
+theme_override_font_sizes/font_size = 13
 text = "• [W, A, S, D] / Tombol Panah: Gerak Karakter Operative
   * Kiting Movement Penalty: Kecepatan berkurang 25% saat menembak atau me-reload.
 
@@ -387,14 +418,14 @@ text = "• [W, A, S, D] / Tombol Panah: Gerak Karakter Operative
 • [KLIK KIRI]: Tembak Peluru Senjata Aktif
 • [R]: Reload Manual Magasin (Otomatis me-reload saat magasin habis)
 • [1, 2, 3]: Pilih Cepat Kartu Upgrade Roguelite saat Level Up
-• [ESC]: Jeda Permainan / Tutup Menu Modal"
+• [ESC]: Jeda Permainan / Buka Menu Pause"
 autowrap_mode = 2
 
 [node name="CloseControlsBtn" type="Button" parent="ControlsModal/Center/Panel/Margin/VBox"]
 custom_minimum_size = Vector2(260, 48)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 11
 text = "[ TUTUP PANDUAN ]"
 
@@ -434,7 +465,7 @@ theme_override_constants/separation = 18
 [node name="Header" type="Label" parent="CreditsModal/Center/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 16
 text = "[ TIM PENGEMBANG O.R.O.S. - PPLG 2026 ]"
 horizontal_alignment = 1
@@ -442,16 +473,16 @@ horizontal_alignment = 1
 [node name="Sub" type="Label" parent="CreditsModal/Center/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
-theme_override_font_sizes/font_size = 10
+theme_override_fonts/font = ExtResource("7_pix")
+theme_override_font_sizes/font_size = 12
 text = "Workshop Pengembangan Perangkat Lunak dan Gim - S1 PTI FT Universitas Negeri Malang"
 horizontal_alignment = 1
 
 [node name="TeamDetails" type="Label" parent="CreditsModal/Center/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_fonts/font = ExtResource("6_font")
-theme_override_font_sizes/font_size = 11
+theme_override_fonts/font = ExtResource("7_pix")
+theme_override_font_sizes/font_size = 13
 text = "1. Muhammad Rayhan Najib (NIM: 240533600012)
    - Lead Programmer, Engine Integrator & Twin-Stick Core State Machine
 
@@ -468,7 +499,7 @@ autowrap_mode = 2
 custom_minimum_size = Vector2(280, 48)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("6_font")
+theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 11
 text = "[ KEMBALI KE MENU ]"
 

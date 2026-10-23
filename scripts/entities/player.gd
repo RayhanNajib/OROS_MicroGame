@@ -49,26 +49,32 @@ func _ready() -> void:
 	if has_node("ShadowSprite"):
 		shadow_sprite = get_node("ShadowSprite")
 		
-	# Load Hero & Weapon textures dynamically based on selection
+	# Load Hero & Weapon textures dynamically based on selection and equipped marketplace skins
 	match GameState.selected_hero:
 		"vex":
-			body_sprite.texture = load("res://assets/sprites/player_vex_run.png")
+			var skin = "res://assets/sprites/skins/player_vex_toxic.png" if SaveManager.equipped_hero_skin == "toxic" else "res://assets/sprites/player_vex_run.png"
+			body_sprite.texture = load(skin)
 		"brutus":
-			body_sprite.texture = load("res://assets/sprites/player_brutus_run.png")
+			var skin = "res://assets/sprites/skins/player_brutus_gold.png" if SaveManager.equipped_hero_skin == "gold" else "res://assets/sprites/player_brutus_run.png"
+			body_sprite.texture = load(skin)
 		_:
-			body_sprite.texture = load("res://assets/sprites/player_kael_run.png")
+			var skin = "res://assets/sprites/skins/player_kael_crimson.png" if SaveManager.equipped_hero_skin == "crimson" else "res://assets/sprites/player_kael_run.png"
+			body_sprite.texture = load(skin)
 			
 	match GameState.selected_weapon:
 		"shotgun":
-			gun_sprite.texture = load("res://assets/sprites/spr_shotgun.png")
+			var wep = "res://assets/sprites/skins/spr_shotgun_cyber.png" if SaveManager.equipped_weapon_skin == "cyber" else "res://assets/sprites/spr_shotgun.png"
+			gun_sprite.texture = load(wep)
 			gun_sprite.position = Vector2(14, 0)
 			muzzle.position = Vector2(28, 0)
 		"smg":
-			gun_sprite.texture = load("res://assets/sprites/spr_smg.png")
+			var wep = "res://assets/sprites/skins/spr_smg_violet.png" if SaveManager.equipped_weapon_skin == "violet" else "res://assets/sprites/spr_smg.png"
+			gun_sprite.texture = load(wep)
 			gun_sprite.position = Vector2(10, 0)
 			muzzle.position = Vector2(20, 0)
 		_:
-			gun_sprite.texture = load("res://assets/sprites/spr_revolver.png")
+			var wep = "res://assets/sprites/skins/spr_revolver_gold.png" if SaveManager.equipped_weapon_skin == "gold" else "res://assets/sprites/spr_revolver.png"
+			gun_sprite.texture = load(wep)
 			gun_sprite.position = Vector2(10, 0)
 			muzzle.position = Vector2(22, 0)
 		

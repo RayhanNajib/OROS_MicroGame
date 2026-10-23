@@ -19,6 +19,7 @@ boot_splash/bg_color=Color(0.0470588, 0.0627451, 0.101961, 1)
 
 [autoload]
 
+SaveManager="*res://scripts/autoload/save_manager.gd"
 GameState="*res://scripts/autoload/game_manager.gd"
 
 [display]
