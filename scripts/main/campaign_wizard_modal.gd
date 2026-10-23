@@ -10,20 +10,24 @@ extends ColorRect
 @onready var stages_vbox: VBoxContainer = $CenterContainer/Panel/Margin/VBox/Step1StageSelect/Scroll/StagesVBox
 
 # Step 2: Loadout
-@onready var btn_kael: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox/HeroBtns/BtnKael
-@onready var btn_vex: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox/HeroBtns/BtnVex
-@onready var btn_brutus: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox/HeroBtns/BtnBrutus
-@onready var hero_desc: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/HeroPanel/Margin/VBox/HeroDesc
+@onready var hero_name_lbl: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/HeroSection/HeroHeader/HeroName
+@onready var hero_hp_lbl: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/HeroSection/HeroHeader/HeroHP
+@onready var hero_desc_lbl: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/HeroSection/HeroDesc
 
-@onready var btn_revolver: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox/WeaponBtns/BtnRevolver
-@onready var btn_shotgun: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox/WeaponBtns/BtnShotgun
-@onready var btn_smg: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox/WeaponBtns/BtnSMG
-@onready var weapon_desc: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/WeaponPanel/Margin/VBox/WeaponDesc
+@onready var btn_kael: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/HeroSection/HeroGrid/BtnKael
+@onready var btn_vex: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/HeroSection/HeroGrid/BtnVex
+@onready var btn_brutus: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/HeroSection/HeroGrid/BtnBrutus
 
-@onready var preview_hero: Sprite2D = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox/StageControl/PreviewHero
-@onready var preview_weapon: Sprite2D = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox/StageControl/PreviewHero/PreviewWeapon
-@onready var prep_stage_banner: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox/PrepStageBanner
-@onready var synergy_banner: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/HBox/PreviewPanel/Margin/VBox/SynergyBanner
+@onready var wep_name_lbl: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/WeaponSection/WepHeader/WepName
+@onready var wep_closeup: TextureRect = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/WeaponSection/WepHeader/WepCloseUp
+@onready var wep_stats_lbl: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/WeaponSection/WepStats
+
+@onready var btn_revolver: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/WeaponSection/WeaponGrid/BtnRevolver
+@onready var btn_shotgun: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/WeaponSection/WeaponGrid/BtnShotgun
+@onready var btn_smg: Button = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/WeaponSection/WeaponGrid/BtnSMG
+
+@onready var synergy_banner: Label = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/SynergyBanner
+@onready var right_side_portrait: TextureRect = $CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/RightSidePortrait
 
 # Navigation buttons
 @onready var back_btn: Button = $CenterContainer/Panel/Margin/VBox/BottomNav/BackBtn
@@ -59,7 +63,7 @@ func go_to_step(step: int) -> void:
 	current_step = step
 	if step == 1:
 		wizard_title.text = "[ LANGKAH 1: PILIH SEKTOR MISI ]"
-		wizard_step_label.text = "PILIH SEKTOR OPERASI YANG AKAN DIINFILTRASI"
+		wizard_step_label.text = "PILIH SEKTOR OPERASI SEBELUM MEMILIH OPERATIVE"
 		step1_stage_select.visible = true
 		step2_loadout_prep.visible = false
 		launch_btn.visible = false
@@ -77,12 +81,6 @@ func go_to_step(step: int) -> void:
 		back_btn.text = "[ < GANTI SEKTOR STAGE ]"
 		update_hero_ui(GameState.selected_hero)
 		update_weapon_ui(GameState.selected_weapon)
-		update_prep_stage_banner()
-
-func _process(_delta: float) -> void:
-	if preview_hero and step2_loadout_prep.visible:
-		var breath := sin(Time.get_ticks_msec() * 0.005) * 0.04
-		preview_hero.scale = Vector2(5.5 * (1.0 + breath), 5.5 * (1.0 - breath))
 
 func build_stage_list() -> void:
 	if not stages_vbox: return
@@ -102,10 +100,10 @@ func build_stage_list() -> void:
 		panel.custom_minimum_size = Vector2(1100, 105)
 
 		var style := StyleBoxFlat.new()
-		style.bg_color = Color(0.08, 0.12, 0.18, 0.96) if is_unlocked else Color(0.04, 0.05, 0.08, 0.85)
-		style.border_color = Color(1.0, 0.85, 0.25, 1.0) if is_current else (Color(0.2, 0.65, 0.9, 0.7) if is_unlocked else Color(0.3, 0.35, 0.45, 0.4))
+		style.bg_color = Color(0.12, 0.09, 0.15, 0.95) if is_unlocked else Color(0.08, 0.06, 0.1, 0.85)
+		style.border_color = Color(0.95, 0.76, 0.28, 1.0) if is_current else (Color(0.2, 0.65, 0.9, 0.7) if is_unlocked else Color(0.3, 0.35, 0.45, 0.4))
 		if s_id == 5 and is_unlocked:
-			style.border_color = Color(1.0, 0.25, 0.35, 1.0) # Nightmare Red
+			style.border_color = Color(0.92, 0.36, 0.42, 1.0) # Nightmare Red
 		style.set_border_width_all(3 if is_current else 2)
 		style.set_corner_radius_all(6)
 		panel.add_theme_stylebox_override("panel", style)
@@ -127,14 +125,14 @@ func build_stage_list() -> void:
 		title_lbl.text = "[ STAGE %02d ] %s // TINGKAT: %s" % [s_id, cfg["title"], cfg["difficulty"]]
 		title_lbl.add_theme_font_override("font", font_orb)
 		title_lbl.add_theme_font_size_override("font_size", 18)
-		title_lbl.add_theme_color_override("font_color", Color(1.0, 0.88, 0.25) if is_unlocked else Color(0.5, 0.55, 0.65))
+		title_lbl.add_theme_color_override("font_color", Color(0.92, 0.36, 0.42) if is_unlocked else Color(0.5, 0.55, 0.65))
 		info_vbox.add_child(title_lbl)
 
 		var desc_lbl := Label.new()
 		desc_lbl.text = "TARGET SURVIVE: %d DETIK  |  MISI: %s  |  APEX BOSS: %s" % [int(cfg["target_time"]), cfg["objective"], cfg["boss_name"]]
 		desc_lbl.add_theme_font_override("font", font_tech)
 		desc_lbl.add_theme_font_size_override("font_size", 15)
-		desc_lbl.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0) if is_unlocked else Color(0.45, 0.5, 0.6))
+		desc_lbl.add_theme_color_override("font_color", Color(0.93, 0.89, 0.85) if is_unlocked else Color(0.45, 0.5, 0.6))
 		info_vbox.add_child(desc_lbl)
 
 		var rank_lbl := Label.new()
@@ -186,32 +184,26 @@ func setup_hero_btn(btn: Button, hero_id: String) -> void:
 	)
 
 func update_hero_ui(hero_id: String) -> void:
-	if btn_kael: btn_kael.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
-	if btn_vex: btn_vex.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
-	if btn_brutus: btn_brutus.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
+	var port_path = "res://assets/sprites/portrait_%s.png" % hero_id
+	if ResourceLoader.exists(port_path) and right_side_portrait:
+		right_side_portrait.texture = load(port_path)
 
 	match hero_id:
 		"kael":
-			if btn_kael: btn_kael.add_theme_color_override("font_color", Color(0.2, 0.9, 1.0))
-			if preview_hero:
-				var skin_path = "res://assets/sprites/skins/player_kael_crimson.png" if SaveManager.equipped_hero_skin == "crimson" else "res://assets/sprites/player_kael_run.png"
-				preview_hero.texture = load(skin_path)
-			if hero_desc:
-				hero_desc.text = "> KAEL (The CyberSmith) [BALANCED]\n\nHP        : 4 HEALTH\nSPEED     : 160 PX/S\n\nSKILL AKTIF [SPACE/E]: EMP CRYO DASH\nMeluncur 260px ke depan dengan kekebalan dan melepaskan gelombang es yang membekukan musuh 3 detik.\n\nSENJATA NATIVE : DUAL REVOLVER (+25% Damage Buff)"
+			if hero_name_lbl: hero_name_lbl.text = "KAEL (THE CYBERSMITH)"
+			if hero_hp_lbl: hero_hp_lbl.text = "HP: 04"
+			if hero_desc_lbl:
+				hero_desc_lbl.text = "SKILL AKTIF [SPACE/E]: EMP CRYO DASH\nMeluncur 260px ke depan dengan kekebalan dan gelombang es membekukan seluruh robot musuh 3 detik.\nDapat ditingkatkan lewat Skill Core drops! Senjata Native: Dual Revolver (+25% Damage)."
 		"vex":
-			if btn_vex: btn_vex.add_theme_color_override("font_color", Color(1.0, 0.3, 0.4))
-			if preview_hero:
-				var skin_path = "res://assets/sprites/skins/player_vex_toxic.png" if SaveManager.equipped_hero_skin == "toxic" else "res://assets/sprites/player_vex_run.png"
-				preview_hero.texture = load(skin_path)
-			if hero_desc:
-				hero_desc.text = "> VEX (Phase Assassin) [AGILITY]\n\nHP        : 3 HEALTH (Tipis)\nSPEED     : 205 PX/S (Sangat Lincah)\n\nSKILL AKTIF [SPACE/E]: PHASE BLINK\nTeleportasi seketika 320px menembus rintangan dan meninggalkan decoy pemancing yang meledak 80 DMG.\n\nSENJATA NATIVE : CYBER SMG (+25% Laju Tembak Buff)"
+			if hero_name_lbl: hero_name_lbl.text = "VEX (PHASE ASSASSIN)"
+			if hero_hp_lbl: hero_hp_lbl.text = "HP: 03"
+			if hero_desc_lbl:
+				hero_desc_lbl.text = "SKILL AKTIF [SPACE/E]: PHASE BLINK\nTeleportasi seketika 320px menembus rintangan dan meninggalkan decoy pemancing yang meledak 80 DMG.\nDapat ditingkatkan lewat Skill Core drops! Senjata Native: Cyber SMG (+25% Laju Tembak)."
 		"brutus":
-			if btn_brutus: btn_brutus.add_theme_color_override("font_color", Color(1.0, 0.7, 0.2))
-			if preview_hero:
-				var skin_path = "res://assets/sprites/skins/player_brutus_gold.png" if SaveManager.equipped_hero_skin == "gold" else "res://assets/sprites/player_brutus_run.png"
-				preview_hero.texture = load(skin_path)
-			if hero_desc:
-				hero_desc.text = "> BRUTUS (The Juggernaut) [TANK]\n\nHP        : 6 HEALTH (Sangat Tebal)\nSPEED     : 130 PX/S (Lambat)\n\nSKILL AKTIF [SPACE/E]: TITAN SEISMIC SLAM\nMenghentak tanah memicu gempa 70 DMG + hempasan 350px dan memberikan perisai kinetik 2.0s.\n\nSENJATA NATIVE : SCRAP SHOTGUN (+3 Pellets & +20% Knockback)"
+			if hero_name_lbl: hero_name_lbl.text = "BRUTUS (THE JUGGERNAUT)"
+			if hero_hp_lbl: hero_hp_lbl.text = "HP: 06"
+			if hero_desc_lbl:
+				hero_desc_lbl.text = "SKILL AKTIF [SPACE/E]: TITAN SEISMIC SLAM\nMenghentak tanah memicu gempa 70 DMG + hempasan 350px dan memberikan perisai kinetik 2.0s.\nDapat ditingkatkan lewat Skill Core drops! Senjata Native: Scrap Shotgun (+3 Pellets & +20% Knockback)."
 
 func setup_weapon_btn(btn: Button, wep_id: String) -> void:
 	if not btn: return
@@ -223,59 +215,38 @@ func setup_weapon_btn(btn: Button, wep_id: String) -> void:
 	)
 
 func update_weapon_ui(wep_id: String) -> void:
-	if btn_revolver: btn_revolver.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
-	if btn_shotgun: btn_shotgun.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
-	if btn_smg: btn_smg.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
+	var close_path = "res://assets/sprites/closeup_%s.png" % wep_id
+	if ResourceLoader.exists(close_path) and wep_closeup:
+		wep_closeup.texture = load(close_path)
 
 	match wep_id:
 		"revolver":
-			if btn_revolver: btn_revolver.add_theme_color_override("font_color", Color(0.2, 0.9, 1.0))
-			if preview_weapon:
-				var wep_path = "res://assets/sprites/skins/spr_revolver_gold.png" if SaveManager.equipped_weapon_skin == "gold" else "res://assets/sprites/spr_revolver.png"
-				preview_weapon.texture = load(wep_path)
-				preview_weapon.position = Vector2(10, 0)
-			if weapon_desc:
-				weapon_desc.text = "> DUAL PLASMA REVOLVER [MID-LONG]\n\nMAGASIN   : 6 PELURU\nDAMAGE    : 24 PER HIT\nRELOAD    : 0.95 DETIK\n\nKARAKTERISTIK:\nPresisi tinggi tembakan berdaya tembus tajam. Ideal untuk eliminasi musuh dari jarak aman."
+			if wep_name_lbl: wep_name_lbl.text = "DUAL REVOLVER [BALANCED]"
+			if wep_stats_lbl:
+				wep_stats_lbl.text = "DAMAGE: 24  |  PROYEKTIL: 1  |  RELOAD: 0.95s  |  FIRE RATE: 0.20s  |  MAX AMMO: 06\nKARAKTER: Presisi tinggi tembakan tajam jarak menengah-jauh untuk eliminasi aman."
 		"shotgun":
-			if btn_shotgun: btn_shotgun.add_theme_color_override("font_color", Color(1.0, 0.85, 0.25))
-			if preview_weapon:
-				var wep_path = "res://assets/sprites/skins/spr_shotgun_cyber.png" if SaveManager.equipped_weapon_skin == "cyber" else "res://assets/sprites/spr_shotgun.png"
-				preview_weapon.texture = load(wep_path)
-				preview_weapon.position = Vector2(14, 0)
-			if weapon_desc:
-				weapon_desc.text = "> SCRAP SHOTGUN [CLOSE QUARTERS]\n\nMAGASIN   : 4 PELURU (Sangat Terbatas)\nDAMAGE    : 8x8 PELLETS (64 POINT-BLANK)\nRELOAD    : 1.25 DETIK (Lambat)\n\nKARAKTERISTIK:\nJarak sangat pendek! Peluru menguap di 170px. Mematikan jika ditembakkan langsung di depan robot musuh."
+			if wep_name_lbl: wep_name_lbl.text = "SCRAP SHOTGUN [POINT-BLANK]"
+			if wep_stats_lbl:
+				wep_stats_lbl.text = "DAMAGE: 8x8 PELLETS (64 POINT-BLANK)  |  PROYEKTIL: 8  |  RELOAD: 1.25s  |  AMMO: 04\nKARAKTER: Jarak sangat pendek (170px), mematikan jika ditembakkan langsung di depan robot musuh."
 		"smg":
-			if btn_smg: btn_smg.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
-			if preview_weapon:
-				var wep_path = "res://assets/sprites/skins/spr_smg_violet.png" if SaveManager.equipped_weapon_skin == "violet" else "res://assets/sprites/spr_smg.png"
-				preview_weapon.texture = load(wep_path)
-				preview_weapon.position = Vector2(10, 0)
-			if weapon_desc:
-				weapon_desc.text = "> CYBER SMG [RAPID SPRAY]\n\nMAGASIN   : 28 PELURU (Sangat Banyak)\nDAMAGE    : 7 PER HIT\nLAJU TEMBAK: 0.075S (Sangat Cepat)\nRELOAD    : 0.80 DETIK\n\nKARAKTERISTIK:\nLaju semburan peluru cepat untuk memotong kerumunan musuh banyak seketika."
+			if wep_name_lbl: wep_name_lbl.text = "CYBER SMG [RAPID SPRAY]"
+			if wep_stats_lbl:
+				wep_stats_lbl.text = "DAMAGE: 7  |  PROYEKTIL: 1  |  RELOAD: 0.80s  |  FIRE RATE: 0.075s  |  MAX AMMO: 28\nKARAKTER: Laju semprotan peluru cepat untuk memotong kerumunan musuh banyak seketika."
 
 func check_synergy() -> void:
 	if not synergy_banner: return
-	var is_syn := false
 	if GameState.selected_hero == "kael" and GameState.selected_weapon == "revolver":
-		is_syn = true
 		synergy_banner.text = "[ NATIVE SYNERGY AKTIF: KAEL + REVOLVER -> +25% DMG ]"
+		synergy_banner.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	elif GameState.selected_hero == "vex" and GameState.selected_weapon == "smg":
-		is_syn = true
 		synergy_banner.text = "[ NATIVE SYNERGY AKTIF: VEX + SMG -> +25% LAJU TEMBAK ]"
+		synergy_banner.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	elif GameState.selected_hero == "brutus" and GameState.selected_weapon == "shotgun":
-		is_syn = true
 		synergy_banner.text = "[ NATIVE SYNERGY AKTIF: BRUTUS + SHOTGUN -> +3 PELLETS ]"
+		synergy_banner.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	else:
 		synergy_banner.text = "[ NON-NATIVE: BUFF SENJATA PASIF NONAKTIF (DAPAT DIUPGRADE DI SHOP) ]"
 		synergy_banner.add_theme_color_override("font_color", Color(0.85, 0.6, 0.35))
-		return
-	synergy_banner.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
-
-func update_prep_stage_banner() -> void:
-	if prep_stage_banner:
-		var cfg = GameState.stage_configs.get(GameState.current_stage, GameState.stage_configs[1])
-		prep_stage_banner.text = "[ TARGET: %s // %d DETIK ]" % [cfg["title"], int(cfg["target_time"])]
-	check_synergy()
 
 func _on_back_pressed() -> void:
 	if sfx_click: sfx_click.play()

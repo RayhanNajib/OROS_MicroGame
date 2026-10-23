@@ -23,6 +23,9 @@ extends CharacterBody2D
 @onready var sfx_weapon_swap: AudioStreamPlayer2D = $SFXWeaponSwap
 @onready var sfx_pickup_core: AudioStreamPlayer2D = $SFXPickupCore
 
+@onready var reload_bar: ProgressBar = $ReloadBar
+@onready var camera: Camera2D = $Camera2D
+
 # Reload & Shooting state
 var shoot_cooldown: float = 0.0
 var is_reloading: bool = false
@@ -106,9 +109,14 @@ func _on_weapon_swapped(_wep_id: String, _slot_idx: int, _is_syn: bool) -> void:
 	emit_ammo_update()
 
 func _process(delta: float) -> void:
-	# 1. Aim gun towards mouse
+	# 1. Aim gun towards mouse & Dynamic Cursor Look-Ahead Camera
 	var mouse_pos := get_global_mouse_position()
 	weapon_pivot.look_at(mouse_pos)
+	
+	if camera:
+		var look_offset = (mouse_pos - global_position) * 0.22
+		look_offset = look_offset.limit_length(100.0)
+		camera.offset = camera.offset.move_toward(look_offset, 280.0 * delta)
 	
 	# Smoothly return gun pivot after recoil
 	weapon_pivot.position = weapon_pivot.position.move_toward(Vector2(0, 3), 40.0 * delta)
@@ -126,14 +134,21 @@ func _process(delta: float) -> void:
 		saw_instance = orbital_saw_scene.instantiate()
 		get_parent().add_child(saw_instance)
 
-	# 3. Reloading Cycle
+	# 3. Reloading Cycle & Above-Head Progress Bar
 	if is_reloading:
 		reload_timer += delta
 		var pct := clampf(reload_timer / GameState.reload_duration, 0.0, 1.0)
 		GameState.update_ammo_state(GameState.ammo, GameState.max_ammo, true, pct)
+		
+		if reload_bar:
+			reload_bar.visible = true
+			reload_bar.value = pct * 100.0
+			
 		if reload_timer >= GameState.reload_duration:
 			finish_reload()
 	else:
+		if reload_bar:
+			reload_bar.visible = false
 		if Input.is_action_just_pressed("reload") and GameState.ammo < GameState.max_ammo:
 			start_reload()
 

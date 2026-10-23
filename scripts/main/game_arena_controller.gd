@@ -15,11 +15,15 @@ extends Node2D
 
 @onready var wave_spawner: Node2D = $WaveSpawner
 
-var zone_radius: float = 1200.0
-var target_zone_radius: float = 1200.0
+var zone_radius: float = 1800.0
+var target_zone_radius: float = 1800.0
 var is_zone_shrinking: bool = false
 var zone_damage_timer: float = 0.0
 var player: CharacterBody2D = null
+
+var event_beacon_done: bool = false
+var event_elite_done: bool = false
+var event_overclock_done: bool = false
 
 func _ready() -> void:
 	GameState.boss_spawned.connect(_on_boss_spawned)
@@ -118,6 +122,18 @@ func _process(delta: float) -> void:
 		if players.size() > 0:
 			player = players[0]
 
+	# Dynamic In-Game Random Events
+	var st = GameState.survival_time
+	if st >= 45.0 and not event_beacon_done:
+		event_beacon_done = true
+		trigger_supply_beacon()
+	elif st >= 95.0 and not event_elite_done:
+		event_elite_done = true
+		trigger_elite_invasion()
+	elif st >= 145.0 and not event_overclock_done:
+		event_overclock_done = true
+		trigger_overclock_surge()
+
 	# Handle Shrinking Zone
 	if is_zone_shrinking and zone_radius > target_zone_radius:
 		zone_radius = move_toward(zone_radius, target_zone_radius, 80.0 * delta)
@@ -180,6 +196,65 @@ func _on_boss_spawned(_b_name: String, _max_hp: int) -> void:
 	if bgm_player:
 		bgm_player.pitch_scale = 1.15
 		bgm_player.volume_db = -2.5
+
+func trigger_supply_beacon() -> void:
+	if alert_banner:
+		alert_label.text = "[ ! ] EVENT: CYBER SUPPLY BEACON DROPPED (MEDKIT & CORE) [ ! ]"
+		alert_banner.visible = true
+		var tw := create_tween()
+		tw.tween_interval(3.5)
+		tw.tween_callback(func(): alert_banner.visible = false)
+		
+	if is_instance_valid(player):
+		var med_scene = load("res://scenes/entities/MedkitPickup.tscn")
+		var core_scene = load("res://scenes/entities/SkillCorePickup.tscn")
+		if med_scene:
+			for i in range(2):
+				var m = med_scene.instantiate()
+				m.global_position = player.global_position + Vector2(randf_range(-140, 140), randf_range(-140, 140))
+				add_child(m)
+		if core_scene:
+			var c = core_scene.instantiate()
+			c.global_position = player.global_position + Vector2(randf_range(-100, 100), randf_range(-100, 100))
+			add_child(c)
+
+func trigger_elite_invasion() -> void:
+	if alert_banner:
+		alert_label.text = "[ ! ] EVENT: ARMORED ELITE COLOSSUS INVASION [ ! ]"
+		alert_banner.visible = true
+		var tw := create_tween()
+		tw.tween_interval(4.0)
+		tw.tween_callback(func(): alert_banner.visible = false)
+		
+	if is_instance_valid(player):
+		var golem_scene = load("res://scenes/entities/EnemyGolem.tscn")
+		if golem_scene:
+			var g = golem_scene.instantiate()
+			g.global_position = player.global_position + Vector2(300, 0).rotated(randf_range(0, TAU))
+			g.max_hp = 350
+			g.modulate = Color(2.5, 0.4, 0.4, 1.0) # Elite Red Glow
+			add_child(g)
+
+func trigger_overclock_surge() -> void:
+	if alert_banner:
+		alert_label.text = "[ ! ] EVENT: REACTOR OVERCLOCK SURGE (+50% FIRE RATE & SPEED) [ ! ]"
+		alert_banner.visible = true
+		var tw := create_tween()
+		tw.tween_interval(4.0)
+		tw.tween_callback(func(): alert_banner.visible = false)
+		
+	# Temporary Buff for 15s
+	var old_fr = GameState.fire_rate
+	var old_spd = GameState.base_speed
+	GameState.fire_rate *= 0.5
+	GameState.base_speed *= 1.35
+	
+	var buff_tw := create_tween()
+	buff_tw.tween_interval(15.0)
+	buff_tw.tween_callback(func():
+		GameState.fire_rate = old_fr
+		GameState.base_speed = old_spd
+	)
 
 func _on_boss_defeated() -> void:
 	is_zone_shrinking = false

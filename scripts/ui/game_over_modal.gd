@@ -1,9 +1,18 @@
 extends CanvasLayer
 
-@onready var title_label: Label = $CenterContainer/PanelContainer/Margin/VBox/Title
-@onready var stats_label: Label = $CenterContainer/PanelContainer/Margin/VBox/StatsLabel
-@onready var retry_btn: Button = $CenterContainer/PanelContainer/Margin/VBox/HBoxBtns/RetryBtn
-@onready var menu_btn: Button = $CenterContainer/PanelContainer/Margin/VBox/HBoxBtns/MenuBtn
+@onready var avatar_frame: TextureRect = $TopLeftLoadout/AvatarFrame
+@onready var weapon_frame: TextureRect = $TopLeftLoadout/WeaponFrame
+
+@onready var title_label: Label = $CenterBox/Title
+@onready var time_label: Label = $CenterBox/ScorePanel/Margin/VBox/TimeRow/Label
+@onready var time_val: Label = $CenterBox/ScorePanel/Margin/VBox/TimeRow/Val
+@onready var kills_label: Label = $CenterBox/ScorePanel/Margin/VBox/KillsRow/Label
+@onready var kills_val: Label = $CenterBox/ScorePanel/Margin/VBox/KillsRow/Val
+@onready var rank_val: Label = $CenterBox/ScorePanel/Margin/VBox/RankRow/Val
+@onready var earned_val: Label = $CenterBox/ScorePanel/Margin/VBox/EarnedRow/Val
+
+@onready var retry_btn: Button = $CenterBox/HBoxBtns/RetryBtn
+@onready var menu_btn: Button = $CenterBox/HBoxBtns/MenuBtn
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -12,28 +21,9 @@ func _ready() -> void:
 	GameState.mission_victory_triggered.connect(_on_mission_victory)
 	
 	if retry_btn:
-		retry_btn.pivot_offset = Vector2(170, 26)
 		retry_btn.pressed.connect(_on_retry_pressed)
-		retry_btn.mouse_entered.connect(func():
-			var tw := retry_btn.create_tween()
-			tw.tween_property(retry_btn, "scale", Vector2(1.04, 1.04), 0.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		)
-		retry_btn.mouse_exited.connect(func():
-			var tw := retry_btn.create_tween()
-			tw.tween_property(retry_btn, "scale", Vector2(1.0, 1.0), 0.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		)
-		
 	if menu_btn:
-		menu_btn.pivot_offset = Vector2(170, 26)
 		menu_btn.pressed.connect(_on_menu_pressed)
-		menu_btn.mouse_entered.connect(func():
-			var tw := menu_btn.create_tween()
-			tw.tween_property(menu_btn, "scale", Vector2(1.04, 1.04), 0.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		)
-		menu_btn.mouse_exited.connect(func():
-			var tw := menu_btn.create_tween()
-			tw.tween_property(menu_btn, "scale", Vector2(1.0, 1.0), 0.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		)
 
 func _process(_delta: float) -> void:
 	if visible and Input.is_action_just_pressed("restart"):
@@ -47,56 +37,52 @@ func _on_game_over(time_survived: float, kills: int, lvl: int) -> void:
 func _on_mission_victory(time_survived: float, kills: int, lvl: int) -> void:
 	show_debriefing(true, time_survived, kills, lvl)
 
-func show_debriefing(is_victory: bool, time_survived: float, kills: int, lvl: int) -> void:
+func show_debriefing(is_victory: bool, time_survived: float, kills: int, _lvl: int) -> void:
 	get_tree().paused = true
 	visible = true
-	
+
+	# Set top-left loadout icons
+	var av_path = "res://assets/sprites/avatar_%s.png" % GameState.selected_hero
+	if ResourceLoader.exists(av_path) and avatar_frame:
+		avatar_frame.texture = load(av_path)
+		
+	var wep_path = "res://assets/sprites/icon_wep_%s.png" % GameState.selected_weapon
+	if ResourceLoader.exists(wep_path) and weapon_frame:
+		weapon_frame.texture = load(wep_path)
+
 	var total_sec := int(time_survived)
 	var mins := floori(float(total_sec) / 60.0)
 	var secs := total_sec % 60
-	
+
 	var eval := GameState.calculate_mission_rank()
 	var rank: String = eval["rank"]
 	var total_nc: int = eval["total_nc"]
-	var bonus_nc: int = eval["bonus_nc"]
-	
+
 	if title_label:
 		if is_victory:
-			title_label.text = "[ MISI SELESAI // SEKTOR DIBERSIHKAN ]"
+			title_label.text = "MISSION ACCOMPLISHED"
 			title_label.add_theme_color_override("font_color", Color(0.2, 0.9, 1.0))
 		else:
-			title_label.text = "[ CRITICAL OVERHEAT // REAKTOR MELTDOWN ]"
-			title_label.add_theme_color_override("font_color", Color(1.0, 0.25, 0.35))
-			
-	var cfg = GameState.stage_configs.get(GameState.current_stage, GameState.stage_configs[1])
-	
-	if stats_label:
-		stats_label.text = """[ LAPORAN DEBRIEFING OPERASI SIBER ]
+			title_label.text = "YOU DIED"
+			title_label.add_theme_color_override("font_color", Color(0.92, 0.36, 0.42))
 
-STATUS MISI        : %s
-SEKTOR OPERASI     : STAGE %02d // %s
-EVALUASI RANK      : RANK [ %s ]
+	if time_label:
+		time_label.text = "TIME SURVIVED (%02d:%02d)" % [mins, secs]
+	if time_val:
+		time_val.text = "%d PTS" % (total_sec * 2)
 
-HERO OPERATIVE     : %s
-SENJATA AKTIF      : %s
+	if kills_label:
+		kills_label.text = "ROBOTS PURGED (%d)" % kills
+	if kills_val:
+		kills_val.text = "%d PTS" % kills
 
-DURASI SURVIVAL    : %02d:%02d (TARGET: %02d:00)
-ROBOT DIELIMINASI  : %d UNIT
-LEVEL OVERCLOCK    : LVL %02d
+	if rank_val:
+		rank_val.text = "RANK %s" % rank
 
-HADIAH MISI        : +%d NANO-CREDITS (BONUS: +%d NC)
-SALDO REKENING     : %d NANO-CREDITS
-""" % [
-			"BERHASIL // SEKTOR BEBAS" if is_victory else "GAGAL // REAKTOR HANCUR",
-			GameState.current_stage, cfg["title"],
-			rank,
-			GameState.selected_hero.to_upper(),
-			GameState.selected_weapon.to_upper(),
-			mins, secs, int(cfg["target_time"] / 60.0),
-			kills, lvl,
-			total_nc, bonus_nc,
-			SaveManager.nano_credits
-		]
+	if earned_val:
+		earned_val.text = "+%d NC" % total_nc
+		SaveManager.nano_credits += total_nc
+		SaveManager.save_game()
 
 func _on_retry_pressed() -> void:
 	get_tree().paused = false

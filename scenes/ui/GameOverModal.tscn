@@ -1,12 +1,14 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/game_over_modal.gd" id="1_scr"]
-[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_raj_bold"]
-[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="3_raj_semi"]
-[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_normal.png" id="4_btn_n"]
-[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_hover.png" id="5_btn_h"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_orb"]
+[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="3_tech"]
+[ext_resource type="Texture2D" path="res://assets/sprites/avatar_kael.png" id="4_avatar"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icon_wep_revolver.png" id="5_wep"]
 [ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_normal.png" id="6_conf_n"]
 [ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_hover.png" id="7_conf_h"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_normal.png" id="8_sci_n"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_hover.png" id="9_sci_h"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_n"]
 texture = ExtResource("6_conf_n")
@@ -23,14 +25,14 @@ texture_margin_right = 10.0
 texture_margin_bottom = 10.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sci_n"]
-texture = ExtResource("4_btn_n")
+texture = ExtResource("8_sci_n")
 texture_margin_left = 8.0
 texture_margin_top = 8.0
 texture_margin_right = 8.0
 texture_margin_bottom = 8.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sci_h"]
-texture = ExtResource("5_btn_h")
+texture = ExtResource("9_sci_h")
 texture_margin_left = 8.0
 texture_margin_top = 8.0
 texture_margin_right = 8.0
@@ -46,81 +48,162 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.03, 0.06, 0.96)
+color = Color(0.12, 0.09, 0.15, 0.96)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="TopLeftLoadout" type="HBoxContainer" parent="."]
+offset_left = 48.0
+offset_top = 40.0
+offset_right = 260.0
+offset_bottom = 124.0
+theme_override_constants/separation = 16
+
+[node name="AvatarFrame" type="TextureRect" parent="TopLeftLoadout"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+texture = ExtResource("4_avatar")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WeaponFrame" type="TextureRect" parent="TopLeftLoadout"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+texture = ExtResource("5_wep")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CenterBox" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -280.0
+offset_right = 380.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 24
+alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(1040, 680)
+[node name="Title" type="Label" parent="CenterBox"]
 layout_mode = 2
-
-[node name="Margin" type="MarginContainer" parent="CenterContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 36
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 36
-theme_override_constants/margin_bottom = 30
-
-[node name="VBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 22
-
-[node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.25, 0.35, 1)
-theme_override_fonts/font = ExtResource("2_raj_bold")
-theme_override_font_sizes/font_size = 28
-text = "[ CRITICAL OVERHEAT // REAKTOR MELTDOWN ]"
+theme_override_colors/font_color = Color(0.92, 0.36, 0.42, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 46
+text = "YOU DIED"
 horizontal_alignment = 1
 
-[node name="StatsLabel" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
-custom_minimum_size = Vector2(0, 420)
+[node name="ScorePanel" type="PanelContainer" parent="CenterBox"]
+custom_minimum_size = Vector2(720, 240)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.92, 0.96, 1, 1)
-theme_override_fonts/font = ExtResource("3_raj_semi")
+
+[node name="Margin" type="MarginContainer" parent="CenterBox/ScorePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="CenterBox/ScorePanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TimeRow" type="HBoxContainer" parent="CenterBox/ScorePanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterBox/ScorePanel/Margin/VBox/TimeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.93, 0.89, 0.85, 1)
+theme_override_fonts/font = ExtResource("3_tech")
 theme_override_font_sizes/font_size = 18
-text = "[ LAPORAN DEBRIEFING OPERASI SIBER ]
+text = "TIME SURVIVED (00:00)"
 
-STATUS MISI        : GAGAL // REAKTOR HANCUR
-SEKTOR OPERASI     : STAGE 01 // PABRIK SUBTERRANEAN
-EVALUASI RANK      : RANK [ C ]
+[node name="Val" type="Label" parent="CenterBox/ScorePanel/Margin/VBox/TimeRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.89, 0.85, 1)
+theme_override_fonts/font = ExtResource("3_tech")
+theme_override_font_sizes/font_size = 18
+text = "0"
 
-HERO OPERATIVE     : KAEL
-SENJATA AKTIF      : DUAL REVOLVER
+[node name="KillsRow" type="HBoxContainer" parent="CenterBox/ScorePanel/Margin/VBox"]
+layout_mode = 2
 
-DURASI SURVIVAL    : 00:00 (TARGET: 03:00)
-ROBOT DIELIMINASI  : 0 UNIT
-LEVEL OVERCLOCK    : LVL 01
+[node name="Label" type="Label" parent="CenterBox/ScorePanel/Margin/VBox/KillsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.93, 0.89, 0.85, 1)
+theme_override_fonts/font = ExtResource("3_tech")
+theme_override_font_sizes/font_size = 18
+text = "ROBOTS PURGED (0)"
 
-HADIAH MISI        : +40 NANO-CREDITS
-SALDO REKENING     : 340 NANO-CREDITS"
-autowrap_mode = 2
+[node name="Val" type="Label" parent="CenterBox/ScorePanel/Margin/VBox/KillsRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.89, 0.85, 1)
+theme_override_fonts/font = ExtResource("3_tech")
+theme_override_font_sizes/font_size = 18
+text = "0"
 
-[node name="HBoxBtns" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
+[node name="RankRow" type="HBoxContainer" parent="CenterBox/ScorePanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterBox/ScorePanel/Margin/VBox/RankRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.93, 0.89, 0.85, 1)
+theme_override_fonts/font = ExtResource("3_tech")
+theme_override_font_sizes/font_size = 18
+text = "MISSION EVALUATION"
+
+[node name="Val" type="Label" parent="CenterBox/ScorePanel/Margin/VBox/RankRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 18
+text = "RANK C"
+
+[node name="Separator" type="HSeparator" parent="CenterBox/ScorePanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="EarnedRow" type="HBoxContainer" parent="CenterBox/ScorePanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterBox/ScorePanel/Margin/VBox/EarnedRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.76, 0.28, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+text = "EARNED NANO-CREDITS"
+
+[node name="Val" type="Label" parent="CenterBox/ScorePanel/Margin/VBox/EarnedRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.76, 0.28, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+text = "+0 NC"
+
+[node name="HBoxBtns" type="HBoxContainer" parent="CenterBox"]
 layout_mode = 2
 theme_override_constants/separation = 24
 alignment = 1
 
-[node name="RetryBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBoxBtns"]
-custom_minimum_size = Vector2(400, 60)
+[node name="RetryBtn" type="Button" parent="CenterBox/HBoxBtns"]
+custom_minimum_size = Vector2(340, 58)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
-theme_override_fonts/font = ExtResource("2_raj_bold")
+theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_conf_h")
-text = "[ RE-ENGAGE SIMULATION (R) ]"
+text = "[ TRY AGAIN (R) ]"
 
-[node name="MenuBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBoxBtns"]
-custom_minimum_size = Vector2(400, 60)
+[node name="MenuBtn" type="Button" parent="CenterBox/HBoxBtns"]
+custom_minimum_size = Vector2(340, 58)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_raj_bold")
+theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
-text = "[ RETURN TO TERMINAL (ESC) ]"
+text = "[ QUIT TO MENU (ESC) ]"

@@ -27,6 +27,11 @@ var audio_bgm: float = 0.8
 var audio_sfx: float = 0.9
 var language: String = "id"
 
+var fullscreen: bool = false
+var camera_shake: bool = true
+var auto_reload: bool = true
+var outline_vfx: bool = false
+
 func _ready() -> void:
 	load_game()
 

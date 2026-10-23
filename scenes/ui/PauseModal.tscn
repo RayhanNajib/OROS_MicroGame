@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/pause_modal.gd" id="1_scr"]
-[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_raj_bold"]
-[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="3_raj_semi"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_orb"]
+[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="3_tech"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="4_click"]
 [ext_resource type="Texture2D" path="res://assets/ui/btn_sci_normal.png" id="5_btn_n"]
 [ext_resource type="Texture2D" path="res://assets/ui/btn_sci_hover.png" id="6_btn_h"]
@@ -47,7 +47,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.04, 0.07, 0.95)
+color = Color(0.12, 0.09, 0.15, 0.96)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 anchors_preset = 15
@@ -57,46 +57,28 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(760, 560)
+custom_minimum_size = Vector2(820, 680)
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="CenterContainer/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 34
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 34
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 36
+theme_override_constants/margin_bottom = 28
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 16
+alignment = 1
 
 [node name="Title" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_fonts/font = ExtResource("2_raj_bold")
-theme_override_font_sizes/font_size = 26
-text = "[ PROTOKOL JEDA PERTEMPURAN // SYSTEM PAUSED ]"
+theme_override_colors/font_color = Color(0.92, 0.36, 0.42, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 32
+text = "OPTIONS"
 horizontal_alignment = 1
-
-[node name="Subtitle" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
-theme_override_fonts/font = ExtResource("3_raj_semi")
-theme_override_font_sizes/font_size = 17
-text = "Simulasi taktis dibekukan. Atur parameter audio atau kembali ke terminal utama."
-horizontal_alignment = 1
-
-[node name="ResumeBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(480, 58)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
-theme_override_fonts/font = ExtResource("2_raj_bold")
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
-theme_override_styles/hover = SubResource("StyleBoxTexture_conf_h")
-text = "[ > LANJUTKAN TEMPUR (ESC) < ]"
 
 [node name="BGMBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
@@ -104,11 +86,12 @@ theme_override_constants/separation = 20
 alignment = 1
 
 [node name="BGMLbl" type="Label" parent="CenterContainer/Panel/Margin/VBox/BGMBox"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_raj_bold")
+theme_override_colors/font_color = Color(0.93, 0.89, 0.85, 1)
+theme_override_fonts/font = ExtResource("3_tech")
 theme_override_font_sizes/font_size = 18
-text = "VOLUME MUSIK BGM:"
+text = "MUSIC VOLUME (100%):"
 
 [node name="BGMSlider" type="HSlider" parent="CenterContainer/Panel/Margin/VBox/BGMBox"]
 custom_minimum_size = Vector2(340, 28)
@@ -121,39 +104,71 @@ theme_override_constants/separation = 20
 alignment = 1
 
 [node name="SFXLbl" type="Label" parent="CenterContainer/Panel/Margin/VBox/SFXBox"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_raj_bold")
+theme_override_colors/font_color = Color(0.93, 0.89, 0.85, 1)
+theme_override_fonts/font = ExtResource("3_tech")
 theme_override_font_sizes/font_size = 18
-text = "VOLUME EFEK SFX:"
+text = "SFX VOLUME (100%):"
 
 [node name="SFXSlider" type="HSlider" parent="CenterContainer/Panel/Margin/VBox/SFXBox"]
 custom_minimum_size = Vector2(340, 28)
 layout_mode = 2
 value = 90.0
 
-[node name="LangBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
+[node name="Separator" type="HSeparator" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-alignment = 1
 
-[node name="LangBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/LangBox"]
-custom_minimum_size = Vector2(380, 50)
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_raj_bold")
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
-theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
-text = "BAHASA ANTARMUKA: INDONESIA"
-
-[node name="MenuBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(480, 56)
+[node name="FullscreenBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(440, 48)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("2_raj_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
-text = "[ KEMBALI KE TERMINAL UTAMA ]"
+text = "FULLSCREEN: OFF"
+
+[node name="ShakeBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(440, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "CAMERA SHAKE: ON"
+
+[node name="AutoReloadBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(440, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "AUTO-RELOAD: ON"
+
+[node name="LangBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(440, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "LANGUAGE: BAHASA INDONESIA"
+
+[node name="BackBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(440, 56)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_conf_h")
+text = "[ BACK (ESC) ]"
 
 [node name="SFXClick" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_click")

@@ -188,7 +188,7 @@ func _process(_delta: float) -> void:
 	if timer_label:
 		timer_label.text = "%02d:%02d" % [mins, secs]
 	if kills_label:
-		kills_label.text = "PURGED: %d UNITS" % GameState.total_kills
+		kills_label.text = "SURVIVE! | PURGED: %d" % GameState.total_kills
 
 	if low_hp_vignette:
 		if GameState.health == 1:
@@ -264,6 +264,14 @@ func update_ammo(current: int, max_cap: int, is_reloading: bool, reload_pct: flo
 			rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			rect.modulate = Color(1, 1, 1, 1) if (i < current) else Color(0.3, 0.35, 0.45, 0.4)
 			ammo_container.add_child(rect)
+			
+		var num_lbl := Label.new()
+		num_lbl.text = "  %03d / %03d" % [current, max_cap]
+		num_lbl.add_theme_font_override("font", load("res://assets/fonts/tech_font.ttf"))
+		num_lbl.add_theme_font_size_override("font_size", 18)
+		num_lbl.add_theme_color_override("font_color", Color(0.92, 0.36, 0.42) if current <= 2 else Color(0.93, 0.89, 0.85))
+		num_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		ammo_container.add_child(num_lbl)
 
 func update_xp(current: int, needed: int, lvl: int) -> void:
 	if xp_bar:
