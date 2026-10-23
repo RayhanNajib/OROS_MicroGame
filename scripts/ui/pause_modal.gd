@@ -10,6 +10,7 @@ extends CanvasLayer
 @onready var auto_reload_btn: Button = $CenterContainer/Panel/Margin/VBox/AutoReloadBtn
 @onready var lang_btn: Button = $CenterContainer/Panel/Margin/VBox/LangBtn
 @onready var back_btn: Button = $CenterContainer/Panel/Margin/VBox/BackBtn
+@onready var menu_btn: Button = $CenterContainer/Panel/Margin/VBox/MenuBtn
 
 @onready var sfx_click: AudioStreamPlayer = $SFXClick
 
@@ -18,6 +19,7 @@ func _ready() -> void:
 	visible = false
 
 	if back_btn: back_btn.pressed.connect(_on_back_pressed)
+	if menu_btn: menu_btn.pressed.connect(_on_menu_pressed)
 	if fullscreen_btn: fullscreen_btn.pressed.connect(_on_fullscreen_toggled)
 	if shake_btn: shake_btn.pressed.connect(_on_shake_toggled)
 	if auto_reload_btn: auto_reload_btn.pressed.connect(_on_auto_reload_toggled)
@@ -56,6 +58,13 @@ func _on_back_pressed() -> void:
 	if sfx_click: sfx_click.play()
 	visible = false
 	get_tree().paused = false
+
+func _on_menu_pressed() -> void:
+	if sfx_click: sfx_click.play()
+	visible = false
+	get_tree().paused = false
+	GameState.reset_run()
+	get_tree().change_scene_to_file("res://scenes/main/MainMenu.tscn")
 
 func _on_bgm_changed(val: float) -> void:
 	SaveManager.audio_bgm = val / 100.0

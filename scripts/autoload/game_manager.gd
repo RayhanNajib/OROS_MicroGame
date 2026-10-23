@@ -137,6 +137,11 @@ signal skill_upgraded(new_level: int)
 func trigger_mission_victory(time_survived: float, kills: int, lvl: int) -> void:
 	mission_victory_triggered.emit(time_survived, kills, lvl)
 
+func update_skill_cooldown(cur_cd: float, max_cd: float) -> void:
+	skill_cooldown_timer = cur_cd
+	skill_cooldown_max = max_cd
+	skill_cooldown_updated.emit(cur_cd, max_cd)
+
 func reset_run() -> void:
 	apply_selection()
 	var cfg = stage_configs.get(current_stage, stage_configs[1])

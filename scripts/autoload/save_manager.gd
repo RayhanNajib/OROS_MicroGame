@@ -2,7 +2,7 @@ extends Node
 
 const SAVE_PATH = "user://oros_save.json"
 
-var nano_credits: int = 300 # Starting Nano-Credits
+var nano_credits: int = 0 # Starting Nano-Credits (Grind to unlock!)
 
 var stages_data: Dictionary = {
 	1: {"unlocked": true, "high_rank": "-", "best_time": 0.0, "cleared": false},

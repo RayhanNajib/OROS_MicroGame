@@ -63,6 +63,7 @@ func go_to_step(step: int) -> void:
 	current_step = step
 	if step == 1:
 		wizard_title.text = "[ LANGKAH 1: PILIH SEKTOR MISI ]"
+		wizard_title.add_theme_color_override("font_color", Color(0, 0.94, 1))
 		wizard_step_label.text = "PILIH SEKTOR OPERASI SEBELUM MEMILIH OPERATIVE"
 		step1_stage_select.visible = true
 		step2_loadout_prep.visible = false
@@ -73,6 +74,7 @@ func go_to_step(step: int) -> void:
 	else:
 		var cfg = GameState.stage_configs.get(GameState.current_stage, GameState.stage_configs[1])
 		wizard_title.text = "[ LANGKAH 2: PERSIAPAN OPERATIVE & ARSENAL ]"
+		wizard_title.add_theme_color_override("font_color", Color(0.98, 0.8, 0.08))
 		wizard_step_label.text = "SEKTOR: STAGE %02d // %s (%s)" % [GameState.current_stage, cfg["title"], cfg["difficulty"]]
 		step1_stage_select.visible = false
 		step2_loadout_prep.visible = true
@@ -80,7 +82,7 @@ func go_to_step(step: int) -> void:
 		shop_shortcut_btn.visible = true
 		back_btn.text = "[ < GANTI SEKTOR STAGE ]"
 		update_hero_ui(GameState.selected_hero)
-		update_weapon_ui(GameState.selected_weapon)
+		update_weapon_ui(GameState.primary_weapon)
 
 func build_stage_list() -> void:
 	if not stages_vbox: return
@@ -88,6 +90,7 @@ func build_stage_list() -> void:
 		child.queue_free()
 
 	var font_orb = load("res://assets/fonts/Orbitron-Bold.ttf")
+	var font_silk = load("res://assets/fonts/Silkscreen-Bold.ttf")
 	var font_tech = load("res://assets/fonts/tech_font.ttf")
 
 	for s_id in range(1, 6):
@@ -100,10 +103,8 @@ func build_stage_list() -> void:
 		panel.custom_minimum_size = Vector2(1100, 105)
 
 		var style := StyleBoxFlat.new()
-		style.bg_color = Color(0.12, 0.09, 0.15, 0.95) if is_unlocked else Color(0.08, 0.06, 0.1, 0.85)
-		style.border_color = Color(0.95, 0.76, 0.28, 1.0) if is_current else (Color(0.2, 0.65, 0.9, 0.7) if is_unlocked else Color(0.3, 0.35, 0.45, 0.4))
-		if s_id == 5 and is_unlocked:
-			style.border_color = Color(0.92, 0.36, 0.42, 1.0) # Nightmare Red
+		style.bg_color = Color(0.06, 0.09, 0.14, 0.96) if is_unlocked else Color(0.04, 0.06, 0.09, 0.85)
+		style.border_color = Color(0.98, 0.8, 0.08, 1.0) if is_current else (Color(0, 0.94, 1, 0.7) if is_unlocked else Color(0.2, 0.35, 0.5, 0.4))
 		style.set_border_width_all(3 if is_current else 2)
 		style.set_corner_radius_all(6)
 		panel.add_theme_stylebox_override("panel", style)
@@ -119,27 +120,27 @@ func build_stage_list() -> void:
 
 		var info_vbox := VBoxContainer.new()
 		info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		info_vbox.add_theme_constant_override("separation", 6)
+		info_vbox.add_theme_constant_override("separation", 4)
 
 		var title_lbl := Label.new()
-		title_lbl.text = "[ STAGE %02d ] %s // TINGKAT: %s" % [s_id, cfg["title"], cfg["difficulty"]]
+		title_lbl.text = "[ STAGE %02d ] %s" % [s_id, cfg["title"]]
 		title_lbl.add_theme_font_override("font", font_orb)
-		title_lbl.add_theme_font_size_override("font_size", 18)
-		title_lbl.add_theme_color_override("font_color", Color(0.92, 0.36, 0.42) if is_unlocked else Color(0.5, 0.55, 0.65))
+		title_lbl.add_theme_font_size_override("font_size", 20)
+		title_lbl.add_theme_color_override("font_color", Color(0, 0.94, 1) if is_unlocked else Color(0.5, 0.55, 0.65))
 		info_vbox.add_child(title_lbl)
 
 		var desc_lbl := Label.new()
-		desc_lbl.text = "TARGET SURVIVE: %d DETIK  |  MISI: %s  |  APEX BOSS: %s" % [int(cfg["target_time"]), cfg["objective"], cfg["boss_name"]]
-		desc_lbl.add_theme_font_override("font", font_tech)
-		desc_lbl.add_theme_font_size_override("font_size", 15)
-		desc_lbl.add_theme_color_override("font_color", Color(0.93, 0.89, 0.85) if is_unlocked else Color(0.45, 0.5, 0.6))
+		desc_lbl.text = "SURVIVE: %d MENIT  |  BOSS: %s  |  TINGKAT: %s" % [int(cfg["target_time"] / 60.0), cfg["boss_name"], cfg["difficulty"]]
+		desc_lbl.add_theme_font_override("font", font_silk)
+		desc_lbl.add_theme_font_size_override("font_size", 13)
+		desc_lbl.add_theme_color_override("font_color", Color(0.98, 0.8, 0.08) if is_unlocked else Color(0.45, 0.5, 0.6))
 		info_vbox.add_child(desc_lbl)
 
 		var rank_lbl := Label.new()
 		rank_lbl.text = "EVALUASI RANK TERTINGGI: %s" % s_data.get("high_rank", "-")
-		rank_lbl.add_theme_font_override("font", font_orb)
-		rank_lbl.add_theme_font_size_override("font_size", 14)
-		rank_lbl.add_theme_color_override("font_color", Color(0.2, 0.9, 1.0))
+		rank_lbl.add_theme_font_override("font", font_silk)
+		rank_lbl.add_theme_font_size_override("font_size", 12)
+		rank_lbl.add_theme_color_override("font_color", Color(0.13, 0.95, 0.4))
 		info_vbox.add_child(rank_lbl)
 
 		hbox.add_child(info_vbox)
@@ -165,7 +166,7 @@ func build_stage_list() -> void:
 			lock_lbl.text = "[ TERKUNCI ]\n%s" % req
 			lock_lbl.add_theme_font_override("font", font_tech)
 			lock_lbl.add_theme_font_size_override("font_size", 13)
-			lock_lbl.add_theme_color_override("font_color", Color(0.8, 0.35, 0.4))
+			lock_lbl.add_theme_color_override("font_color", Color(0.6, 0.7, 0.8))
 			lock_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			lock_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			hbox.add_child(lock_lbl)
@@ -181,6 +182,12 @@ func setup_hero_btn(btn: Button, hero_id: String) -> void:
 		GameState.selected_hero = hero_id
 		update_hero_ui(hero_id)
 		check_synergy()
+		
+		# Tekken-style hop preview bounce!
+		if right_side_portrait:
+			var tw := right_side_portrait.create_tween()
+			tw.tween_property(right_side_portrait, "scale", Vector2(1.05, 1.05), 0.1).set_trans(Tween.TRANS_BACK)
+			tw.tween_property(right_side_portrait, "scale", Vector2.ONE, 0.15)
 	)
 
 func update_hero_ui(hero_id: String) -> void:
@@ -193,17 +200,17 @@ func update_hero_ui(hero_id: String) -> void:
 			if hero_name_lbl: hero_name_lbl.text = "KAEL (THE CYBERSMITH)"
 			if hero_hp_lbl: hero_hp_lbl.text = "HP: 04"
 			if hero_desc_lbl:
-				hero_desc_lbl.text = "SKILL AKTIF [SPACE/E]: EMP CRYO DASH\nMeluncur 260px ke depan dengan kekebalan dan gelombang es membekukan seluruh robot musuh 3 detik.\nDapat ditingkatkan lewat Skill Core drops! Senjata Native: Dual Revolver (+25% Damage)."
+				hero_desc_lbl.text = "SKILL AKTIF [TAHAN E]: EMP CRYO DASH\nMeluncur 260px ke depan dengan kekebalan dan membekukan musuh 3 detik tanpa wipe kill.\nSenjata Native: Dual Revolver (+25% Damage)."
 		"vex":
 			if hero_name_lbl: hero_name_lbl.text = "VEX (PHASE ASSASSIN)"
 			if hero_hp_lbl: hero_hp_lbl.text = "HP: 03"
 			if hero_desc_lbl:
-				hero_desc_lbl.text = "SKILL AKTIF [SPACE/E]: PHASE BLINK\nTeleportasi seketika 320px menembus rintangan dan meninggalkan decoy pemancing yang meledak 80 DMG.\nDapat ditingkatkan lewat Skill Core drops! Senjata Native: Cyber SMG (+25% Laju Tembak)."
+				hero_desc_lbl.text = "SKILL AKTIF [TAHAN E]: PHASE BLINK\nTeleportasi seketika 320px menembus rintangan dan meninggalkan decoy pemancing meledak.\nSenjata Native: Cyber SMG (+25% Laju Tembak)."
 		"brutus":
 			if hero_name_lbl: hero_name_lbl.text = "BRUTUS (THE JUGGERNAUT)"
 			if hero_hp_lbl: hero_hp_lbl.text = "HP: 06"
 			if hero_desc_lbl:
-				hero_desc_lbl.text = "SKILL AKTIF [SPACE/E]: TITAN SEISMIC SLAM\nMenghentak tanah memicu gempa 70 DMG + hempasan 350px dan memberikan perisai kinetik 2.0s.\nDapat ditingkatkan lewat Skill Core drops! Senjata Native: Scrap Shotgun (+3 Pellets & +20% Knockback)."
+				hero_desc_lbl.text = "SKILL AKTIF [TAHAN E]: TITAN SLAM\nMenghentak tanah memicu gempa 220px + hempasan knockback kuat dan perisai kinetik 2.0s.\nSenjata Native: Scrap Shotgun (+3 Pellets)."
 
 func setup_weapon_btn(btn: Button, wep_id: String) -> void:
 	if not btn: return
@@ -213,6 +220,12 @@ func setup_weapon_btn(btn: Button, wep_id: String) -> void:
 		GameState.selected_weapon = wep_id
 		update_weapon_ui(wep_id)
 		check_synergy()
+		
+		# Weapon swap click bounce
+		if wep_closeup:
+			var tw := wep_closeup.create_tween()
+			tw.tween_property(wep_closeup, "scale", Vector2(1.08, 1.08), 0.08)
+			tw.tween_property(wep_closeup, "scale", Vector2.ONE, 0.12)
 	)
 
 func update_weapon_ui(wep_id: String) -> void:
@@ -224,15 +237,15 @@ func update_weapon_ui(wep_id: String) -> void:
 		"revolver":
 			if wep_name_lbl: wep_name_lbl.text = "DUAL REVOLVER [BALANCED]"
 			if wep_stats_lbl:
-				wep_stats_lbl.text = "DAMAGE: 18 (2-Hit Kill) | PROYEKTIL: 1 | RELOAD: 0.95s | FIRE RATE: 0.22s | AMMO: 06\\nSEKUNDER: CYBER KATANA TERPASANG (TEBASAN MELEE MEMICU 100% HEAL DROP)"
+				wep_stats_lbl.text = "DAMAGE: 18 (2-Hit Kill) | PROYEKTIL: 1 | RELOAD: 0.95s | FIRE RATE: 0.22s | AMMO: 06\nSEKUNDER: CYBER KATANA TERPASANG (TEBASAN MELEE MEMICU 100% HEAL DROP)"
 		"shotgun":
 			if wep_name_lbl: wep_name_lbl.text = "SCRAP SHOTGUN [POINT-BLANK]"
 			if wep_stats_lbl:
-				wep_stats_lbl.text = "DAMAGE: 8x10 PELLETS (80 POINT-BLANK) | RELOAD: 1.25s | AMMO: 04 (Jarak < 110px)\\nSEKUNDER: CYBER KATANA TERPASANG (TEBASAN MELEE MEMICU 100% HEAL DROP)"
+				wep_stats_lbl.text = "DAMAGE: 8x10 PELLETS (80 POINT-BLANK) | RELOAD: 1.25s | AMMO: 04 (Jarak < 110px)\nSEKUNDER: CYBER KATANA TERPASANG (TEBASAN MELEE MEMICU 100% HEAL DROP)"
 		"smg":
 			if wep_name_lbl: wep_name_lbl.text = "CYBER SMG [RAPID SPRAY]"
 			if wep_stats_lbl:
-				wep_stats_lbl.text = "DAMAGE: 6 | PROYEKTIL: 1 | RELOAD: 0.80s | FIRE RATE: 0.08s | AMMO: 28\\nSEKUNDER: CYBER KATANA TERPASANG (TEBASAN MELEE MEMICU 100% HEAL DROP)"
+				wep_stats_lbl.text = "DAMAGE: 6 | PROYEKTIL: 1 | RELOAD: 0.80s | FIRE RATE: 0.08s | AMMO: 28\nSEKUNDER: CYBER KATANA TERPASANG (TEBASAN MELEE MEMICU 100% HEAL DROP)"
 
 func check_synergy() -> void:
 	if not synergy_banner: return

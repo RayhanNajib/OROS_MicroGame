@@ -43,6 +43,7 @@ var invuln_timer: float = 0.0
 var is_dashing: bool = false
 var dash_timer: float = 0.0
 var dash_velocity: Vector2 = Vector2.ZERO
+var is_holding_skill: bool = false
 
 # Animation timer
 var anim_timer: float = 0.0
@@ -195,12 +196,15 @@ func _process(delta: float) -> void:
 		elif Input.is_physical_key_pressed(KEY_Q):
 			GameState.toggle_slot()
 
-	# 6. Active Character Skill (SPACE / SHIFT / E)
-	var wants_skill := Input.is_physical_key_pressed(KEY_SPACE) or Input.is_physical_key_pressed(KEY_SHIFT) or Input.is_physical_key_pressed(KEY_E)
-	if wants_skill and GameState.skill_cooldown_timer <= 0.0 and not is_dashing:
+	# 6. Active Character Skill: Hold [E / Space / Shift] to aim, release to trigger!
+	var skill_key_pressed := Input.is_physical_key_pressed(KEY_E) or Input.is_physical_key_pressed(KEY_SPACE) or Input.is_physical_key_pressed(KEY_SHIFT)
+	if skill_key_pressed and GameState.skill_cooldown_timer <= 0.0 and not is_dashing:
+		is_holding_skill = true
+	elif is_holding_skill and not skill_key_pressed:
+		is_holding_skill = false
 		trigger_active_skill()
 
-	# 7. Update Skill Telegraphing Projection Indicator
+	# 7. Update Skill Telegraphing Projection Indicator (Only visible while holding!)
 	update_skill_telegraph(mouse_pos)
 
 	# 8. Invulnerability Flash
@@ -232,7 +236,7 @@ func _process(delta: float) -> void:
 func update_skill_telegraph(mouse_pos: Vector2) -> void:
 	if not telegraph_line: return
 	
-	if GameState.skill_cooldown_timer > 0.0:
+	if not is_holding_skill or GameState.skill_cooldown_timer > 0.0:
 		telegraph_line.visible = false
 		return
 		
@@ -245,17 +249,17 @@ func update_skill_telegraph(mouse_pos: Vector2) -> void:
 	match GameState.selected_hero:
 		"kael":
 			# Cyan dashed laser arrow to mouse (260px)
-			telegraph_line.default_color = Color(0.0, 0.94, 1.0, 0.6)
+			telegraph_line.default_color = Color(0.0, 0.94, 1.0, 0.8)
 			telegraph_line.add_point(Vector2.ZERO)
 			telegraph_line.add_point(dir * 260.0)
 		"vex":
 			# Emerald green target point (320px)
-			telegraph_line.default_color = Color(0.13, 0.95, 0.4, 0.6)
+			telegraph_line.default_color = Color(0.13, 0.95, 0.4, 0.8)
 			telegraph_line.add_point(Vector2.ZERO)
 			telegraph_line.add_point(dir * 320.0)
 		"brutus":
 			# High-voltage yellow circular ring (220px)
-			telegraph_line.default_color = Color(1.0, 0.9, 0.1, 0.5)
+			telegraph_line.default_color = Color(1.0, 0.9, 0.1, 0.7)
 			var pts := 24
 			for i in range(pts + 1):
 				var ang = (float(i) / float(pts)) * TAU
@@ -264,7 +268,7 @@ func update_skill_telegraph(mouse_pos: Vector2) -> void:
 func _physics_process(delta: float) -> void:
 	if GameState.skill_cooldown_timer > 0.0:
 		GameState.skill_cooldown_timer -= delta
-		GameState.skill_cooldown_updated.emit(GameState.skill_cooldown_timer, GameState.skill_cooldown_max)
+		GameState.update_skill_cooldown(GameState.skill_cooldown_timer, GameState.skill_cooldown_max)
 
 	if is_dashing:
 		dash_timer -= delta
@@ -307,22 +311,23 @@ func trigger_active_skill() -> void:
 	match GameState.selected_hero:
 		"kael":
 			is_dashing = true
-			dash_timer = 0.16
+			dash_timer = 0.18
 			var aim_dir := (get_global_mouse_position() - global_position).normalized()
-			dash_velocity = aim_dir * 580.0
+			dash_velocity = aim_dir * 620.0
 			is_invulnerable = true
-			invuln_timer = 0.35
+			invuln_timer = 0.40
 			
 			if sfx_skill_dash: sfx_skill_dash.play()
 			if sfx_skill_freeze: sfx_skill_freeze.play()
 			
+			# Pure Mobility Dash + Frost Slow (ZERO screen wipe damage!)
 			var enemies = get_tree().get_nodes_in_group("enemies")
 			for e in enemies:
-				if is_instance_valid(e) and global_position.distance_to(e.global_position) < (180.0 + GameState.skill_level * 15.0):
-					if e.has_method("take_damage"):
-						e.take_damage(30 + GameState.skill_level * 5, aim_dir * 120.0, false)
+				if is_instance_valid(e) and global_position.distance_to(e.global_position) < 140.0:
 					if e.has_method("apply_freeze"):
 						e.apply_freeze(0.4, 3.0)
+					if e.has_method("take_damage"):
+						e.take_damage(5, aim_dir * 80.0, false) # Minimal 5 DMG, enemies survive!
 						
 		"vex":
 			var aim_dir := (get_global_mouse_position() - global_position).normalized()

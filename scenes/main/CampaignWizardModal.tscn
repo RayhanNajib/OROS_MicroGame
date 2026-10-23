@@ -49,7 +49,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.12, 0.09, 0.15, 0.98)
+color = Color(0.04, 0.06, 0.09, 0.98)
 script = ExtResource("1_scr")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
@@ -82,7 +82,7 @@ theme_override_constants/separation = 24
 [node name="WizardTitle" type="Label" parent="CenterContainer/Panel/Margin/VBox/HeaderBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.92, 0.36, 0.42, 1)
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
 theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 28
 text = "[ LANGKAH 1: PILIH SEKTOR MISI ]"
@@ -143,7 +143,7 @@ layout_mode = 2
 [node name="HeroName" type="Label" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/HeroSection/HeroHeader"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.92, 0.36, 0.42, 1)
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
 theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 24
 text = "HASTUR (THE CYBERSMITH)"
@@ -199,7 +199,7 @@ layout_mode = 2
 [node name="WepName" type="Label" parent="CenterContainer/Panel/Margin/VBox/Step2LoadoutPrep/MainLayout/LeftLoadout/WeaponSection/WepHeader"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.92, 0.36, 0.42, 1)
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
 theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 22
 text = "REVOLVER [BALANCED WEAPON]"

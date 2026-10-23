@@ -47,7 +47,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.12, 0.09, 0.15, 0.96)
+color = Color(0.04, 0.06, 0.09, 0.96)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 anchors_preset = 15
@@ -57,7 +57,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(820, 680)
+custom_minimum_size = Vector2(840, 720)
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="CenterContainer/Panel"]
@@ -74,10 +74,10 @@ alignment = 1
 
 [node name="Title" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.92, 0.36, 0.42, 1)
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
 theme_override_fonts/font = ExtResource("2_orb")
-theme_override_font_sizes/font_size = 32
-text = "OPTIONS"
+theme_override_font_sizes/font_size = 30
+text = "[ PROTOKOL PENGATURAN // OPTIONS ]"
 horizontal_alignment = 1
 
 [node name="BGMBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
@@ -88,7 +88,7 @@ alignment = 1
 [node name="BGMLbl" type="Label" parent="CenterContainer/Panel/Margin/VBox/BGMBox"]
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.93, 0.89, 0.85, 1)
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_fonts/font = ExtResource("3_tech")
 theme_override_font_sizes/font_size = 18
 text = "MUSIC VOLUME (100%):"
@@ -106,7 +106,7 @@ alignment = 1
 [node name="SFXLbl" type="Label" parent="CenterContainer/Panel/Margin/VBox/SFXBox"]
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.93, 0.89, 0.85, 1)
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_fonts/font = ExtResource("3_tech")
 theme_override_font_sizes/font_size = 18
 text = "SFX VOLUME (100%):"
@@ -120,7 +120,7 @@ value = 90.0
 layout_mode = 2
 
 [node name="FullscreenBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(440, 48)
+custom_minimum_size = Vector2(460, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("2_orb")
@@ -130,7 +130,7 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
 text = "FULLSCREEN: OFF"
 
 [node name="ShakeBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(440, 48)
+custom_minimum_size = Vector2(460, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("2_orb")
@@ -140,7 +140,7 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
 text = "CAMERA SHAKE: ON"
 
 [node name="AutoReloadBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(440, 48)
+custom_minimum_size = Vector2(460, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("2_orb")
@@ -150,7 +150,7 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
 text = "AUTO-RELOAD: ON"
 
 [node name="LangBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(440, 48)
+custom_minimum_size = Vector2(460, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("2_orb")
@@ -160,15 +160,25 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
 text = "LANGUAGE: BAHASA INDONESIA"
 
 [node name="BackBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(440, 56)
+custom_minimum_size = Vector2(460, 56)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_colors/font_color = Color(0.04, 0.06, 0.09, 1)
 theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_conf_h")
-text = "[ BACK (ESC) ]"
+text = "[ LANJUTKAN TEMPUR / TUTUP (ESC) ]"
+
+[node name="MenuBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(460, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "[ KEMBALI KE MAIN TERMINAL ]"
 
 [node name="SFXClick" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_click")
