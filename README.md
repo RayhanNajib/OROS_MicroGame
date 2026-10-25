@@ -12,7 +12,7 @@
 |:--:|:---|:---:|:---|:---|
 | **1** | **Muhammad Rayhan Najib** | `240533600012` | **Lead Programmer & Engine Integrator** | Arsitektur Godot 4.7, GDScript 2.0 static typing, twin-stick mouse aiming, sistem peluru plasma & reload, serta logika modular level-up modal. |
 | **2** | **Luigy M. C. Liem Saunoah** | `240533605298` | **2D Pixel Artist, Animator & UI Designer** | Desain visual karakter Kael 4-frame run cycle, 3 jenis robot musuh (Spider, Drone, Golem), 8 ikon kartu upgrade, tileset lantai arena, dan HUD hearts/ammo. |
-| **3** | **Ahmad Faizun** | `240533608123` | **Project Manager, Game Designer & QA Tester** | Manajemen sprint papan Trello, balancing kurva EXP roguelite, sintesis audio 16-bit foley (gunshot, reload, hit, death, XP ting, fanfare), dan smoke testing. |
+| **3** | **M. Faizun Ni'am** | `240533600539` | **Project Manager, Game Designer & QA Tester** | Manajemen sprint papan Trello, balancing kurva EXP roguelite, sintesis audio 16-bit foley (gunshot, reload, hit, death, XP ting, fanfare), dan smoke testing. |
 
 ---
 
