@@ -10,7 +10,7 @@ size = Vector2(56, 68)
 collision_layer = 4
 collision_mask = 5
 script = ExtResource("1_scr")
-max_hp = 750
+max_hp = 2250
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_tex")

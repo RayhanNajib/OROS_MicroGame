@@ -1,19 +1,21 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene format=3 uid="uid://cfrvqaxhdos82"]
 
-[ext_resource type="Script" path="res://scripts/main/main_menu.gd" id="1_scr"]
-[ext_resource type="Texture2D" path="res://assets/sprites/pixel_menu_bg.png" id="2_bg"]
-[ext_resource type="Texture2D" path="res://assets/sprites/pixel_logo_oros.png" id="3_logo"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="4_click"]
-[ext_resource type="AudioStream" path="res://assets/audio/bgm_combat_loop.wav" id="5_bgm"]
-[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="6_orb"]
-[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="7_tech"]
-[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_normal.png" id="8_btn_n"]
-[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_hover.png" id="9_btn_h"]
-[ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_normal.png" id="10_conf_n"]
-[ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_hover.png" id="11_conf_h"]
+[ext_resource type="Script" uid="uid://b4fs0andqi4wr" path="res://scripts/main/main_menu.gd" id="1_scr"]
+[ext_resource type="Texture2D" uid="uid://dsykfda2n7qia" path="res://assets/sprites/pixel_menu_bg.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://tdmla0kdng53" path="res://assets/sprites/pixel_logo_oros.png" id="3_logo"]
+[ext_resource type="AudioStream" uid="uid://pk3kvw6dh63k" path="res://assets/audio/sfx_menu_click.wav" id="4_click"]
+[ext_resource type="AudioStream" uid="uid://b6ocpu6wjo8dl" path="res://assets/audio/bgm_combat_loop.wav" id="5_bgm"]
+[ext_resource type="FontFile" uid="uid://p13kc4lufsqi" path="res://assets/fonts/Orbitron-Bold.ttf" id="6_orb"]
+[ext_resource type="FontFile" uid="uid://csta6oe060ol2" path="res://assets/fonts/tech_font.ttf" id="7_tech"]
+[ext_resource type="Texture2D" uid="uid://cmk45x8aw8cmr" path="res://assets/ui/btn_sci_normal.png" id="8_btn_n"]
+[ext_resource type="Texture2D" uid="uid://ddqu0i8pfq4j3" path="res://assets/ui/btn_sci_hover.png" id="9_btn_h"]
+[ext_resource type="Texture2D" uid="uid://djyf7v7fea0wi" path="res://assets/ui/btn_confirm_normal.png" id="10_conf_n"]
+[ext_resource type="Texture2D" uid="uid://hnudm3txme77" path="res://assets/ui/btn_confirm_hover.png" id="11_conf_h"]
 [ext_resource type="PackedScene" path="res://scenes/main/CampaignWizardModal.tscn" id="12_wizard_modal"]
 [ext_resource type="PackedScene" path="res://scenes/main/MarketplaceModal.tscn" id="13_shop_modal"]
-[ext_resource type="PackedScene" path="res://scenes/ui/PauseModal.tscn" id="14_settings_modal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SettingsModal.tscn" id="14_settings_modal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/CreditsHoloModal.tscn" id="15_credits_modal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SaveLoadModal.tscn" id="16_saveload_modal"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_n"]
 texture = ExtResource("10_conf_n")
@@ -43,7 +45,7 @@ texture_margin_top = 8.0
 texture_margin_right = 8.0
 texture_margin_bottom = 8.0
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=613902792]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,7 +54,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_scr")
 
-[node name="PixelBG" type="TextureRect" parent="."]
+[node name="PixelBG" type="TextureRect" parent="." unique_id=564032927]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,7 +65,7 @@ texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="CenterBox" type="VBoxContainer" parent="."]
+[node name="CenterBox" type="VBoxContainer" parent="." unique_id=1744764659]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -79,7 +81,7 @@ grow_vertical = 2
 theme_override_constants/separation = 22
 alignment = 1
 
-[node name="LogoRect" type="TextureRect" parent="CenterBox"]
+[node name="LogoRect" type="TextureRect" parent="CenterBox" unique_id=2067664978]
 custom_minimum_size = Vector2(520, 110)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -87,7 +89,7 @@ texture = ExtResource("3_logo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Subtitle" type="Label" parent="CenterBox"]
+[node name="Subtitle" type="Label" parent="CenterBox" unique_id=1729885987]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
 theme_override_fonts/font = ExtResource("6_orb")
@@ -95,7 +97,7 @@ theme_override_font_sizes/font_size = 22
 text = "OVERCLOCKED ROGUELITE ON SURVIVOR"
 horizontal_alignment = 1
 
-[node name="StageStatusLabel" type="Label" parent="CenterBox"]
+[node name="StageStatusLabel" type="Label" parent="CenterBox" unique_id=1041046585]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("7_tech")
@@ -103,27 +105,42 @@ theme_override_font_sizes/font_size = 18
 text = "PROGRES: STAGE 01 TERBUKA // HIGHEST RANK: -"
 horizontal_alignment = 1
 
-[node name="Spacer" type="Control" parent="CenterBox"]
+[node name="Spacer" type="Control" parent="CenterBox" unique_id=63525255]
 custom_minimum_size = Vector2(0, 14)
 layout_mode = 2
 
-[node name="VerticalMenuButtons" type="VBoxContainer" parent="CenterBox"]
+[node name="VerticalMenuButtons" type="VBoxContainer" parent="CenterBox" unique_id=815607664]
 layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="PlayBtn" type="Button" parent="CenterBox/VerticalMenuButtons"]
+[node name="PlayBtn" type="Button" parent="CenterBox/VerticalMenuButtons" unique_id=1610654685]
 custom_minimum_size = Vector2(520, 68)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_colors/font_color = Color(0.98, 0.85, 0.12, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.98, 0.85, 0.12, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("6_orb")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_conf_h")
 text = "[ > PLAY GAME / OPERASI SIBER < ]"
 
-[node name="ShopBtn" type="Button" parent="CenterBox/VerticalMenuButtons"]
+[node name="CoopBtn" type="Button" parent="CenterBox/VerticalMenuButtons" unique_id=1610654686]
+custom_minimum_size = Vector2(520, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("6_orb")
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "[ > LOCAL CO-OP (2 PLAYERS) < ]"
+
+[node name="ShopBtn" type="Button" parent="CenterBox/VerticalMenuButtons" unique_id=592119834]
 custom_minimum_size = Vector2(520, 64)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -133,7 +150,19 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
 text = "[ CYBER ARMORY / SHOP ]"
 
-[node name="SettingsBtn" type="Button" parent="CenterBox/VerticalMenuButtons"]
+[node name="SaveLoadBtn" type="Button" parent="CenterBox/VerticalMenuButtons" unique_id=748291038]
+custom_minimum_size = Vector2(520, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.2, 0.9, 0.45, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("6_orb")
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "[ ARSIP DATA: SAVE & LOAD (5 SLOTS) ]"
+
+[node name="SettingsBtn" type="Button" parent="CenterBox/VerticalMenuButtons" unique_id=284975627]
 custom_minimum_size = Vector2(520, 64)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -143,7 +172,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
 text = "[ PENGATURAN & AUDIO ]"
 
-[node name="ControlsBtn" type="Button" parent="CenterBox/VerticalMenuButtons"]
+[node name="ControlsBtn" type="Button" parent="CenterBox/VerticalMenuButtons" unique_id=1915904039]
 custom_minimum_size = Vector2(520, 64)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -153,7 +182,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
 text = "[ PANDUAN KONTROL & CREDITS ]"
 
-[node name="QuitBtn" type="Button" parent="CenterBox/VerticalMenuButtons"]
+[node name="QuitBtn" type="Button" parent="CenterBox/VerticalMenuButtons" unique_id=166714881]
 custom_minimum_size = Vector2(520, 64)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -164,7 +193,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
 text = "[ KELUAR DARI SISTEM (QUIT) ]"
 
-[node name="VersionFooter" type="Label" parent="."]
+[node name="VersionFooter" type="Label" parent="." unique_id=760396872]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -183,13 +212,7 @@ theme_override_font_sizes/font_size = 16
 text = "O.R.O.S. v1.5.0-TACTICAL • GODOT 4.7.2 • FT PTI UNIVERSITAS NEGERI MALANG"
 horizontal_alignment = 1
 
-[node name="CampaignWizardModal" parent="." instance=ExtResource("12_wizard_modal")]
-
-[node name="MarketplaceModal" parent="." instance=ExtResource("13_shop_modal")]
-
-[node name="SettingsModal" parent="." instance=ExtResource("14_settings_modal")]
-
-[node name="ControlsModal" type="ColorRect" parent="."]
+[node name="CampaignWizardModal" parent="." unique_id=563693243 instance=ExtResource("12_wizard_modal")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -197,9 +220,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.04, 0.08, 0.96)
 
-[node name="Center" type="CenterContainer" parent="ControlsModal"]
+[node name="MarketplaceModal" parent="." unique_id=1664765368 instance=ExtResource("13_shop_modal")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -207,61 +230,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="ControlsModal/Center"]
-custom_minimum_size = Vector2(1040, 680)
-layout_mode = 2
+[node name="SettingsModal" parent="." unique_id=1701428504 instance=ExtResource("14_settings_modal")]
 
-[node name="Margin" type="MarginContainer" parent="ControlsModal/Center/Panel"]
-layout_mode = 2
-theme_override_constants/margin_left = 34
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 34
-theme_override_constants/margin_bottom = 30
+[node name="CreditsHoloModal" parent="." unique_id=375693657 instance=ExtResource("15_credits_modal")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="VBox" type="VBoxContainer" parent="ControlsModal/Center/Panel/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 22
+[node name="SaveLoadModal" parent="." unique_id=983172645 instance=ExtResource("16_saveload_modal")]
+visible = false
 
-[node name="Header" type="Label" parent="ControlsModal/Center/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_fonts/font = ExtResource("6_orb")
-theme_override_font_sizes/font_size = 24
-text = "[ PROTOKOL KONTROL & CREDITS ]"
-horizontal_alignment = 1
-
-[node name="Guide" type="Label" parent="ControlsModal/Center/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_fonts/font = ExtResource("7_tech")
-theme_override_font_sizes/font_size = 17
-text = "• [W, A, S, D] / Tombol Panah: Gerak Karakter Operative
-• [SPACE / SHIFT / E]: Aktifkan Skill Karakter (Cryo Dash, Phase Blink, Seismic Slam)
-• [MOUSE]: Arah Bidik Senjata Plasma
-• [KLIK KIRI]: Tembak Peluru Senjata Aktif
-• [R]: Reload Magasin Manual
-• [Q] atau [1, 2, 3]: Ganti Senjata Langsung di Arena Pertempuran
-• [ESC]: Jeda Pertempuran / Menu Pengaturan Audio
-
-TIM PENGEMBANG (PTI FT UNIVERSITAS NEGERI MALANG):
-1. Muhammad Rayhan Najib (240533600012) - Lead Programmer & Engine Core
-2. Luigy M. C. Liem Saunoah (240533605298) - 2D Pixel Artist & UI/UX Designer
-3. Ahmad Faizun (240533608123) - Project Manager & Audio Chiptune Foley"
-autowrap_mode = 2
-
-[node name="CloseControlsBtn" type="Button" parent="ControlsModal/Center/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(280, 52)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("6_orb")
-theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
-theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
-text = "[ TUTUP ]"
-
-[node name="SFXClick" type="AudioStreamPlayer" parent="."]
+[node name="SFXClick" type="AudioStreamPlayer" parent="." unique_id=1786587735]
 stream = ExtResource("4_click")
 
-[node name="BGMCombat" type="AudioStreamPlayer" parent="."]
+[node name="BGMCombat" type="AudioStreamPlayer" parent="." unique_id=1962472198]
+process_mode = 3
 stream = ExtResource("5_bgm")
 autoplay = true

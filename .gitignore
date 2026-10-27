@@ -1,6 +1,9 @@
 # Godot 4 .gitignore
 .godot/
 *.translation
-export_presets.cfg
 .DS_Store
 Thumbs.db
+*.tmp
+*.bak
+*.save
+_archive_dev_tools/

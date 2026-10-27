@@ -15,6 +15,17 @@ func setup(amount: int, is_crit: bool = false) -> void:
 		scale = Vector2.ONE
 		
 	# Floating parabola animation
+	_animate_popup()
+
+func setup_text(text_str: String, custom_color: Color = Color(0.0, 0.95, 1.0, 1.0)) -> void:
+	if not label:
+		label = $Label
+	label.text = text_str
+	label.add_theme_color_override("font_color", custom_color)
+	scale = Vector2(1.15, 1.15)
+	_animate_popup()
+
+func _animate_popup() -> void:
 	var tw := create_tween()
 	tw.set_parallel(true)
 	var random_x := randf_range(-18.0, 18.0)

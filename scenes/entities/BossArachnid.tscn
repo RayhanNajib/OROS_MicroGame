@@ -12,7 +12,7 @@ collision_mask = 5
 script = ExtResource("1_scr")
 boss_type = "arachnid"
 boss_name = "ARACHNID-SOVEREIGN"
-max_hp = 1100
+max_hp = 3300
 base_speed = 52.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

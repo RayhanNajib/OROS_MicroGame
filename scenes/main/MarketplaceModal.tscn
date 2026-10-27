@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/main/marketplace_modal.gd" id="1_scr"]
 [ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_orb"]
@@ -12,6 +12,13 @@
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_n"]
 texture = ExtResource("8_conf_n")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_h"]
+texture = ExtResource("9_conf_h")
 texture_margin_left = 10.0
 texture_margin_top = 10.0
 texture_margin_right = 10.0
@@ -88,17 +95,24 @@ layout_mode = 2
 theme_override_constants/separation = 16
 
 [node name="ShopTabBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/TabButtons"]
-custom_minimum_size = Vector2(360, 50)
+custom_minimum_size = Vector2(360, 52)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_orb")
+theme_override_colors/font_color = Color(1, 0.95, 0.15, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.95, 0.15, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_silk")
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_conf_h")
 text = "[ 1. VISUAL SHOP KOSMETIK ]"
 
 [node name="RunesTabBtn" type="Button" parent="CenterContainer/Panel/Margin/VBox/TabButtons"]
-custom_minimum_size = Vector2(360, 50)
+custom_minimum_size = Vector2(360, 52)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_orb")
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.15, 1)
+theme_override_fonts/font = ExtResource("3_silk")
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")

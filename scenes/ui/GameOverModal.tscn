@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_hover.png" id="8_conf_h"]
 [ext_resource type="Texture2D" path="res://assets/ui/btn_sci_normal.png" id="9_sci_n"]
 [ext_resource type="Texture2D" path="res://assets/ui/btn_sci_hover.png" id="10_sci_h"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui_vignette.png" id="11_vig"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_your_death.wav" id="12_sfx_death"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_n"]
 texture = ExtResource("7_conf_n")
@@ -41,6 +43,7 @@ texture_margin_bottom = 8.0
 
 [node name="GameOverModal" type="CanvasLayer"]
 process_mode = 3
+layer = 15
 script = ExtResource("1_scr")
 
 [node name="DimOverlay" type="ColorRect" parent="."]
@@ -49,7 +52,21 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.04, 0.06, 0.09, 0.96)
+color = Color(0.04, 0.06, 0.09, 0.94)
+
+[node name="VignetteOverlay" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("11_vig")
+expand_mode = 1
+
+[node name="DeathAudioPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_sfx_death")
+volume_db = 2.0
 
 [node name="TopLeftLoadout" type="HBoxContainer" parent="."]
 offset_left = 54.0
@@ -93,6 +110,14 @@ theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
 theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 40
 text = "[ SYSTEM OVERHEAT // TERMINATED ]"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="CenterBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1.0, 0.35, 0.35, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 18
+text = "NEURAL LINK SEVERED — CHASSIS DESTROYED"
 horizontal_alignment = 1
 
 [node name="ScorePanel" type="PanelContainer" parent="CenterBox"]
@@ -193,7 +218,10 @@ alignment = 1
 [node name="RetryBtn" type="Button" parent="CenterBox/HBoxBtns"]
 custom_minimum_size = Vector2(360, 60)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.04, 0.06, 0.09, 1)
+theme_override_colors/font_color = Color(1, 0.95, 0.15, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.95, 0.15, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")

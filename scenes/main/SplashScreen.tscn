@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/main/splash_screen.gd" id="1_scr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pixel_logo_oros.png" id="2_logo"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="3_orb"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_boot_jingle.wav" id="4_jingle"]
+
+[node name="SplashScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_scr")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.06, 0.09, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="LogoRect" type="TextureRect" parent="Center/VBox"]
+custom_minimum_size = Vector2(500, 110)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("2_logo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Subtitle" type="Label" parent="Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("3_orb")
+theme_override_font_sizes/font_size = 18
+text = "KELOMPOK 3 // FT PTI UNIVERSITAS NEGERI MALANG"
+horizontal_alignment = 1
+
+[node name="JinglePlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_jingle")
+volume_db = -2.0

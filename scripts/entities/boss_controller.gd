@@ -2,11 +2,30 @@ extends CharacterBody2D
 
 @export var boss_type: String = "colossus"
 @export var boss_name: String = "COLOSSUS-OMEGA"
-@export var max_hp: int = 750
-@export var base_speed: float = 46.0
+@export var max_hp: int = 2250
+@export var base_speed: float = 125.0
 @export var contact_damage: int = 2
 
-var current_hp: int = 750
+# Compatibility alias for wave_spawner and mini-boss callers
+var boss_max_hp: int:
+	get: return max_hp
+	set(v):
+		max_hp = v
+		current_hp = v
+var boss_hp: int:
+	get: return current_hp
+	set(v): current_hp = v
+var max_health: int:
+	get: return max_hp
+	set(v):
+		max_hp = v
+		current_hp = v
+var health: int:
+	get: return current_hp
+	set(v): current_hp = v
+
+var current_hp: int = 2250
+var boss_alive_time: float = 0.0
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var anim_timer: Timer = $AnimTimer
@@ -19,6 +38,14 @@ var attack_timer: float = 0.0
 var special_timer: float = 0.0
 var is_special_active: bool = false
 var contact_cooldown: float = 0.0
+
+# Apex Boss Dash Skill Attributes
+var dash_timer: float = 0.0
+var is_dashing: bool = false
+var is_dash_charging: bool = false
+var dash_dir: Vector2 = Vector2.ZERO
+var dash_time_remaining: float = 0.0
+var dash_interval: float = 5.2
 
 var enemy_bullet_scene: PackedScene
 var xp_gem_scene: PackedScene
@@ -50,10 +77,21 @@ func _on_anim_tick() -> void:
 		sprite.frame = current_frame
 
 func _physics_process(delta: float) -> void:
+	# Find closest valid active player (exclude downed co-op players)
+	var players = get_tree().get_nodes_in_group("player")
+	var best_p: Node2D = null
+	var min_d: float = 999999.0
+	for p in players:
+		if not is_instance_valid(p): continue
+		if p.get("is_downed") == true: continue
+		var d = global_position.distance_to(p.global_position)
+		if d < min_d:
+			min_d = d
+			best_p = p
+	player = best_p
+
 	if not is_instance_valid(player):
-		var players = get_tree().get_nodes_in_group("player")
-		if players.size() > 0:
-			player = players[0]
+		# If no active player, target tower or idle
 		return
 
 	if contact_cooldown > 0.0:
@@ -63,7 +101,7 @@ func _physics_process(delta: float) -> void:
 	var dist := to_player.length()
 	var dir := to_player.normalized()
 
-	if sprite:
+	if sprite and not is_dashing:
 		sprite.flip_h = (dir.x < 0)
 
 	# Regular Attack Loop
@@ -72,7 +110,7 @@ func _physics_process(delta: float) -> void:
 	if boss_type == "chrono": atk_interval = 2.0
 	elif boss_type == "dreadnought": atk_interval = 2.6
 	
-	if attack_timer >= atk_interval:
+	if attack_timer >= atk_interval and not is_dashing and not is_dash_charging:
 		attack_timer = 0.0
 		execute_regular_attack(dir)
 
@@ -81,25 +119,100 @@ func _physics_process(delta: float) -> void:
 	var sp_interval := 6.5
 	if boss_type == "chrono": sp_interval = 4.5
 	
-	if special_timer >= sp_interval:
+	if special_timer >= sp_interval and not is_dashing and not is_dash_charging:
 		special_timer = 0.0
 		execute_special_ability(dir)
 
-	# Move toward player
-	var move_speed := 0.0 if is_special_active else base_speed
-	velocity = (dir * move_speed) + knockback_velocity
+	# Apex Boss Dash Skill Loop
+	dash_timer += delta
+	if dash_timer >= dash_interval and not is_special_active and not is_dash_charging and not is_dashing:
+		dash_timer = 0.0
+		start_dash_sequence(dir)
+
+	boss_alive_time += delta
+	var speed_mult: float = 1.0
+	if boss_alive_time > 60.0:
+		speed_mult = minf(3.0, 1.0 + ((boss_alive_time - 60.0) / 60.0) * 2.0)
+
+	# Velocity calculation
+	if is_dashing:
+		dash_time_remaining -= delta
+		velocity = dash_dir * 560.0
+		spawn_boss_ghost()
+		if dash_time_remaining <= 0.0:
+			is_dashing = false
+			modulate = Color(1, 1, 1, 1)
+			GameState.screen_shake_requested.emit(8.0, 0.2)
+	elif is_dash_charging:
+		velocity = Vector2.ZERO
+	else:
+		var move_speed := 0.0 if is_special_active else (base_speed * speed_mult)
+		velocity = (dir * move_speed) + knockback_velocity
+
 	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, 300.0 * delta)
 	move_and_slide()
 
+	# ARENA ZONE ENFORCEMENT: Boss is strictly contained inside the arena circle!
+	var max_zone_dist: float = 490.0
+	var arena_ctrl = get_tree().get_first_node_in_group("arena_controller")
+	if arena_ctrl and "zone_radius" in arena_ctrl:
+		max_zone_dist = maxf(140.0, float(arena_ctrl.zone_radius) - 40.0)
+	elif has_node("/root/GameArena"):
+		var ga = get_node("/root/GameArena")
+		if "zone_radius" in ga:
+			max_zone_dist = maxf(140.0, float(ga.zone_radius) - 40.0)
+
+	var current_center_dist: float = global_position.length()
+	if current_center_dist > max_zone_dist:
+		# Forced high-speed sprint leash back into the arena
+		var inward_dir: Vector2 = -global_position.normalized()
+		velocity = inward_dir * (base_speed * 3.2)
+		global_position = global_position.normalized() * max_zone_dist
+
 	# Contact damage with player
-	var hit_bound := 45.0
+	var hit_bound := 48.0
+	if is_dashing: hit_bound = 64.0
 	if boss_type == "chrono": hit_bound = 60.0
 	elif boss_type == "dreadnought": hit_bound = 55.0
 	
 	if dist < hit_bound and contact_cooldown <= 0.0:
 		if is_instance_valid(player) and player.has_method("take_hit"):
-			player.take_hit(contact_damage)
-			contact_cooldown = 1.0
+			var dmg = contact_damage * 2 if is_dashing else contact_damage
+			player.take_hit(dmg)
+			contact_cooldown = 0.8
+			if is_dashing and "apply_knockback" in player:
+				player.apply_knockback(dash_dir * 420.0)
+
+func start_dash_sequence(target_dir: Vector2) -> void:
+	is_dash_charging = true
+	dash_dir = target_dir
+	# Telegraph windup with crimson glow and screen warning
+	modulate = Color(3.0, 0.3, 0.3, 1.0)
+	var tw := create_tween()
+	tw.tween_interval(0.42)
+	tw.tween_callback(func():
+		is_dash_charging = false
+		is_dashing = true
+		dash_time_remaining = 0.38
+		modulate = Color(2.5, 0.6, 0.6, 1.0)
+		GameState.screen_shake_requested.emit(5.0, 0.15)
+	)
+
+func spawn_boss_ghost() -> void:
+	if not sprite: return
+	var ghost := Sprite2D.new()
+	ghost.texture = sprite.texture
+	ghost.hframes = sprite.hframes
+	ghost.vframes = sprite.vframes
+	ghost.frame = sprite.frame
+	ghost.flip_h = sprite.flip_h
+	ghost.global_position = global_position
+	ghost.scale = sprite.scale
+	ghost.modulate = Color(2.0, 0.2, 0.2, 0.55)
+	get_parent().add_child(ghost)
+	var gtw := create_tween()
+	gtw.tween_property(ghost, "modulate:a", 0.0, 0.22)
+	gtw.tween_callback(ghost.queue_free)
 
 func execute_regular_attack(dir: Vector2) -> void:
 	if not enemy_bullet_scene: return
@@ -227,12 +340,13 @@ func die() -> void:
 			med.global_position = global_position + Vector2(randf_range(-25, 25), randf_range(-25, 25))
 			get_parent().call_deferred("add_child", med)
 
-	# Guaranteed Boss Loot: Skill Cores
+	# Boss Loot: 1 Skill Core (hadiah langka setelah mengalahkan boss besar; mini-boss berpeluang kecil 25%)
 	var core_scene = load("res://scenes/entities/SkillCorePickup.tscn")
 	if core_scene:
-		for i in range(2):
+		var should_drop: bool = true if not is_in_group("mini_boss") else (randf() < 0.25)
+		if should_drop:
 			var core = core_scene.instantiate()
-			core.global_position = global_position + Vector2(randf_range(-20, 20), randf_range(-20, 20))
+			core.global_position = global_position + Vector2(randf_range(-16, 16), randf_range(-16, 16))
 			get_parent().call_deferred("add_child", core)
 			
 	queue_free()

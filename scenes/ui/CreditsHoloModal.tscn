@@ -1,0 +1,350 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/credits_holo_modal.gd" id="1_scr"]
+[ext_resource type="FontFile" path="res://assets/fonts/Orbitron-Bold.ttf" id="2_orb"]
+[ext_resource type="FontFile" path="res://assets/fonts/Silkscreen-Bold.ttf" id="3_silk"]
+[ext_resource type="FontFile" path="res://assets/fonts/tech_font.ttf" id="4_tech"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_menu_click.wav" id="5_click"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_normal.png" id="6_btn_n"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_sci_hover.png" id="7_btn_h"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_normal.png" id="8_conf_n"]
+[ext_resource type="Texture2D" path="res://assets/ui/btn_confirm_hover.png" id="9_conf_h"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_n"]
+texture = ExtResource("8_conf_n")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_conf_h"]
+texture = ExtResource("9_conf_h")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sci_n"]
+texture = ExtResource("6_btn_n")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sci_h"]
+texture = ExtResource("7_btn_h")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_card"]
+size = Vector2(1.5, 2.25)
+
+[sub_resource type="TorusMesh" id="TorusMesh_ring"]
+inner_radius = 0.8
+outer_radius = 1.05
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+size = Vector2(14, 14)
+
+[node name="CreditsHoloModal" type="ColorRect"]
+process_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.06, 0.09, 0.98)
+script = ExtResource("1_scr")
+
+[node name="HoloViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="HoloViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="World3D" type="Node3D" parent="HoloViewportContainer/SubViewport"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="HoloViewportContainer/SubViewport/World3D"]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 4, 3)
+light_color = Color(0.9, 0.95, 1, 1)
+light_energy = 0.8
+
+[node name="OmniLight3D" type="OmniLight3D" parent="HoloViewportContainer/SubViewport/World3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 2.2)
+light_color = Color(0, 0.94, 1, 1)
+light_energy = 1.8
+omni_range = 8.0
+
+[node name="Camera3D" type="Camera3D" parent="HoloViewportContainer/SubViewport/World3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0.25, 4.3)
+current = true
+
+[node name="WorldPivot" type="Node3D" parent="HoloViewportContainer/SubViewport/World3D"]
+
+[node name="CardRayhan" type="MeshInstance3D" parent="HoloViewportContainer/SubViewport/World3D/WorldPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0.1)
+mesh = SubResource("QuadMesh_card")
+
+[node name="CardFaizun" type="MeshInstance3D" parent="HoloViewportContainer/SubViewport/World3D/WorldPivot"]
+transform = Transform3D(0.961262, 0, 0.275637, 0, 1, 0, -0.275637, 0, 0.961262, -1.75, 0.15, -0.2)
+mesh = SubResource("QuadMesh_card")
+
+[node name="CardLuigy" type="MeshInstance3D" parent="HoloViewportContainer/SubViewport/World3D/WorldPivot"]
+transform = Transform3D(0.961262, 0, -0.275637, 0, 1, 0, 0.275637, 0, 0.961262, 1.75, 0.15, -0.2)
+mesh = SubResource("QuadMesh_card")
+
+[node name="UIOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="UIOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="UIOverlay/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="HeaderBox" type="HBoxContainer" parent="UIOverlay/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="UIOverlay/Margin/VBox/HeaderBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 24
+text = "[ HOLOGRAPHIC ARCHIVE // OVERCLOCK TEAM DOSSIER ]"
+
+[node name="TabHoloBtn" type="Button" parent="UIOverlay/Margin/VBox/HeaderBox"]
+custom_minimum_size = Vector2(260, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.15, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_conf_h")
+text = "[ 3D HOLOGRAM TIM ]"
+
+[node name="TabControlsBtn" type="Button" parent="UIOverlay/Margin/VBox/HeaderBox"]
+custom_minimum_size = Vector2(260, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "[ PANDUAN KONTROL ]"
+
+[node name="TopControls" type="HBoxContainer" parent="UIOverlay/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HintLabel" type="Label" parent="UIOverlay/Margin/VBox/TopControls"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 12
+text = "[KLIK & DRAG]: PUTAR 360° • [SCROLL]: ZOOM • [KLIK ANGGOTA]: FOKUS DOSSIER"
+
+[node name="MemberButtons" type="HBoxContainer" parent="UIOverlay/Margin/VBox/TopControls"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BtnRayhan" type="Button" parent="UIOverlay/Margin/VBox/TopControls/MemberButtons"]
+custom_minimum_size = Vector2(170, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "1. RAYHAN"
+
+[node name="BtnFaizun" type="Button" parent="UIOverlay/Margin/VBox/TopControls/MemberButtons"]
+custom_minimum_size = Vector2(170, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "2. FAIZUN"
+
+[node name="BtnLuigy" type="Button" parent="UIOverlay/Margin/VBox/TopControls/MemberButtons"]
+custom_minimum_size = Vector2(170, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.13, 0.95, 0.4, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "3. LUIGY"
+
+[node name="BtnResetCam" type="Button" parent="UIOverlay/Margin/VBox/TopControls/MemberButtons"]
+custom_minimum_size = Vector2(170, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "[ RESET VIEW ]"
+
+[node name="BtnAutoRotate" type="Button" parent="UIOverlay/Margin/VBox/TopControls/MemberButtons"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxTexture_sci_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sci_h")
+text = "AUTO-ROTATE: ON"
+
+[node name="MiddleArea" type="HBoxContainer" parent="UIOverlay/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Spacer" type="Control" parent="UIOverlay/Margin/VBox/MiddleArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="DossierBox" type="PanelContainer" parent="UIOverlay/Margin/VBox/MiddleArea"]
+custom_minimum_size = Vector2(540, 480)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Margin" type="MarginContainer" parent="UIOverlay/Margin/VBox/MiddleArea/DossierBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="UIOverlay/Margin/VBox/MiddleArea/DossierBox/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderDossier" type="Label" parent="UIOverlay/Margin/VBox/MiddleArea/DossierBox/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 16
+text = "[ DOSSIER ARSIP PERSONEL ]"
+
+[node name="DossierName" type="Label" parent="UIOverlay/Margin/VBox/MiddleArea/DossierBox/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.15, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 20
+text = "TIM PENGEMBANG O.R.O.S."
+
+[node name="DossierRole" type="Label" parent="UIOverlay/Margin/VBox/MiddleArea/DossierBox/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 13
+text = "KELOMPOK 3 • PTI FT UNIVERSITAS NEGERI MALANG"
+
+[node name="Separator" type="HSeparator" parent="UIOverlay/Margin/VBox/MiddleArea/DossierBox/Margin/VBox"]
+layout_mode = 2
+
+[node name="DossierDesc" type="Label" parent="UIOverlay/Margin/VBox/MiddleArea/DossierBox/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_fonts/font = ExtResource("4_tech")
+theme_override_font_sizes/font_size = 16
+text = "Klik pada tombol anggota di atas atau klik-tahan mouse untuk memutar hologram 3D 360 derajat. Gunakan scroll wheel mouse untuk memperbesar (zoom in) dan memperkecil (zoom out) arsip personel."
+autowrap_mode = 2
+
+[node name="ControlsGuideBox" type="PanelContainer" parent="UIOverlay/Margin/VBox"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="UIOverlay/Margin/VBox/ControlsGuideBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="UIOverlay/Margin/VBox/ControlsGuideBox/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="GuideTitle" type="Label" parent="UIOverlay/Margin/VBox/ControlsGuideBox/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 22
+text = "[ TACTICAL CONTROLS & KEYBOARD SHORTCUTS ]"
+
+[node name="GuideText" type="Label" parent="UIOverlay/Margin/VBox/ControlsGuideBox/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_fonts/font = ExtResource("4_tech")
+theme_override_font_sizes/font_size = 18
+text = "• [W, A, S, D] / Tombol Panah: Gerak Karakter Operative (WASD 8-Directional Movement)
+• [SPACE / SHIFT / TAHAN E]: Bidik & Eksekusi Skill Karakter (Cryo Dash, Decoy Blink, Seismic Slam, Singularity)
+• [MOUSE / KURSOR]: Arah Bidik Senjata Jarak Jauh & Tebasan Melee
+• [KLIK KIRI]: Tembak Peluru Senjata Primer (Ranged)
+• [KLIK KANAN / Q / 1, 2]: Ganti Senjata Cepat (Slot 1 Ranged <-> Slot 2 Melee Katana, CD 0.35s)
+• [R]: Reload Magasin Manual (Animasi Slide Bar di Atas Kepala Karakter)
+• [ESC]: Jeda Pertempuran / Menu Pengaturan Audio & Return to Terminal
+• [NUMPAD 1, 2]: Shortcut Alternatif Pergantian Senjata
+
+ATURAN BALANCING RESMI:
+- Pemulihan HP (Medkit) HANYA jatuh dari tebasan senjata Melee (35% drop rate). Ranged kill 0% drop medkit!
+- Dash karakter murni manuver mobilitas & freeze (tidak menghapus musuh 1 layar instan)."
+autowrap_mode = 2
+
+[node name="BottomBar" type="HBoxContainer" parent="UIOverlay/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="CloseBtn" type="Button" parent="UIOverlay/Margin/VBox/BottomBar"]
+custom_minimum_size = Vector2(440, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.15, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_orb")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxTexture_conf_n")
+theme_override_styles/hover = SubResource("StyleBoxTexture_conf_h")
+text = "[ < KEMBALI KE TERMINAL UTAMA (ESC) ]"
+
+[node name="SFXClick" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_click")

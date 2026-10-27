@@ -21,6 +21,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_melee_slash.wav" id="19_slash_sfx"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_melee_hit.wav" id="20_hit_sfx"]
 [ext_resource type="Texture2D" path="res://assets/sprites/fx_slash_arc.png" id="21_slash_tex"]
+[ext_resource type="Script" path="res://scripts/ui/reload_visual.gd" id="22_rel_vis"]
 
 
 
@@ -81,6 +82,11 @@ energy = 1.3
 texture = ExtResource("4_light")
 texture_scale = 1.8
 
+
+[node name="ReloadVisual" type="Node2D" parent="." node_paths=PackedStringArray("player_node")]
+position = Vector2(0, -32)
+script = ExtResource("22_rel_vis")
+player_node = NodePath("..")
 
 [node name="ReloadBar" type="ProgressBar" parent="."]
 visible = false

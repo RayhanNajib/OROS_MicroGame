@@ -12,7 +12,7 @@ collision_mask = 5
 script = ExtResource("1_scr")
 boss_type = "dreadnought"
 boss_name = "DREADNOUGHT-GOLIATH"
-max_hp = 2100
+max_hp = 6300
 base_speed = 40.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

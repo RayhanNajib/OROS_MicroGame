@@ -1,9 +1,9 @@
 extends CharacterBody2D
 
-@export var max_hp: int = 750
-var current_hp: int = 750
+@export var max_hp: int = 2250
+var current_hp: int = 2250
 var base_speed: float = 46.0
-var contact_damage: int = 2
+var contact_damage: int = 4
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var anim_timer: Timer = $AnimTimer
@@ -16,6 +16,13 @@ var attack_timer: float = 0.0
 var slam_timer: float = 0.0
 var is_slamming: bool = false
 var contact_cooldown: float = 0.0
+
+# 3x Speed Ramp & 2-Second Telegraph Laser
+var boss_alive_time: float = 0.0
+var laser_timer: float = 0.0
+var is_charging_laser: bool = false
+var laser_aim_dir: Vector2 = Vector2.ZERO
+var laser_line: Line2D = null
 
 var enemy_bullet_scene: PackedScene
 var xp_gem_scene: PackedScene
@@ -47,11 +54,20 @@ func _on_anim_tick() -> void:
 		sprite.frame = current_frame
 
 func _physics_process(delta: float) -> void:
-	if not is_instance_valid(player):
+	if not is_instance_valid(player) or player.get("is_downed") == true:
+		player = null
 		var players = get_tree().get_nodes_in_group("player")
-		if players.size() > 0:
-			player = players[0]
-		return
+		var closest_dist := 999999.0
+		for p in players:
+			if is_instance_valid(p) and not p.get("is_downed"):
+				var d = global_position.distance_to(p.global_position)
+				if d < closest_dist:
+					closest_dist = d
+					player = p
+		if not is_instance_valid(player):
+			velocity = velocity.move_toward(Vector2.ZERO, 100.0 * delta)
+			move_and_slide()
+			return
 
 	if contact_cooldown > 0.0:
 		contact_cooldown -= delta
@@ -63,6 +79,12 @@ func _physics_process(delta: float) -> void:
 	if sprite:
 		sprite.flip_h = (dir.x < 0)
 
+	boss_alive_time += delta
+	var speed_mult: float = 1.0
+	if boss_alive_time > 60.0:
+		# Ramp up to 3.0x speed after 1 minute
+		speed_mult = minf(3.0, 1.0 + ((boss_alive_time - 60.0) / 60.0) * 2.0)
+
 	# 1. Radial Bullet Barrage
 	attack_timer += delta
 	if attack_timer >= 3.6:
@@ -71,12 +93,18 @@ func _physics_process(delta: float) -> void:
 
 	# 2. Ground Slam Charge
 	slam_timer += delta
-	if slam_timer >= 6.0:
+	if slam_timer >= 6.0 and not is_charging_laser:
 		slam_timer = 0.0
 		execute_ground_slam()
 
-	# Move toward player if not slamming
-	var move_speed := 0.0 if is_slamming else base_speed
+	# 3. Lethal Long-Range Laser with 2.0s Telegraph Indicator
+	laser_timer += delta
+	if laser_timer >= 8.5 and not is_slamming and not is_charging_laser:
+		laser_timer = 0.0
+		start_laser_telegraph(dir)
+
+	# Move toward player if not slamming or charging laser
+	var move_speed := 0.0 if (is_slamming or is_charging_laser) else (base_speed * speed_mult)
 	velocity = (dir * move_speed) + knockback_velocity
 	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, 300.0 * delta)
 	move_and_slide()
@@ -87,6 +115,61 @@ func _physics_process(delta: float) -> void:
 			player.take_hit(contact_damage)
 			contact_cooldown = 1.0
 
+func start_laser_telegraph(target_dir: Vector2) -> void:
+	is_charging_laser = true
+	laser_aim_dir = target_dir
+	
+	if not laser_line:
+		laser_line = Line2D.new()
+		laser_line.z_index = 25
+		add_child(laser_line)
+	
+	laser_line.visible = true
+	laser_line.clear_points()
+	laser_line.add_point(Vector2.ZERO)
+	laser_line.add_point(laser_aim_dir * 900.0)
+	laser_line.width = 2.0
+	laser_line.default_color = Color(1.0, 0.15, 0.15, 0.5)
+
+	# 2.0 seconds indicator before laser fires
+	var tw := create_tween()
+	tw.tween_method(func(val: float):
+		if is_instance_valid(laser_line):
+			laser_line.width = lerp(2.0, 8.0, val)
+			laser_line.default_color = Color(1.0, 0.1, 0.1, lerp(0.5, 0.95, val))
+	, 0.0, 1.0, 2.0)
+	
+	tw.tween_callback(func():
+		if not is_instance_valid(self): return
+		fire_heavy_laser()
+	)
+
+func fire_heavy_laser() -> void:
+	if not is_instance_valid(self): return
+	if is_instance_valid(laser_line):
+		laser_line.width = 28.0
+		laser_line.default_color = Color(3.5, 0.4, 0.4, 1.0)
+	
+	GameState.screen_shake_requested.emit(12.0, 0.35)
+	
+	# High damage piercing laser beam projectiles
+	if enemy_bullet_scene:
+		for i in range(12):
+			var b = enemy_bullet_scene.instantiate()
+			b.global_position = global_position + (laser_aim_dir * (i * 65.0 + 30.0))
+			b.direction = laser_aim_dir
+			b.speed = 650.0
+			b.damage = 3
+			get_parent().add_child(b)
+	
+	var fade_tw := create_tween()
+	fade_tw.tween_interval(0.3)
+	fade_tw.tween_callback(func():
+		if is_instance_valid(laser_line):
+			laser_line.visible = false
+		is_charging_laser = false
+	)
+
 func fire_radial_barrage() -> void:
 	if not enemy_bullet_scene: return
 	var count := 8
@@ -96,6 +179,7 @@ func fire_radial_barrage() -> void:
 		b.global_position = global_position
 		b.direction = Vector2.RIGHT.rotated(angle)
 		b.speed = 210.0
+		b.damage = 2
 		get_parent().add_child(b)
 
 func execute_ground_slam() -> void:
@@ -115,6 +199,7 @@ func execute_ground_slam() -> void:
 			b.global_position = global_position
 			b.direction = Vector2.RIGHT.rotated(angle)
 			b.speed = 280.0
+			b.damage = 2
 			get_parent().add_child(b)
 	)
 

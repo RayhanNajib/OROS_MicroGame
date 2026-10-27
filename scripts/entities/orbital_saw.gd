@@ -45,5 +45,9 @@ func deal_saw_damage(enemy: Node2D) -> void:
 		return
 	hit_cooldowns[enemy] = 0.25 # Can hit same enemy every 0.25s
 	if enemy.has_method("take_damage"):
-		var kb = (enemy.global_position - global_position).normalized() * 60.0
-		enemy.take_damage(damage, kb)
+		var lvl_scale: float = 1.0 + 0.3 * float(maxi(0, int(GameState.level) - 1))
+		if GameState.active_tomes.has("tome_summoning"):
+			lvl_scale *= 2.0
+		var dmg: int = int(float(damage) * lvl_scale)
+		var kb: Vector2 = (enemy.global_position - global_position).normalized() * 60.0
+		enemy.take_damage(dmg, kb)

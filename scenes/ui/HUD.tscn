@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/pixel_low_hp_vignette.png" id="5_vig"]
 
 [node name="HUD" type="CanvasLayer"]
+layer = 2
 script = ExtResource("1_scr")
 
 [node name="LowHPVignette" type="TextureRect" parent="."]
@@ -101,9 +102,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -340.0
-offset_top = 74.0
+offset_top = 76.0
 offset_right = 340.0
-offset_bottom = 116.0
+offset_bottom = 122.0
 grow_horizontal = 2
 theme_override_constants/separation = 4
 
@@ -125,10 +126,10 @@ visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -280.0
-offset_top = 124.0
-offset_right = 280.0
-offset_bottom = 160.0
+offset_left = -340.0
+offset_top = 76.0
+offset_right = 340.0
+offset_bottom = 128.0
 grow_horizontal = 2
 theme_override_constants/separation = 3
 
@@ -151,33 +152,90 @@ anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 36.0
 offset_top = -140.0
-offset_right = 440.0
+offset_right = 480.0
 offset_bottom = -24.0
 grow_vertical = 0
 theme_override_constants/separation = 6
 
-[node name="SkillHeader" type="HBoxContainer" parent="BottomLeftSkill"]
+[node name="SkillRow" type="HBoxContainer" parent="BottomLeftSkill"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 14
 
-[node name="SkillNameLabel" type="Label" parent="BottomLeftSkill/SkillHeader"]
+[node name="SkillIconContainer" type="Control" parent="BottomLeftSkill/SkillRow"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+
+[node name="SkillIcon" type="TextureRect" parent="BottomLeftSkill/SkillRow/SkillIconContainer"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkillCDOverlay" type="ColorRect" parent="BottomLeftSkill/SkillRow/SkillIconContainer"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+
+[node name="SkillCDText" type="Label" parent="BottomLeftSkill/SkillRow/SkillIconContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillTextCol" type="VBoxContainer" parent="BottomLeftSkill/SkillRow"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SkillHeader" type="HBoxContainer" parent="BottomLeftSkill/SkillRow/SkillTextCol"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ControllerPromptIcon" type="TextureRect" parent="BottomLeftSkill/SkillRow/SkillTextCol/SkillHeader"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkillNameLabel" type="Label" parent="BottomLeftSkill/SkillRow/SkillTextCol/SkillHeader"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.94, 1, 1)
 theme_override_fonts/font = ExtResource("2_orb")
 theme_override_font_sizes/font_size = 16
 text = "[ SPACE/E: AKTIFKAN SKILL ]"
 
-[node name="SkillLvlBadge" type="Label" parent="BottomLeftSkill/SkillHeader"]
+[node name="SkillLvlBadge" type="Label" parent="BottomLeftSkill/SkillRow/SkillTextCol/SkillHeader"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.8, 0.08, 1)
 theme_override_fonts/font = ExtResource("3_silk")
 theme_override_font_sizes/font_size = 14
 text = "[ LVL 01 ]"
 
-[node name="SkillCDBar" type="ProgressBar" parent="BottomLeftSkill"]
-custom_minimum_size = Vector2(380, 14)
+[node name="SkillStatusLabel" type="Label" parent="BottomLeftSkill/SkillRow/SkillTextCol"]
 layout_mode = 2
-show_percentage = false
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_fonts/font = ExtResource("3_silk")
+theme_override_font_sizes/font_size = 12
+text = "[ READY ]"
 
 [node name="ControlsReminder" type="Label" parent="BottomLeftSkill"]
 layout_mode = 2

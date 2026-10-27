@@ -12,7 +12,7 @@ collision_mask = 5
 script = ExtResource("1_scr")
 boss_type = "chrono"
 boss_name = "CHRONO-HARBINGER OMEGA"
-max_hp = 3000
+max_hp = 9000
 base_speed = 70.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
